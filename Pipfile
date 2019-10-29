@@ -16,6 +16,8 @@ Sphinx = "*"
 cufflinks = "*"
 plotly = "*"
 scikit-learn = "*"
+jupyter = "*"
+scipy = "*"
 
 [requires]
 python_version = "3.7"
