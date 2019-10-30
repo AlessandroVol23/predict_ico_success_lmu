@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "c4dae71ceb97dd0f18614ed82eadba808f610e65553a77f6993b6a1a63634bcd"
+            "sha256": "b5c97daa19b60590075a76fac8069509a3ce89e61d364dc280c1ce9abde0b4e2"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -32,11 +32,11 @@
         },
         "awscli": {
             "hashes": [
-                "sha256:64275b9b97acc034fe08e0f0f2996cf8685747dd458502b547f0679535ad0243",
-                "sha256:dd77ebd458267869013508407dbb7e2957d9bd011c717390fdf9615c81d46285"
+                "sha256:192fefd67054d9264f12c85b3528487bd2815e2b11a9bb67ab3148d7a6a71348",
+                "sha256:846e600299b55f57a9d0df05074f040c3559ee29c9d3046d4f734d4af8dbaaad"
             ],
             "index": "pypi",
-            "version": "==1.16.268"
+            "version": "==1.16.269"
         },
         "babel": {
             "hashes": [
@@ -61,10 +61,10 @@
         },
         "botocore": {
             "hashes": [
-                "sha256:3773a28e139ccd41435afe64ee5945e5ccd1b84706f54bcb971788d71f7f138c",
-                "sha256:efd131a59107ceb3c9a0f885d947f1b150ab68a875bbec05004d9768e45e6a0f"
+                "sha256:13bf9d0d9b9cda278349c9ba0c35c96570795438d5bd29e5188e110b3f5a5183",
+                "sha256:cfce2c7d6a218d693ed6daa8a41040761e35d7a728d1cf43ae14c4132fb146f3"
             ],
-            "version": "==1.13.4"
+            "version": "==1.13.5"
         },
         "certifi": {
             "hashes": [
@@ -306,6 +306,16 @@
                 "sha256:a183e0ec2e8f6adddf62b0a3fc6a2237e3e0056d381e536d3e7c7ecc3067e244"
             ],
             "version": "==4.6.1"
+        },
+        "lightgbm": {
+            "hashes": [
+                "sha256:37225b9f816ea3365ff5988fc8a3717e46ac99a5f223986c86c86cec4f111b54",
+                "sha256:5b911e50224c769b5f3e348839a19c72c6d9c21f3f910d54647090450bea252a",
+                "sha256:a3ca150fdb19370b120ec5b4d045b7b9ffbe73d2ff04d9f45e23395f91f6e050",
+                "sha256:f0938261116ddb4f9d146573819b2414db43b425bb10ee501c5b0f7ba0da7279"
+            ],
+            "index": "pypi",
+            "version": "==2.3.0"
         },
         "markupsafe": {
             "hashes": [
@@ -761,7 +771,7 @@
         },
         "src": {
             "editable": true,
-            "file": "file:///c/Users/Sandro/repo/data_science_for_business_lmu"
+            "path": "."
         },
         "terminado": {
             "hashes": [
@@ -833,5 +843,49 @@
             "version": "==0.6.0"
         }
     },
-    "develop": {}
+    "develop": {
+        "autopep8": {
+            "hashes": [
+                "sha256:4d8eec30cc81bc5617dbf1218201d770dc35629363547f17577c61683ccfb3ee"
+            ],
+            "index": "pypi",
+            "version": "==1.4.4"
+        },
+        "entrypoints": {
+            "hashes": [
+                "sha256:589f874b313739ad35be6e0cd7efde2a4e9b6fea91edcc34e58ecbb8dbe56d19",
+                "sha256:c70dd71abe5a8c85e55e12c19bd91ccfeec11a6e99044204511f9ed547d48451"
+            ],
+            "version": "==0.3"
+        },
+        "flake8": {
+            "hashes": [
+                "sha256:45681a117ecc81e870cbf1262835ae4af5e7a8b08e40b944a8a6e6b895914cfb",
+                "sha256:49356e766643ad15072a789a20915d3c91dc89fd313ccd71802303fd67e4deca"
+            ],
+            "index": "pypi",
+            "version": "==3.7.9"
+        },
+        "mccabe": {
+            "hashes": [
+                "sha256:ab8a6258860da4b6677da4bd2fe5dc2c659cff31b3ee4f7f5d64e79735b80d42",
+                "sha256:dd8d182285a0fe56bace7f45b5e7d1a6ebcbf524e8f3bd87eb0f125271b8831f"
+            ],
+            "version": "==0.6.1"
+        },
+        "pycodestyle": {
+            "hashes": [
+                "sha256:95a2219d12372f05704562a14ec30bc76b05a5b297b21a5dfe3f6fac3491ae56",
+                "sha256:e40a936c9a450ad81df37f549d676d127b1b66000a6c500caa2b085bc0ca976c"
+            ],
+            "version": "==2.5.0"
+        },
+        "pyflakes": {
+            "hashes": [
+                "sha256:17dbeb2e3f4d772725c777fabc446d5634d1038f234e77343108ce445ea69ce0",
+                "sha256:d976835886f8c5b31d47970ed689944a0262b5f3afa00a5a7b4dc81e5449f8a2"
+            ],
+            "version": "==2.1.1"
+        }
+    }
 }
