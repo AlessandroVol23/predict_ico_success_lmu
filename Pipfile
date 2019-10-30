@@ -4,9 +4,10 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
+flake8 = "*"
+autopep8 = "*"
 
 [packages]
-src = {editable = true,file = "file:///c/Users/Sandro/repo/data_science_for_business_lmu"}
 click = "*"
 coverage = "*"
 awscli = "*"
@@ -18,6 +19,8 @@ plotly = "*"
 scikit-learn = "*"
 jupyter = "*"
 scipy = "*"
+src = {editable = true,path = "."}
+lightgbm = "*"
 
 [requires]
 python_version = "3.7"
