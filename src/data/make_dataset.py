@@ -27,10 +27,8 @@ def read_in_data(path_bitcoin_df='data/raw/1_training_data_sets/1_bitcoin_price_
     tuple (df, df, df)
         df_bitcoin, df, df_test
     """
-    df_bitcoin = pd.read_csv(path_bitcoin_df,
-                             encoding="ISO-8859-1", delimiter=';')
-    df = pd.read_csv(path_training_df,
-                     encoding="ISO-8859-1")
+    df_bitcoin = pd.read_csv(path_bitcoin_df, encoding="ISO-8859-1", delimiter=';')
+    df = pd.read_csv(path_training_df,encoding="ISO-8859-1")
 
     df_test = pd.read_csv(path_test_df, encoding="ISO-8859-1")
 

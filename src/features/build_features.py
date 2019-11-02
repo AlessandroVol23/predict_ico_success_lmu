@@ -4,6 +4,7 @@
 import logging
 import pandas as pd
 import numpy as np
+from sklearn import preprocessing
 
 logger = logging.getLogger(__name__)
 log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
@@ -28,10 +29,20 @@ class FeatureEngineering(object):
         self.df = df
         self.df_bitcoin = df_bitcoin
         self.df_test = df_test
+        self.le =  preprocessing.LabelEncoder()
 
         # Create empty dataframe to add features
-        self.df_features_train = self.df[['OBS_ID', 'success']].copy()
+        self.df_features_train = self.df[['OBS_ID','categories_0', 'success']].copy()
         self.df_features_test = self.df_test[['OBS_ID']].copy()
+
+
+    def normalize_categorical_feature(self, column):
+        self.le.fit(self.df['categories_0'])
+        self.le.transform(self.df['categories_0']) 
+
+    def denormalize_categorical_feature(self, column):
+        print(column)
+
 
     def _add_transaction_count(self, train=True):
         """This function adds the feature transaction count to the feature dataset. 
@@ -44,6 +55,7 @@ class FeatureEngineering(object):
         """
         logger.info("Adding transaction count for {}".format(
             "train" if train else "test"))
+        normalize_categorical_feature(self, "categories_0")
 
         # Copy DataFrame
         df_copy = self.df.copy() if train else self.df_test.copy()
@@ -51,14 +63,15 @@ class FeatureEngineering(object):
         # Fill NA values with mean
         df_copy.transaction_count.fillna(
             df_copy.transaction_count.mean(), inplace=True)
+        
 
         if train:
             self.df_features_train = pd.merge(
-                self.df_features_train, df_copy[['OBS_ID', 'transaction_count']])
+                self.df_features_train, df_copy[['OBS_ID', 'categories_0' 'transaction_count']])
             assert 'transaction_count' in self.df_features_train.columns, "No transaction count in df_features!"
         else:
             self.df_features_test = pd.merge(
-                self.df_features_test, df_copy[['OBS_ID', 'transaction_count']])
+                self.df_features_test, df_copy[['OBS_ID', 'categories_0','transaction_count']])
             assert 'transaction_count' in self.df_features_test.columns, "No transaction count in df_features!"
 
     def get_X_y(self):
