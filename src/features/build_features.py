@@ -4,6 +4,7 @@
 import logging
 import pandas as pd
 import numpy as np
+from sklearn import preprocessing
 
 logger = logging.getLogger(__name__)
 log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
