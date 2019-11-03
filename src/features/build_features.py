@@ -25,26 +25,42 @@ class FeatureEngineering(object):
         df_test : DataFrame
             Test DataFrame
         """
-        self.df = df
+        self.df = pd.concat([df, df_test])
+        # Fill all from test set with TEST
+        self.df.loc[self.df.success.isna(), 'success'] = "TEST"
         self.df_bitcoin = df_bitcoin
-        self.df_test = df_test
 
         # Create empty dataframe to add features
-        self.df_features_train = self.df[['OBS_ID', 'success']].copy()
-        self.df_features_test = self.df_test[['OBS_ID']].copy()
+        self.df_features = self.df[['OBS_ID', 'success']].copy()
 
-    def _fill_na(df_in, column, strategy):
-    """Fill all NA values with certain strategiy
+    def _fill_na(self, df_in, column, strategy):
+        """Function to fill NA values
+
+        Arguments:
+            df_in {DataFrame} -- DataFrame to fill NA values
+            column {str} -- Column to fill
+            strategy {str} -- Mean / Median so far
 
         Returns:
-            DataFrame -- DataFrame with filled values.
+            DataFrame -- DataFrame with filled NA values
         """
-    df = df_in.copy()
+        logger.info("Start filling NA values in {}".format(column))
+        df = df_in.copy()
 
-    df[column].fillna(df[column], strategy, inplace=True)
-    return df
+        if strategy == 'mean':
+            to_fill = df[column].mean()
+        elif strategy == 'median':
+            to_fill = df[column].median()
 
-    def _add_transaction_count(self, train=True):
+        logger.info("Found {} NA values in column {}".format(
+            df[column].isna().sum(), column))
+
+        df[column].fillna(to_fill, inplace=True)
+
+        logger.info("Filled NA values")
+        return df
+
+    def _add_transaction_count(self):
         """This function adds the feature transaction count to the feature dataset. 
         It will add the feature for train and test set.
 
@@ -53,49 +69,28 @@ class FeatureEngineering(object):
         train : bool, optional
             Trainset or testset?, by default True
         """
-        logger.info("Adding transaction count for {}".format(
-            "train" if train else "test"))
-
         # Copy DataFrame
-        df_copy = self.df.copy() if train else self.df_test.copy()
+        df_copy = self.df.copy()
 
-        # Fill NA values with mean
-        df_copy.transaction_count.fillna(
-            df_copy.transaction_count.mean(), inplace=True)
+        df_copy = self._fill_na(
+            df_copy, 'transaction_count', 'mean')
 
-        if train:
-            self.df_features_train = pd.merge(
-                self.df_features_train, df_copy[['OBS_ID', 'transaction_count']])
-            assert 'transaction_count' in self.df_features_train.columns, "No transaction count in df_features!"
-        else:
-            self.df_features_test = pd.merge(
-                self.df_features_test, df_copy[['OBS_ID', 'transaction_count']])
-            assert 'transaction_count' in self.df_features_test.columns, "No transaction count in df_features!"
+        self.df_features = pd.merge(
+            self.df_features, df_copy[['OBS_ID', 'transaction_count']])
+        assert 'transaction_count' in self.df_features.columns, "No transaction count in df_features!"
 
     def _add_holder_count(self):
         logger.info("Add function holder count")
 
         # Copy DataFrame
-        df_copy_train = self.df.copy()
-        df_copy_test = self.df_test.copy()
+        df_copy = self.df.copy()
 
-        # Fill NA values with mean for train
-        df_copy_train.holder_count.fillna(
-            df_copy_train.holder_count.mean(), inplace=True)
-
-        # Fill NA values with mean for test
-        df_copy_test.holder_count.fillna(
-            df_copy_test.holder_count.mean(), inplace=True)
+        df_copy = self._fill_na(df_copy, 'holder_count', 'mean')
 
         # Add for train
-        self.df_features_train = pd.merge(
-            self.df_features_train, df_copy_train[['OBS_ID', 'holder_count']])
-        assert 'transaction_count' in self.df_features_train.columns, "No transaction count in df_features!"
-
-        # Test
-        self.df_features_test = pd.merge(
-            self.df_features_test, df_copy_test[['OBS_ID', 'holder_count']])
-        assert 'transaction_count' in self.df_features_test.columns, "No transaction count in df_features!"
+        self.df_features = pd.merge(
+            self.df_features, df_copy[['OBS_ID', 'holder_count']])
+        assert 'transaction_count' in self.df_features.columns, "No transaction count in df_features!"
 
     def get_X_y(self):
         """This function returns X_train, y_train and X_test.
@@ -106,17 +101,19 @@ class FeatureEngineering(object):
         DataFrames
             X_train, y_train, X_test
         """
-        self.X_train = self.df_features_train.drop(
-            ['success', 'OBS_ID'], axis=1)
-        self.y_train = self.df_features_train.loc[:, 'success']
+        df_train = self.df_features.loc[self.df_features.success != 'TEST']
+        df_test = self.df_features.loc[self.df_features.success == 'TEST']
 
-        self.X_test = self.df_features_test
+        self.X_train = df_train.drop(
+            ['success', 'OBS_ID'], axis=1)
+        self.y_train = df_train.loc[:, 'success']
+
+        self.X_test = df_test.drop('success', axis=1)
 
         return self.X_train, self.y_train, self.X_test
 
     def construct_features(self):
         """This function is the pipeline for adding all features to the dataset
         """
-        self._add_transaction_count(train=True)
-        self._add_transaction_count(train=False)
+        self._add_transaction_count()
         self._add_holder_count()
