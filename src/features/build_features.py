@@ -102,6 +102,17 @@ class FeatureEngineering(object):
             self.df_features, df_copy[['OBS_ID', 'transaction_count']])
         assert 'transaction_count' in self.df_features.columns, "No transaction count in df_features!"
 
+    def _transform_numerical_variables(self, column, na_strategy='mean'):
+        logger.info("Transform numerical variable for column {}".format(column))
+
+        # Copy Dataframe
+        df_copy = self.df
+
+        # Fill NAs
+        df_copy = self._fill_na(df_copy, column, na_strategy)
+
+        self._add_column_to_data_frame(df_copy, column)
+
     def _add_holder_count(self):
         logger.info("Add function holder count")
 
@@ -113,7 +124,7 @@ class FeatureEngineering(object):
         # Add for train
         self.df_features = pd.merge(
             self.df_features, df_copy[['OBS_ID', 'holder_count']])
-        assert 'transaction_count' in self.df_features.columns, "No transaction count in df_features!"
+        assert 'holder_count' in self.df_features.columns, "No holder_count in df_features!"
 
     def get_X_y(self):
         """This function returns X_train, y_train and X_test.
@@ -138,6 +149,19 @@ class FeatureEngineering(object):
     def construct_features(self):
         """This function is the pipeline for adding all features to the dataset
         """
-        self._add_transaction_count()
-        self._add_holder_count()
+        # self._add_transaction_count()
+        # self._add_holder_count()
         self._add_category()
+
+        _numerical_features = [
+            'transaction_count',
+            'holder_count',
+            'market_data_current_price_usd',
+            'market_data_ath_usd',
+            'market_data_total_supply',
+            'market_data_circulating_supply',
+            'public_interest_stats_bing_matches'
+        ]
+
+        for col in _numerical_features:
+            self._transform_numerical_variables(col)
