@@ -32,6 +32,7 @@ class FeatureEngineering(object):
         self.df_bitcoin = df_bitcoin
 
         # Create empty dataframe to add features
+<<<<<<< HEAD
         self.df_features = self.df[['OBS_ID', 'success']].copy()
 
     def _fill_na(self, df_in, column, strategy):
@@ -41,6 +42,40 @@ class FeatureEngineering(object):
             df_in {DataFrame} -- DataFrame to fill NA values
             column {str} -- Column to fill
             strategy {str} -- Mean / Median so far
+=======
+        self.df_features_train = self.df[['OBS_ID', 'success']].copy()
+        self.df_features_test = self.df_test[['OBS_ID']].copy()
+
+    def _nan_values_to_string(self, df,column):
+        df.loc[df[column].isna(), column] = "NAN"
+        return df
+
+    def normalize_categorical_feature(self,df,  column):
+        if self.le:
+            self.le.fit
+        labels = self.le.transform(df[column])
+        return labels 
+
+    def _add_column_to_data_frame(self, df, column):
+        self.df_features_train = pd.merge(
+                self.df_features_train, df[['OBS_ID',column]])
+        assert column in self.df_features_train.columns, "No {column} in df_features!"
+
+        self.df_features_test = pd.merge(
+                self.df_features_test, df[['OBS_ID',column]])
+        assert column in self.df_features_test.columns, "No {column} in df_features!"
+
+    def _add_category(self):
+        logger.info("Adding categories_0")
+        df_copy = self.df.copy()
+        df_copy = self._nan_values_to_string(df_copy, 'categories_0')
+        labels = self.normalize_categorical_feature(df_copy, "categories_0")
+        df_copy = df_copy.assign(labels_categories_0 = labels)
+
+        self._add_column_to_data_frame(df_copy, "labels_categories_0")
+
+
+>>>>>>> added categories label encoder
 
         Returns:
             DataFrame -- DataFrame with filled NA values
