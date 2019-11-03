@@ -33,6 +33,17 @@ class FeatureEngineering(object):
         self.df_features_train = self.df[['OBS_ID', 'success']].copy()
         self.df_features_test = self.df_test[['OBS_ID']].copy()
 
+    def _fill_na(df_in, column, strategy):
+    """Fill all NA values with certain strategiy
+
+        Returns:
+            DataFrame -- DataFrame with filled values.
+        """
+    df = df_in.copy()
+
+    df[column].fillna(df[column], strategy, inplace=True)
+    return df
+
     def _add_transaction_count(self, train=True):
         """This function adds the feature transaction count to the feature dataset. 
         It will add the feature for train and test set.
@@ -61,6 +72,31 @@ class FeatureEngineering(object):
                 self.df_features_test, df_copy[['OBS_ID', 'transaction_count']])
             assert 'transaction_count' in self.df_features_test.columns, "No transaction count in df_features!"
 
+    def _add_holder_count(self):
+        logger.info("Add function holder count")
+
+        # Copy DataFrame
+        df_copy_train = self.df.copy()
+        df_copy_test = self.df_test.copy()
+
+        # Fill NA values with mean for train
+        df_copy_train.holder_count.fillna(
+            df_copy_train.holder_count.mean(), inplace=True)
+
+        # Fill NA values with mean for test
+        df_copy_test.holder_count.fillna(
+            df_copy_test.holder_count.mean(), inplace=True)
+
+        # Add for train
+        self.df_features_train = pd.merge(
+            self.df_features_train, df_copy_train[['OBS_ID', 'holder_count']])
+        assert 'transaction_count' in self.df_features_train.columns, "No transaction count in df_features!"
+
+        # Test
+        self.df_features_test = pd.merge(
+            self.df_features_test, df_copy_test[['OBS_ID', 'holder_count']])
+        assert 'transaction_count' in self.df_features_test.columns, "No transaction count in df_features!"
+
     def get_X_y(self):
         """This function returns X_train, y_train and X_test.
         These are not the splits for training! This is just for preprocessing both datasets.
@@ -83,3 +119,4 @@ class FeatureEngineering(object):
         """
         self._add_transaction_count(train=True)
         self._add_transaction_count(train=False)
+        self._add_holder_count()
