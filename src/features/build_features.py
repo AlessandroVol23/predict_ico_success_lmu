@@ -31,6 +31,7 @@ class FeatureEngineering(object):
         self.df.loc[self.df.success.isna(), 'success'] = "TEST"
         self.df_bitcoin = df_bitcoin
         self.le = preprocessing.LabelEncoder()
+        self.label_dict = {}
         # Create empty dataframe to add features
         self.df_features = self.df[['OBS_ID', 'success']].copy()
 
@@ -113,6 +114,26 @@ class FeatureEngineering(object):
 
         self._add_column_to_data_frame(df_copy, column)
 
+    def _transform_categorical_variables(self, column):
+        logger.info("Transform categorical variable for column {}".format(column))
+
+
+        label_name= "labels_" + column
+        self.label_dict[column] = label_name
+        # Copy Dataframe
+        df_copy = self.df.copy()
+
+        # Fill NAs
+        df_copy = self._nan_values_to_string(df_copy, column)
+
+        # Transform labels
+        labels = self.normalize_categorical_feature(df_copy, column)
+        dictonary={self.label_dict[column]: labels}
+        df_copy = df_copy.assign(**dictonary)
+
+        self._add_column_to_data_frame(df_copy, self.label_dict[column] )
+
+
     def _add_holder_count(self):
         logger.info("Add function holder count")
 
@@ -151,7 +172,7 @@ class FeatureEngineering(object):
         """
         # self._add_transaction_count()
         # self._add_holder_count()
-        self._add_category()
+        # self._add_category()
 
         _numerical_features = [
             'transaction_count',
@@ -163,5 +184,17 @@ class FeatureEngineering(object):
             'public_interest_stats_bing_matches'
         ]
 
+        _categorical_featuers = [
+            'categories_0',
+            'country_origin',
+            'ico_data_country_origin',
+            'ico_data_hardcap_currency',
+            'ico_data_softcap_currency',
+            'ico_data_total_raised_currency',
+        ]
+
         for col in _numerical_features:
             self._transform_numerical_variables(col)
+
+        for col in _categorical_featuers:
+            self._transform_categorical_variables(col)
