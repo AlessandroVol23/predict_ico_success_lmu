@@ -3,7 +3,7 @@
 import logging
 import pandas as pd
 import numpy as np
-
+import click
 logger = logging.getLogger(__name__)
 
 
@@ -116,3 +116,19 @@ def get_preprocessed_datasets(path_bitcoin_df='data/raw/1_training_data_sets/1_b
     assert len(df) == 4757, "Shape of DF has to be 4757"
     assert len(df_test) == 1001, "Shape of DF test has to be 1001"
     return df_bitcoin, df, df_test
+
+
+def _save_processed_data(df_bitcoin, df, df_test):
+    df_bitcoin.to_csv('data/processed/df_bitcoin_pp.csv')
+    df.to_csv('data/processed/df_train_pp.csv')
+    df_test.to_csv('data/processed/df_test_pp.csv')
+
+
+@click.command()
+def main():
+    df_bitcoin, df, df_test = get_preprocessed_datasets()
+    _save_processed_data(df_bitcoin, df, df_test)
+
+
+if __name__ == "__main__":
+    main()

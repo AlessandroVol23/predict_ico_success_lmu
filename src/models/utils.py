@@ -6,8 +6,16 @@ import pandas as pd
 import numpy as np
 
 logger = logging.getLogger(__name__)
-log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-logging.basicConfig(level=logging.INFO, format=log_fmt)
+
+
+def read_feature_data(x_train='data/features/features_x_train.csv',
+                      y_train='data/features/features_y_train.csv',
+                      x_test='data/features/features_x_test.csv'):
+    x_train = pd.read_csv(x_train)
+    y_train = pd.read_csv(y_train)
+    x_test = pd.read_csv(x_test)
+
+    return x_train, y_train, x_test
 
 
 def create_submission_csv(model, X_test, path_to_save_csv):
