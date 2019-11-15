@@ -2,11 +2,13 @@
 # -*- coding: utf-8 -*-
 
 import logging
+import pandas as pd
 from sklearn.model_selection import train_test_split
 import lightgbm as lgb
 from lightgbm import LGBMClassifier
 from sklearn.metrics import matthews_corrcoef
 from sklearn.model_selection import KFold
+from sklearn.model_selection import StratifiedKFold
 import numpy as np
 from src.models.utils import read_feature_data
 from sklearn.metrics import roc_auc_score
@@ -29,21 +31,31 @@ class LightGbmModel(object):
             y_train DataFrame from build_features.py
         """
         self.X_train, self.y_train, self.X_test = read_feature_data()
+        self.test_ids = self.X_test['OBS_ID']
+        self.X_test = self.X_test.drop('OBS_ID', axis=1)
+
+        logger.info("X_train shape: {}".format(self.X_train.shape))
+        logger.info("y_train shape: {}".format(self.y_train.shape))
+        logger.info("x_test shape: {}".format(self.X_test.shape))
 
     def cross_validation(self):
         """Cross validation
         """
         # Modeling
-        folds = KFold(n_splits=5, shuffle=True, random_state=123)
+        #folds = KFold(n_splits=5, shuffle=True, random_state=123)
+        # StratifiedKFold
+        folds = StratifiedKFold(n_splits=5, shuffle=True, random_state=123)
+        # skf.get_n_splits(self.X_train, self.y_train)
+
         oof_preds = np.zeros(self.X_train.shape[0])
         sub_preds = np.zeros(self.X_test.shape[0])
-        for n_fold, (trn_idx, val_idx) in enumerate(folds.split(self.X_train)):
+        for n_fold, (trn_idx, val_idx) in enumerate(folds.split(self.X_train, self.y_train)):
             trn_x, trn_y = self.X_train.iloc[trn_idx], self.y_train.iloc[trn_idx]
             val_x, val_y = self.X_train.iloc[val_idx], self.y_train.iloc[val_idx]
 
             clf = LGBMClassifier(
                 n_estimators=2000,
-                learning_rate=0.1,
+                learning_rate=0.01,
                 num_leaves=123,
                 colsample_bytree=.8,
                 subsample=.9,
@@ -56,63 +68,39 @@ class LightGbmModel(object):
 
             clf.fit(trn_x, trn_y,
                     eval_set=[(trn_x, trn_y), (val_x, val_y)],
-                    eval_metric='auc', verbose=250, early_stopping_rounds=150
+                    eval_metric='binary_logloss', verbose=250, early_stopping_rounds=150
                     )
 
             oof_preds[val_idx] = clf.predict_proba(
                 val_x, num_iteration=clf.best_iteration_)[:, 1]
-            sub_preds += clf.predict_proba(test[features], num_iteration=clf.best_iteration_)[
+            sub_preds += clf.predict_proba(self.X_test, num_iteration=clf.best_iteration_)[
                 :, 1] / folds.n_splits
 
-            print('Fold %2d AUC : %.6f' %
-                  (n_fold + 1, roc_auc_score(val_y, oof_preds[val_idx])))
+            oof_pred_abs = oof_preds.round()
+            self.sub_preds_abs = sub_preds.round()
+
+            unique_elements, counts_elements = np.unique(
+                oof_pred_abs, return_counts=True)
+            logger.info("unique elements: {}: counts_elements: {}".format(
+                unique_elements, counts_elements))
+
+            print('Fold %2d mcc : %.6f' %
+                  (n_fold + 1, matthews_corrcoef(val_y, oof_pred_abs[val_idx])))
             del clf, trn_x, trn_y, val_x, val_y
 
-    def train(self):
-        """Train lightgbm model with some harcoded parameters
-        """
-        # Convert it into a format fitting for LGBM Multiclass
-        train_set = lgb.Dataset(self.X_train, self.y_train)
-        val_set = lgb.Dataset(self.X_test, self.y_test)
-
-        parameters = {
-            'application': 'binary',
-            'objective': 'binary',
-            'metric': 'auc',
-            'is_unbalance': 'true',
-            'boosting': 'gbdt',
-            'num_leaves': 31,
-            'feature_fraction': 0.5,
-            'bagging_fraction': 0.5,
-            'bagging_freq': 20,
-            'learning_rate': 0.05,
-            'verbose': 0
-        }
-
-        self.model = lgb.train(parameters,
-                               train_set,
-                               valid_sets=val_set,
-                               num_boost_round=5000,
-                               early_stopping_rounds=100)
-
-    def evaluate(self):
-        """Function to calculate MCC metric.
-        """
-        # Get prediction probabilities for test set
-        preds = self.model.predict(
-            self.X_test, num_iteration=self.model.best_iteration)
-
-        # Probabilities to classes
-        classes_preds = preds.round().astype(int)
-
-        # Print mcc
-        logger.info("MCC is; {}".format(
-            matthews_corrcoef(self.y_test, classes_preds)))
+    def create_evaluation_file(self):
+        df_submission = pd.DataFrame(
+            [self.test_ids.values, self.sub_preds_abs]).transpose()
+        df_submission.columns = ['OBS_ID', 'success']
+        df_submission['OBS_ID'] = df_submission.OBS_ID.astype(int)
+        df_submission['success'] = df_submission.success.astype(int)
+        df_submission.to_csv('data/submissions/submission7.csv', index=None)
 
 
 def main():
     model = LightGbmModel()
     model.cross_validation()
+    model.create_evaluation_file()
     pass
 
 

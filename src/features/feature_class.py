@@ -84,25 +84,6 @@ class FeatureEngineering(object):
 
         self._add_column_to_data_frame(df_copy, "labels_categories_0")
 
-    def _add_transaction_count(self):
-        """This function adds the feature transaction count to the feature dataset. 
-        It will add the feature for train and test set.
-
-        Parameters
-        ----------
-        train : bool, optional
-            Trainset or testset?, by default True
-        """
-        # Copy DataFrame
-        df_copy = self.df.copy()
-
-        df_copy = self._fill_na(
-            df_copy, 'transaction_count', 'mean')
-
-        self.df_features = pd.merge(
-            self.df_features, df_copy[['OBS_ID', 'transaction_count']])
-        assert 'transaction_count' in self.df_features.columns, "No transaction count in df_features!"
-
     def _transform_numerical_variables(self, column, na_strategy='mean'):
         logger.info("Transform numerical variable for column {}".format(column))
 
@@ -156,16 +137,23 @@ class FeatureEngineering(object):
             X_train, y_train, X_test
         """
         df_train = self.df_features.loc[self.df_features.success != 'TEST']
+        logger.info("DF_train shape: {}".format(df_train.shape))
         df_test = self.df_features.loc[self.df_features.success == 'TEST']
+        logger.info("df_test shape: {}".format(df_train.shape))
 
         self.X_train = df_train.drop(
             ['success', 'OBS_ID'], axis=1)
-        self.y_train = df_train.loc[:, 'success']
+        self.y_train = df_train.loc[:, 'success'].values.astype(int)
+        logger.info("Y_train unique values: {}".format(
+            np.unique(self.y_train, return_counts=True)))
 
         self.X_test = df_test.drop('success', axis=1)
 
         # self.X_train = self.X_train.values
         # self.y_train = self.y_train.values.astype(int)
+        logger.info("X_train shape: {}".format(self.X_train.shape))
+        logger.info("y_train shape: {}".format(self.y_train.shape))
+        logger.info("X_test shape: {}".format(self.X_test.shape))
 
         return self.X_train, self.y_train, self.X_test
 

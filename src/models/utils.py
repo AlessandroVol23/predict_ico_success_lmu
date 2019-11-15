@@ -9,12 +9,14 @@ logger = logging.getLogger(__name__)
 
 
 def read_feature_data(x_train='data/features/features_x_train.csv',
-                      y_train='data/features/features_y_train.csv',
+                      y_train='data/features/features_y_train.np',
                       x_test='data/features/features_x_test.csv'):
     x_train = pd.read_csv(x_train)
-    y_train = pd.read_csv(y_train)
+    #y_train = pd.DataFrame(np.fromfile(y_train))
+    y_train = pd.DataFrame(np.fromfile(y_train, dtype=int))
     x_test = pd.read_csv(x_test)
-
+    #print("UNIQUE: {}".format(np.unique(y_train, return_counts=True)))
+    print("UNIQUE: {}".format(y_train.groupby(0).count()))
     return x_train, y_train, x_test
 
 
