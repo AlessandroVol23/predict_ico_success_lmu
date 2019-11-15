@@ -1,6 +1,10 @@
 # data_science_for_business_lmu
 
-A short description of the project.
+```bash
+make data -> creates data
+make features -> creates features
+make lbm_model -> creates lbm model and evaluation file with name submission6.csv in submissions
+```
 
 ## Project Organization
 
