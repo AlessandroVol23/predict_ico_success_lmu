@@ -93,6 +93,17 @@ class LightGbmModel(object):
         self.sub_preds_abs = sub_preds.round()
         print("Overall MCC was: {}".format(np.array(mcc_folds).mean()))
 
+    def get_submission_number(self):
+        with open('SUBMISSION_NUMBER') as f:
+            return f.readline()
+
+    def increment_submission_number(self, current_number):
+        new_build_number = current_number + 1
+        print('New submission number is now: %2d' % (new_build_number))
+        with open('SUBMISSION_NUMBER') as f:
+            f.write(new_build_number)
+
+    # TODO get current submission_number and increment it after writing
     def create_evaluation_file(self):
         df_submission = pd.DataFrame(
             [self.test_ids.values, self.sub_preds_abs]).transpose()
