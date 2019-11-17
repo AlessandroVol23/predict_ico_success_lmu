@@ -12,6 +12,7 @@ from sklearn.model_selection import StratifiedKFold
 import numpy as np
 from src.models.utils import read_feature_data
 from sklearn.metrics import roc_auc_score
+import os
 
 logger = logging.getLogger(__name__)
 log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
@@ -94,23 +95,29 @@ class LightGbmModel(object):
         print("Overall MCC was: {}".format(np.array(mcc_folds).mean()))
 
     def get_submission_number(self):
-        with open('SUBMISSION_NUMBER') as f:
+        with open("SUBMISSION_NUMBER", "r") as f:
             return f.readline()
 
-    def increment_submission_number(self, current_number):
-        new_build_number = current_number + 1
+    def increment_submission_number(self, current_number=0):
+        new_build_number = int(current_number) + 1
         print('New submission number is now: %2d' % (new_build_number))
-        with open('SUBMISSION_NUMBER') as f:
-            f.write(new_build_number)
+        with open("SUBMISSION_NUMBER", "w") as f:
+            f.write(str(new_build_number))
 
     # TODO get current submission_number and increment it after writing
-    def create_evaluation_file(self):
+    def create_evaluation_file(self, increment=True):
+        next_submission_number = self.get_submission_number()
+        print(next_submission_number)
+        if increment:
+            self.increment_submission_number(next_submission_number)
+
         df_submission = pd.DataFrame(
             [self.test_ids.values, self.sub_preds_abs]).transpose()
         df_submission.columns = ['OBS_ID', 'success']
         df_submission['OBS_ID'] = df_submission.OBS_ID.astype(int)
         df_submission['success'] = df_submission.success.astype(int)
-        df_submission.to_csv('data/submissions/submission7.csv', index=None)
+        fileName = 'data/submissions/submission' + next_submission_number + '.csv'
+        df_submission.to_csv(fileName, index=None)
 
 
 def main():
