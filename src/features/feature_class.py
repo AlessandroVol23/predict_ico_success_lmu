@@ -48,6 +48,7 @@ class FeatureEngineering(object):
         self.df = pd.concat([df, df_test])
         # Fill all from test set with TEST
         self.df.loc[self.df.success.isna(), 'success'] = "TEST"
+        print(self.df)
         self.df_bitcoin = df_bitcoin
         
         # Label Encoder
@@ -159,10 +160,8 @@ class FeatureEngineering(object):
         labels = self.one_hote_encoder(df_copy, column)
         dfOneHot = pd.DataFrame(labels, columns = [label_name + str(int(i)) for i in range(labels.shape[1])])
 
-        # Remove duplicates
-        df_copy = df_copy.loc[~df_copy.index.duplicated(keep='first')]
         # Concat to 
-        df_copy = pd.concat([df_copy, dfOneHot], axis=1)
+        df_copy = df_copy.join(dfOneHot)
 
         # TODO 
         # Currently little tricky, as we iterrate over the onHoteEncoded data but provide the df_copy dataframe as parameter 
