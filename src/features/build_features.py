@@ -1,7 +1,7 @@
 import numpy as np
 import click
-from src.features.feature_class import FeatureEngineering
-from src.features.utils import read_processed_data
+from feature_class import FeatureEngineering
+from utils import read_processed_data
 
 
 @click.command()
