@@ -10,7 +10,24 @@ logger = logging.getLogger(__name__)
 log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 logging.basicConfig(level=logging.INFO, format=log_fmt)
 
+_categorical_featuers = [
+            'categories_0',
+            'country_origin',
+            'ico_data_country_origin',
+            'ico_data_hardcap_currency',
+            'ico_data_softcap_currency',
+            'ico_data_total_raised_currency',
+        ]
 
+_numerical_features = [
+            'transaction_count',
+            'holder_count',
+            'market_data_current_price_usd',
+            'market_data_ath_usd',
+            'market_data_total_supply',
+            'market_data_circulating_supply',
+            'public_interest_stats_bing_matches'
+        ]    
 class FeatureEngineering(object):
 
     # Constructor
@@ -26,11 +43,19 @@ class FeatureEngineering(object):
         df_test : DataFrame
             Test DataFrame
         """
+
+
         self.df = pd.concat([df, df_test])
         # Fill all from test set with TEST
         self.df.loc[self.df.success.isna(), 'success'] = "TEST"
         self.df_bitcoin = df_bitcoin
+        
+        # Label Encoder
         self.le = preprocessing.LabelEncoder()
+
+        # One Hot Encoder
+        self.enc = preprocessing.OneHotEncoder(handle_unknown='ignore')
+
         self.label_dict = {}
         # Create empty dataframe to add features
         self.df_features = self.df[['OBS_ID', 'success']].copy()
@@ -75,6 +100,11 @@ class FeatureEngineering(object):
         labels = self.le.fit_transform(df[column])
         return labels
 
+    def one_hote_encoder(self, df, column):
+        categorical_data =df[column].values.reshape(-1,1)
+        onehot_encoded = self.enc.fit_transform(categorical_data).toarray()
+        return onehot_encoded
+
     def _add_category(self):
         logger.info("Adding categories_0")
         df_copy = self.df.copy()
@@ -95,9 +125,9 @@ class FeatureEngineering(object):
 
         self._add_column_to_data_frame(df_copy, column)
 
-    def _transform_categorical_variables(self, column):
+    def _transform_categorical_variables_label_encoded(self, column):
         logger.info(
-            "Transform categorical variable for column {}".format(column))
+            "Transform categorical variable to label encoding for column {}".format(column))
 
         label_name = "labels_" + column
         self.label_dict[column] = label_name
@@ -113,6 +143,32 @@ class FeatureEngineering(object):
         df_copy = df_copy.assign(**dictonary)
 
         self._add_column_to_data_frame(df_copy, self.label_dict[column])
+
+    def _transform_categorical_variables_one_hot_encoded(self, column):
+        logger.info(
+            "Transform categorical variable to one hot encoded for column {}".format(column))
+        # Copy Dataframe
+        df_copy = self.df.copy()
+
+        # Fill NAs
+        df_copy = self._nan_values_to_string(df_copy, column)
+        
+        label_name = column + "_"
+
+        # Tansform one hot encoded
+        labels = self.one_hote_encoder(df_copy, column)
+        dfOneHot = pd.DataFrame(labels, columns = [label_name + str(int(i)) for i in range(labels.shape[1])])
+
+        # Remove duplicates
+        df_copy = df_copy.loc[~df_copy.index.duplicated(keep='first')]
+        # Concat to 
+        df_copy = pd.concat([df_copy, dfOneHot], axis=1)
+
+        # TODO 
+        # Currently little tricky, as we iterrate over the onHoteEncoded data but provide the df_copy dataframe as parameter 
+        # maybe we should just concatinate the one_hote_encoded datafarame to the object dataframe in a seperate function ??
+        for col in dfOneHot.columns: 
+            self._add_column_to_data_frame(df_copy, col)
 
     def _add_holder_count(self):
         logger.info("Add function holder count")
@@ -157,31 +213,30 @@ class FeatureEngineering(object):
 
         return self.X_train, self.y_train, self.X_test
 
-    def construct_features(self):
-        """This function is the pipeline for adding all features to the dataset
-        """
-
-        _numerical_features = [
-            'transaction_count',
-            'holder_count',
-            'market_data_current_price_usd',
-            'market_data_ath_usd',
-            'market_data_total_supply',
-            'market_data_circulating_supply',
-            'public_interest_stats_bing_matches'
-        ]
-
-        _categorical_featuers = [
-            'categories_0',
-            'country_origin',
-            'ico_data_country_origin',
-            'ico_data_hardcap_currency',
-            'ico_data_softcap_currency',
-            'ico_data_total_raised_currency',
-        ]
+    def construct_numerical_featuers(self):
+        """This function is the pipeline for adding all numerical features to the dataset
+        """  
 
         for col in _numerical_features:
             self._transform_numerical_variables(col)
 
+    def construct_cateogrical_features_label_encoded(self):
+        """This function is the pipeline for adding all label encoded categorical featuers to the dataset
+        """
+
         for col in _categorical_featuers:
-            self._transform_categorical_variables(col)
+            self._transform_categorical_variables_label_encoded(col)
+
+    def construct_cateogrical_features_one_hot_encoded(self):
+        """This function is the pipeline for adding all label encoded categorical featuers to the dataset
+        """
+
+        for col in _categorical_featuers:
+            self._transform_categorical_variables_one_hot_encoded(col)
+
+
+    def construct_features(self):
+        """This function is the pipeline for adding all features to the dataset
+        """
+        self.construct_numerical_featuers()
+        self.construct_cateogrical_features_one_hot_encoded()
