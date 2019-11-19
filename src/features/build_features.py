@@ -1,7 +1,12 @@
+#! /bin/bash
+# -*- coding: utf-8 -*-
+from tqdm import tqdm
 import numpy as np
 import click
 from feature_class import FeatureEngineering
 from utils import read_processed_data
+import logging
+logger = logging.getLogger(__name__)
 
 
 @click.command()
@@ -10,11 +15,13 @@ def main():
     fe = FeatureEngineering(df, df_bitcoin, df_test)
     feature_sets = fe.read_feature_meta()
 
-    for(key, value) in feature_sets.items():
+    for(key, value) in tqdm(feature_sets.items()):
+        logger.info("Building feature set: {}".format(key))
         fe.construct_feature_set(value)
         X_train, y_train, X_test = fe.get_X_y()
         print("UNIQUE: {}".format(np.unique(y_train, return_counts=True)))
-        X_train.to_csv('data/features/features_x_train_'+key+'.csv', index=None)
+        X_train.to_csv('data/features/features_x_train_' +
+                       key+'.csv', index=None)
         y_train.tofile('data/features/features_y_train_'+key+'.np')
         X_test.to_csv('data/features/features_x_test_'+key+'.csv', index=None)
 
