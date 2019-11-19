@@ -1,0 +1,12 @@
+[{
+
+    "column":"categories_0",
+    "econder":["one_hot", "lable"],
+    "na_strategy":["delete", "set:NA"]
+},
+{
+
+    "column":"categories_0",
+    "econder":["one_hot", "lable"],
+    "na_strategy":["delete", "set:NA"]
+}]
