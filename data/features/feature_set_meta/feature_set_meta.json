@@ -1,281 +1,822 @@
 {
-
-    "1": [
-        {
-            "column": "categories_0",
-            "type": "categorical",
-            "encoder": "one_hot",
-            "na_strategy": "set:NA"
-        },
-        {
-            "column": "country_origin",
-            "type": "categorical",
-            "encoder": "one_hot",
-            "na_strategy": "set:NA"
-        },     {
-            "column": "ico_data_country_origin",
-            "type": "categorical",
-            "encoder": "one_hot",
-            "na_strategy": "set:NA"
-        },     {
-            "column": "ico_data_hardcap_currency",
-            "type": "categorical",
-            "encoder": "one_hot",
-            "na_strategy": "set:NA"
-        },     {
-            "column": "ico_data_softcap_currency",
-            "type": "categorical",
-            "encoder": "one_hot",
-            "na_strategy": "set:NA"
-        },     {
-            "column": "ico_data_total_raised_currency",
-            "type": "categorical",
-            "encoder": "one_hot",
-            "na_strategy": "set:NA"
-        },     {
-            "column": "ico_data_country_origin",
-            "type": "categorical",
-            "encoder": "one_hot",
-            "na_strategy": "set:NA"
-        },
-        {
-            "column": "holder_count",
-            "type": "numerical",
-            "na_strategy": "median"
-        },
-        {
-            "column": "transaction_count",
-            "type": "numerical",
-            "na_strategy": "mean"
-        },
-        {
-            "column": "market_data_current_price_usd",
-            "type": "numerical",
-            "na_strategy": "mean"
-        },
-        {
-            "column": "market_data_ath_usd",
-            "type": "numerical",
-            "na_strategy": "mean"
-        },
-        {
-            "column": "market_data_total_supply",
-            "type": "numerical",
-            "na_strategy": "mean"
-        },
-        {
-            "column": "market_data_circulating_supply",
-            "type": "numerical",
-            "na_strategy": "mean"
-        },
-        {
-            "column": "market_data_high_24h_usd",
-            "type": "numerical",
-            "na_strategy": "mean"
-        },
-        {
-            "column": "market_data_low_24h_usd",
-            "type": "numerical",
-            "na_strategy": "mean"
-        },
-        {
-            "column": "public_interest_stats_bing_matches",
-            "type": "numerical",
-            "na_strategy": "mean"
-        },
-        {
-            "column": "community_data_facebook_likes",
-            "type": "numerical",
-            "na_strategy": "mean"
-        },
-        {
-            "column": "community_data_twitter_followers",
-            "type": "numerical",
-            "na_strategy": "mean"
-        },
-        {
-            "column": "community_data_reddit_subscribers",
-            "type": "numerical",
-            "na_strategy": "mean"
-        },
-        {
-            "column": "developer_data_stars",
-            "type": "numerical",
-            "na_strategy": "mean"
-        },
-        {
-            "column": "developer_data_subscribers",
-            "type": "numerical",
-            "na_strategy": "mean"
-        },
-        {
-            "column": "developer_data_total_issues",
-            "type": "numerical",
-            "na_strategy": "mean"
-        },
-        {
-            "column": "developer_data_closed_issues",
-            "type": "numerical",
-            "na_strategy": "mean"
-        },
-        {
-            "column": "developer_data_pull_requests_merged",
-            "type": "numerical",
-            "na_strategy": "mean"
-        },
-        {
-            "column": "developer_data_commit_count_4_weeks",
-            "type": "numerical",
-            "na_strategy": "mean"
-        },
-        {
-            "column": "ico_data_hardcap_amount",
-            "type": "numerical",
-            "na_strategy": "mean"
-        },
-        {
-            "column": "ico_data_softcap_amount",
-            "type": "numerical",
-            "na_strategy": "mean"
-        }
-    ],
-    "2": [
-        {
-            "column": "categories_0",
-            "type": "categorical",
-            "encoder": "label",
-            "na_strategy": "set:NA"
-        },
-        {
-            "column": "country_origin",
-            "type": "categorical",
-            "encoder": "label",
-            "na_strategy": "set:NA"
-        },     {
-            "column": "ico_data_country_origin",
-            "type": "categorical",
-            "encoder": "label",
-            "na_strategy": "set:NA"
-        },     {
-            "column": "ico_data_hardcap_currency",
-            "type": "categorical",
-            "encoder": "label",
-            "na_strategy": "set:NA"
-        },     {
-            "column": "ico_data_softcap_currency",
-            "type": "categorical",
-            "encoder": "label",
-            "na_strategy": "set:NA"
-        },     {
-            "column": "ico_data_total_raised_currency",
-            "type": "categorical",
-            "encoder": "label",
-            "na_strategy": "set:NA"
-        },     {
-            "column": "ico_data_country_origin",
-            "type": "categorical",
-            "encoder": "label",
-            "na_strategy": "set:NA"
-        },
-        {
-            "column": "holder_count",
-            "type": "numerical",
-            "na_strategy": "median"
-        },
-        {
-            "column": "transaction_count",
-            "type": "numerical",
-            "na_strategy": "median"
-        },
-        {
-            "column": "market_data_current_price_usd",
-            "type": "numerical",
-            "na_strategy": "median"
-        },
-        {
-            "column": "market_data_ath_usd",
-            "type": "numerical",
-            "na_strategy": "median"
-        },
-        {
-            "column": "market_data_total_supply",
-            "type": "numerical",
-            "na_strategy": "median"
-        },
-        {
-            "column": "market_data_circulating_supply",
-            "type": "numerical",
-            "na_strategy": "median"
-        },
-        {
-            "column": "market_data_high_24h_usd",
-            "type": "numerical",
-            "na_strategy": "median"
-        },
-        {
-            "column": "market_data_low_24h_usd",
-            "type": "numerical",
-            "na_strategy": "median"
-        },
-        {
-            "column": "public_interest_stats_bing_matches",
-            "type": "numerical",
-            "na_strategy": "median"
-        },
-        {
-            "column": "community_data_facebook_likes",
-            "type": "numerical",
-            "na_strategy": "median"
-        },
-        {
-            "column": "community_data_twitter_followers",
-            "type": "numerical",
-            "na_strategy": "median"
-        },
-        {
-            "column": "community_data_reddit_subscribers",
-            "type": "numerical",
-            "na_strategy": "median"
-        },
-        {
-            "column": "developer_data_stars",
-            "type": "numerical",
-            "na_strategy": "median"
-        },
-        {
-            "column": "developer_data_subscribers",
-            "type": "numerical",
-            "na_strategy": "median"
-        },
-        {
-            "column": "developer_data_total_issues",
-            "type": "numerical",
-            "na_strategy": "median"
-        },
-        {
-            "column": "developer_data_closed_issues",
-            "type": "numerical",
-            "na_strategy": "median"
-        },
-        {
-            "column": "developer_data_pull_requests_merged",
-            "type": "numerical",
-            "na_strategy": "median"
-        },
-        {
-            "column": "developer_data_commit_count_4_weeks",
-            "type": "numerical",
-            "na_strategy": "median"
-        },
-        {
-            "column": "ico_data_hardcap_amount",
-            "type": "numerical",
-            "na_strategy": "median"
-        },
-        {
-            "column": "ico_data_softcap_amount",
-            "type": "numerical",
-            "na_strategy": "median"
-        }
-    ]
+  "1": [
+    {
+      "column": "categories_0",
+      "type": "categorical",
+      "encoder": "one_hot",
+      "na_strategy": "set:NA"
+    },
+    {
+      "column": "country_origin",
+      "type": "categorical",
+      "encoder": "one_hot",
+      "na_strategy": "set:NA"
+    },
+    {
+      "column": "ico_data_country_origin",
+      "type": "categorical",
+      "encoder": "one_hot",
+      "na_strategy": "set:NA"
+    },
+    {
+      "column": "ico_data_hardcap_currency",
+      "type": "categorical",
+      "encoder": "one_hot",
+      "na_strategy": "set:NA"
+    },
+    {
+      "column": "ico_data_softcap_currency",
+      "type": "categorical",
+      "encoder": "one_hot",
+      "na_strategy": "set:NA"
+    },
+    {
+      "column": "ico_data_total_raised_currency",
+      "type": "categorical",
+      "encoder": "one_hot",
+      "na_strategy": "set:NA"
+    },
+    {
+      "column": "ico_data_country_origin",
+      "type": "categorical",
+      "encoder": "one_hot",
+      "na_strategy": "set:NA"
+    },
+    {
+      "column": "holder_count",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "transaction_count",
+      "type": "numerical",
+      "na_strategy": "mean"
+    },
+    {
+      "column": "market_data_current_price_usd",
+      "type": "numerical",
+      "na_strategy": "mean"
+    },
+    {
+      "column": "market_data_ath_usd",
+      "type": "numerical",
+      "na_strategy": "mean"
+    },
+    {
+      "column": "market_data_total_supply",
+      "type": "numerical",
+      "na_strategy": "mean"
+    },
+    {
+      "column": "market_data_circulating_supply",
+      "type": "numerical",
+      "na_strategy": "mean"
+    },
+    {
+      "column": "market_data_high_24h_usd",
+      "type": "numerical",
+      "na_strategy": "mean"
+    },
+    {
+      "column": "market_data_low_24h_usd",
+      "type": "numerical",
+      "na_strategy": "mean"
+    },
+    {
+      "column": "public_interest_stats_bing_matches",
+      "type": "numerical",
+      "na_strategy": "mean"
+    },
+    {
+      "column": "community_data_facebook_likes",
+      "type": "numerical",
+      "na_strategy": "mean"
+    },
+    {
+      "column": "community_data_twitter_followers",
+      "type": "numerical",
+      "na_strategy": "mean"
+    },
+    {
+      "column": "community_data_reddit_subscribers",
+      "type": "numerical",
+      "na_strategy": "mean"
+    },
+    {
+      "column": "developer_data_stars",
+      "type": "numerical",
+      "na_strategy": "mean"
+    },
+    {
+      "column": "developer_data_subscribers",
+      "type": "numerical",
+      "na_strategy": "mean"
+    },
+    {
+      "column": "developer_data_total_issues",
+      "type": "numerical",
+      "na_strategy": "mean"
+    },
+    {
+      "column": "developer_data_closed_issues",
+      "type": "numerical",
+      "na_strategy": "mean"
+    },
+    {
+      "column": "developer_data_pull_requests_merged",
+      "type": "numerical",
+      "na_strategy": "mean"
+    },
+    {
+      "column": "developer_data_commit_count_4_weeks",
+      "type": "numerical",
+      "na_strategy": "mean"
+    },
+    {
+      "column": "ico_data_hardcap_amount",
+      "type": "numerical",
+      "na_strategy": "mean"
+    },
+    {
+      "column": "ico_data_softcap_amount",
+      "type": "numerical",
+      "na_strategy": "mean"
+    }
+  ],
+  "2": [
+    {
+      "column": "categories_0",
+      "type": "categorical",
+      "encoder": "label",
+      "na_strategy": "set:NA"
+    },
+    {
+      "column": "country_origin",
+      "type": "categorical",
+      "encoder": "label",
+      "na_strategy": "set:NA"
+    },
+    {
+      "column": "ico_data_country_origin",
+      "type": "categorical",
+      "encoder": "label",
+      "na_strategy": "set:NA"
+    },
+    {
+      "column": "ico_data_hardcap_currency",
+      "type": "categorical",
+      "encoder": "label",
+      "na_strategy": "set:NA"
+    },
+    {
+      "column": "ico_data_softcap_currency",
+      "type": "categorical",
+      "encoder": "label",
+      "na_strategy": "set:NA"
+    },
+    {
+      "column": "ico_data_total_raised_currency",
+      "type": "categorical",
+      "encoder": "label",
+      "na_strategy": "set:NA"
+    },
+    {
+      "column": "ico_data_country_origin",
+      "type": "categorical",
+      "encoder": "label",
+      "na_strategy": "set:NA"
+    },
+    {
+      "column": "holder_count",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "transaction_count",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "market_data_current_price_usd",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "market_data_ath_usd",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "market_data_total_supply",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "market_data_circulating_supply",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "market_data_high_24h_usd",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "market_data_low_24h_usd",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "public_interest_stats_bing_matches",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "community_data_facebook_likes",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "community_data_twitter_followers",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "community_data_reddit_subscribers",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "developer_data_stars",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "developer_data_subscribers",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "developer_data_total_issues",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "developer_data_closed_issues",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "developer_data_pull_requests_merged",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "developer_data_commit_count_4_weeks",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "ico_data_hardcap_amount",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "ico_data_softcap_amount",
+      "type": "numerical",
+      "na_strategy": "median"
+    }
+  ],
+  "3": [
+    {
+      "column": "categories_0",
+      "type": "categorical",
+      "encoder": "label",
+      "na_strategy": "set:NA"
+    },
+    {
+      "column": "country_origin",
+      "type": "categorical",
+      "encoder": "label",
+      "na_strategy": "set:NA"
+    },
+    {
+      "column": "ico_data_country_origin",
+      "type": "categorical",
+      "encoder": "label",
+      "na_strategy": "set:NA"
+    },
+    {
+      "column": "ico_data_hardcap_currency",
+      "type": "categorical",
+      "encoder": "label",
+      "na_strategy": "set:NA"
+    },
+    {
+      "column": "ico_data_softcap_currency",
+      "type": "categorical",
+      "encoder": "label",
+      "na_strategy": "set:NA"
+    },
+    {
+      "column": "ico_data_total_raised_currency",
+      "type": "categorical",
+      "encoder": "label",
+      "na_strategy": "set:NA"
+    },
+    {
+      "column": "ico_data_country_origin",
+      "type": "categorical",
+      "encoder": "label",
+      "na_strategy": "set:NA"
+    },
+    {
+      "column": "holder_count",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "transaction_count",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "market_data_current_price_usd",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "market_data_ath_usd",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "market_data_total_supply",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "market_data_circulating_supply",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "market_data_high_24h_usd",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "market_data_low_24h_usd",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "public_interest_stats_bing_matches",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "community_data_facebook_likes",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "community_data_twitter_followers",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "community_data_reddit_subscribers",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "developer_data_stars",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "developer_data_subscribers",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "developer_data_total_issues",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "developer_data_closed_issues",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "developer_data_pull_requests_merged",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "developer_data_commit_count_4_weeks",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "ico_data_hardcap_amount",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "ico_data_softcap_amount",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    }
+  ],
+  "meta_features": [
+    {
+      "column": "categories_0",
+      "type": "categorical",
+      "encoder": "label",
+      "na_strategy": "set:NA"
+    },
+    {
+      "column": "transaction_count",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "holder_count",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "country_origin",
+      "type": "categorical",
+      "encoder": "label",
+      "na_strategy": "set:NA"
+    }
+  ],
+  "market_features": [
+    {
+      "column": "market_data_current_price_usd",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "market_data_ath_usd",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "market_data_high_24h_usd",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "market_data_total_supply",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "market_data_circulating_supply",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    }
+  ],
+  "community_features": [
+    {
+      "column": "community_data_facebook_likes",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "community_data_twitter_followers",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "community_data_reddit_average_posts_48h",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "community_data_reddit_subscribers",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "community_data_reddit_accounts_active_48h",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    }
+  ],
+  "developer_features": [
+    {
+      "column": "developer_data_forks",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "developer_data_stars",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "developer_data_subscribers",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "developer_data_total_issues",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "developer_data_closed_issues",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "developer_data_pull_requests_merged",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "developer_data_pull_request_contributors",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "developer_data_commit_count_4_weeks",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    }
+  ],
+  "ico_features": [
+    {
+      "column": "ico_data_amount_for_sale",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "ico_data_country_origin",
+      "type": "categorical",
+      "encoder": "label",
+      "na_strategy": "set:NA"
+    },
+    {
+      "column": "ico_data_hardcap_amount",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "ico_data_hardcap_currency",
+      "type": "categorical",
+      "encoder": "label",
+      "na_strategy": "set:NA"
+    },
+    {
+      "column": "ico_data_kyc_required",
+      "type": "binary",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "ico_data_pre_sale_available",
+      "type": "binary",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "ico_data_softcap_amount",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "ico_data_softcap_currency",
+      "type": "categorical",
+      "encoder": "label",
+      "na_strategy": "set:NA"
+    },
+    {
+      "column": "ico_data_total_raised",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "ico_data_total_raised_currency",
+      "type": "categorical",
+      "encoder": "label",
+      "na_strategy": "set:NA"
+    }
+  ],
+  "public_interest_features": [
+    {
+      "column": "public_interest_stats_alexa_rank",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "public_interest_stats_bing_matches",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "public_interest_stats_bing_matches",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "KW1",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "KW2",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "KW3",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "KW4",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "KW5",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "KW6",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "KW7",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "KW8",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "KW9",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "KW10",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "KW11",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "KW12",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "KW13",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "KW14",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "KW15",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "KW16",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "KW17",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "KW18",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "KW19",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "KW20",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "KW21",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "KW22",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "KW23",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "KW24",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "KW25",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "KW26",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "KW27",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "KW28",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "KW29",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "KW30",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "KW31",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "KW32",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "KW33",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "KW34",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "KW35",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "KW36",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "KW37",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "KW38",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "KW39",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    }
+  ]
 }
