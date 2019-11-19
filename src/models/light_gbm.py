@@ -42,20 +42,21 @@ class LightGbmModel(object):
         """Cross validation
         """
         # Modeling
-        #folds = KFold(n_splits=5, shuffle=True, random_state=123)
+        # folds = KFold(n_splits=5, shuffle=True, random_state=123)
         # StratifiedKFold
-        folds = StratifiedKFold(n_splits=5, shuffle=True, random_state=123)
+        folds = StratifiedKFold(n_splits=10, shuffle=True, random_state=123)
         # skf.get_n_splits(self.X_train, self.y_train)
 
         oof_preds = np.zeros(self.X_train.shape[0])
         sub_preds = np.zeros(self.X_test.shape[0])
+        mcc_folds = []
         for n_fold, (trn_idx, val_idx) in enumerate(folds.split(self.X_train, self.y_train)):
             trn_x, trn_y = self.X_train.iloc[trn_idx], self.y_train.iloc[trn_idx]
             val_x, val_y = self.X_train.iloc[val_idx], self.y_train.iloc[val_idx]
 
             clf = LGBMClassifier(
                 n_estimators=2000,
-                learning_rate=0.01,
+                learning_rate=0.005,
                 num_leaves=123,
                 colsample_bytree=.8,
                 subsample=.9,
@@ -77,16 +78,20 @@ class LightGbmModel(object):
                 :, 1] / folds.n_splits
 
             oof_pred_abs = oof_preds.round()
-            self.sub_preds_abs = sub_preds.round()
 
             unique_elements, counts_elements = np.unique(
                 oof_pred_abs, return_counts=True)
             logger.info("unique elements: {}: counts_elements: {}".format(
                 unique_elements, counts_elements))
-
+            mcc = matthews_corrcoef(val_y, oof_pred_abs[val_idx])
             print('Fold %2d mcc : %.6f' %
-                  (n_fold + 1, matthews_corrcoef(val_y, oof_pred_abs[val_idx])))
+                  (n_fold + 1, mcc))
+
+            mcc_folds.append(mcc)
             del clf, trn_x, trn_y, val_x, val_y
+
+        self.sub_preds_abs = sub_preds.round()
+        print("Overall MCC was: {}".format(np.array(mcc_folds).mean()))
 
     def create_evaluation_file(self):
         df_submission = pd.DataFrame(
