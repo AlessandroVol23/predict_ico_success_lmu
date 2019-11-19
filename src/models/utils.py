@@ -8,9 +8,11 @@ import numpy as np
 logger = logging.getLogger(__name__)
 
 
-def read_feature_data(x_train='data/features/features_x_train.csv',
-                      y_train='data/features/features_y_train.np',
-                      x_test='data/features/features_x_test.csv'):
+def read_feature_data(feature_set = "1"):
+    x_train='data/features/features_x_train_'+feature_set+'.csv'
+    y_train='data/features/features_y_train_'+feature_set+'.np'
+    x_test='data/features/features_x_test_'+feature_set+'.csv'
+    print(x_train)
     x_train = pd.read_csv(x_train)
     #y_train = pd.DataFrame(np.fromfile(y_train))
     y_train = pd.DataFrame(np.fromfile(y_train, dtype=int))

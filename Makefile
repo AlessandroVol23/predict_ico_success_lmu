@@ -32,7 +32,11 @@ features:
 	$(PYTHON_INTERPRETER) src/features/build_features.py
 
 lbm_model:
-	$(PYTHON_INTERPRETER) src/models/light_gbm.py
+ifdef feature_set
+	$(PYTHON_INTERPRETER) src/models/light_gbm.py $(feature_set)
+else
+	$(PYTHON_INTERPRETER) src/models/light_gbm.py 1
+endif
 
 
 #################################################################################
