@@ -5,42 +5,11 @@ import logging
 import pandas as pd
 import numpy as np
 from sklearn import preprocessing
+import json
 
 logger = logging.getLogger(__name__)
 log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 logging.basicConfig(level=logging.INFO, format=log_fmt)
-
-_categorical_featuers = [
-    'categories_0',
-    'country_origin',
-    'ico_data_country_origin',
-    'ico_data_hardcap_currency',
-    'ico_data_softcap_currency',
-    'ico_data_total_raised_currency',
-    'ico_data_country_origin'
-]
-
-_numerical_features = [
-    'transaction_count',
-    'holder_count',
-    'market_data_current_price_usd',
-    'market_data_ath_usd',
-    'market_data_total_supply',
-    'market_data_circulating_supply',
-    'market_data_high_24h_usd',
-    'market_data_low_24h_usd',
-    'public_interest_stats_bing_matches',
-    'community_data_facebook_likes',
-    'community_data_twitter_followers',
-    'community_data_reddit_subscribers',
-    'developer_data_stars',
-    'developer_data_subscribers',
-    'developer_data_total_issues',
-    'developer_data_closed_issues',
-    'developer_data_pull_requests_merged',
-    'developer_data_commit_count_4_weeks',
-    'ico_data_hardcap_amount',
-    'ico_data_softcap_amount']
 
 
 class FeatureEngineering(object):
@@ -75,6 +44,10 @@ class FeatureEngineering(object):
         # Create empty dataframe to add features
         self.df_features = self.df[['OBS_ID', 'success']].copy()
 
+    def read_feature_meta(self):
+        with open("data/features/feature_set_meta/feature_set_meta.json") as f:
+            return (json.load(f))
+
     def _fill_na(self, df_in, column, strategy):
         """Function to fill NA values
 
@@ -86,18 +59,32 @@ class FeatureEngineering(object):
         Returns:
             DataFrame -- DataFrame with filled NA values
         """
-        logger.info("Start filling NA values in {}".format(column))
+
+        logger.info("Start filling NA values in {} with strategy".format(column, strategy))
+        
         df = df_in.copy()
 
-        if strategy == 'mean':
-            to_fill = df[column].mean()
-        elif strategy == 'median':
-            to_fill = df[column].median()
 
         logger.info("Found {} NA values in column {}".format(
             df[column].isna().sum(), column))
 
-        df[column].fillna(to_fill, inplace=True)
+        if strategy.find(":") != -1:
+            strat = strategy.split(":")
+            if strat[0] == "set":
+                df.loc[df[column].isna(), column] = strat[1]
+            else:
+                raise ValueError("Unrecognized command strategy for {column}")
+
+        else:
+            if strategy == 'mean':
+                to_fill = df[column].mean()
+
+            elif strategy == 'median':
+                to_fill = df[column].median()
+
+            else:
+                raise ValueError("Unrecognized na strategy for {column}")
+            df[column].fillna(to_fill, inplace=True)
 
         logger.info("Filled NA values")
         return df
@@ -107,27 +94,14 @@ class FeatureEngineering(object):
             self.df_features, df[['OBS_ID', column]])
         assert column in self.df_features.columns, "No {column} in df_features!"
 
-    def _nan_values_to_string(self, df, column):
-        df.loc[df[column].isna(), column] = "NAN"
-        return df
-
-    def normalize_categorical_feature(self, df,  column):
+    def _label_encode_categorical_feature(self, df,  column):
         labels = self.le.fit_transform(df[column])
         return labels
 
-    def one_hote_encoder(self, df, column):
+    def _one_hote_encoder(self, df, column):
         categorical_data = df[column].values.reshape(-1, 1)
         onehot_encoded = self.enc.fit_transform(categorical_data).toarray()
         return onehot_encoded
-
-    def _add_category(self):
-        logger.info("Adding categories_0")
-        df_copy = self.df.copy()
-        df_copy = self._nan_values_to_string(df_copy, 'categories_0')
-        labels = self.normalize_categorical_feature(df_copy, "categories_0")
-        df_copy = df_copy.assign(labels_categories_0=labels)
-
-        self._add_column_to_data_frame(df_copy, "labels_categories_0")
 
     def _transform_numerical_variables(self, column, na_strategy='mean'):
         logger.info("Transform numerical variable for column {}".format(column))
@@ -140,7 +114,7 @@ class FeatureEngineering(object):
 
         self._add_column_to_data_frame(df_copy, column)
 
-    def _transform_categorical_variables_label_encoded(self, column):
+    def _transform_categorical_variables_label_encoded(self, column, na_strategy='set:NAN'):
         logger.info(
             "Transform categorical variable to label encoding for column {}".format(column))
 
@@ -150,27 +124,27 @@ class FeatureEngineering(object):
         df_copy = self.df.copy()
 
         # Fill NAs
-        df_copy = self._nan_values_to_string(df_copy, column)
+        df_copy = self._fill_na(df_copy, column, na_strategy)
 
         # Transform labels
-        labels = self.normalize_categorical_feature(df_copy, column)
+        labels = self._label_encode_categorical_feature(df_copy, column)
         dictonary = {self.label_dict[column]: labels}
         df_copy = df_copy.assign(**dictonary)
 
         self._add_column_to_data_frame(df_copy, self.label_dict[column])
 
-    def _transform_categorical_variables_one_hot_encoded(self, column):
+    def _transform_categorical_variables_one_hot_encoded(self, column,na_strategy='set:NAN'):
         logger.info(
             "Transform categorical variable to one hot encoded for column {}".format(column))
         # Copy Dataframe
         df_copy = self.df.copy()
 
         # Fill NAs
-        df_copy = self._nan_values_to_string(df_copy, column)
+        df_copy = self._fill_na(df_copy, column, na_strategy)
         label_name = column + "_"
 
         # Tansform one hot encoded
-        labels = self.one_hote_encoder(df_copy, column)
+        labels = self._one_hote_encoder(df_copy, column)
         dfOneHot = pd.DataFrame(
             labels, columns=[label_name + str(int(i)) for i in range(labels.shape[1])])
 
@@ -182,19 +156,6 @@ class FeatureEngineering(object):
         # maybe we should just concatinate the one_hote_encoded datafarame to the object dataframe in a seperate function ??
         for col in dfOneHot.columns:
             self._add_column_to_data_frame(df_copy, col)
-
-    def _add_holder_count(self):
-        logger.info("Add function holder count")
-
-        # Copy DataFrame
-        df_copy = self.df.copy()
-
-        df_copy = self._fill_na(df_copy, 'holder_count', 'mean')
-
-        # Add for train
-        self.df_features = pd.merge(
-            self.df_features, df_copy[['OBS_ID', 'holder_count']])
-        assert 'holder_count' in self.df_features.columns, "No holder_count in df_features!"
 
     def get_X_y(self):
         """This function returns X_train, y_train and X_test.
@@ -226,29 +187,33 @@ class FeatureEngineering(object):
 
         return self.X_train, self.y_train, self.X_test
 
-    def construct_numerical_featuers(self):
-        """This function is the pipeline for adding all numerical features to the dataset
-        """
+            
 
-        for col in _numerical_features:
-            self._transform_numerical_variables(col)
-
-    def construct_cateogrical_features_label_encoded(self):
-        """This function is the pipeline for adding all label encoded categorical featuers to the dataset
-        """
-
-        for col in _categorical_featuers:
-            self._transform_categorical_variables_label_encoded(col)
-
-    def construct_cateogrical_features_one_hot_encoded(self):
-        """This function is the pipeline for adding all label encoded categorical featuers to the dataset
-        """
-
-        for col in _categorical_featuers:
-            self._transform_categorical_variables_one_hot_encoded(col)
-
-    def construct_features(self):
+    def construct_feature_set(self,featuers):
         """This function is the pipeline for adding all features to the dataset
         """
-        self.construct_numerical_featuers()
-        self.construct_cateogrical_features_one_hot_encoded()
+        for feature in featuers:
+            assert ('column' in feature), "No column key provided"
+            assert("type" in feature), "No column type provided"
+
+            feature_type = feature["type"]
+            feature_name = feature["column"]
+
+            if feature_type == "categorical":
+                assert ('encoder' in feature), "No encoder for categorical feauter {feature_name} provided"
+                feauter_encoder = feature["encoder"]
+
+                if feauter_encoder == "label":
+                   self._transform_categorical_variables_label_encoded(feature_name)
+                elif feauter_encoder == "one_hot":
+                   self._transform_categorical_variables_one_hot_encoded(feature_name)
+                else: 
+                    raise ValueError("Feauter encoder not recognized")
+
+            elif feature_type == "numerical":
+                assert ('na_strategy' in feature), "No na_strategy for categorical feauter {feature_name} provided"
+                strategy = feature["na_strategy"]
+                self._transform_numerical_variables(feature_name, strategy)
+            else:
+                raise ValueError('feature type not recognized')
+
