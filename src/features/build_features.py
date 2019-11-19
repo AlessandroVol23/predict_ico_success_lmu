@@ -2,15 +2,26 @@ import numpy as np
 import click
 from feature_class import FeatureEngineering
 from utils import read_processed_data
+import logging
+import json
 
+logger = logging.getLogger(__name__)
+log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+logging.basicConfig(level=logging.INFO, format=log_fmt)
+
+
+def read_feature_meta():
+    with open("data/features/feature_set_meta/feature_set_meta.json") as f:
+        return (json.load(f))
 
 @click.command()
 def main():
     df_bitcoin, df, df_test = read_processed_data()
-    fe = FeatureEngineering(df, df_bitcoin, df_test)
-    feature_sets = fe.read_feature_meta()
+    feature_sets = read_feature_meta()
 
     for(key, value) in feature_sets.items():
+        logger.info("building features for feature_set {} ".format(key))
+        fe = FeatureEngineering(df, df_bitcoin, df_test)
         fe.construct_feature_set(value)
         X_train, y_train, X_test = fe.get_X_y()
         print("UNIQUE: {}".format(np.unique(y_train, return_counts=True)))
