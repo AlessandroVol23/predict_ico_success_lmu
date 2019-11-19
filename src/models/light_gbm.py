@@ -2,17 +2,17 @@
 # -*- coding: utf-8 -*-
 
 import logging
+import os
+
+import click
+import numpy as np
 import pandas as pd
-from sklearn.model_selection import train_test_split
+from sklearn.metrics import matthews_corrcoef, roc_auc_score
+from sklearn.model_selection import KFold, StratifiedKFold, train_test_split
+
 import lightgbm as lgb
 from lightgbm import LGBMClassifier
-from sklearn.metrics import matthews_corrcoef
-from sklearn.model_selection import KFold
-from sklearn.model_selection import StratifiedKFold
-import numpy as np
 from src.models.utils import read_feature_data
-from sklearn.metrics import roc_auc_score
-import os
 
 logger = logging.getLogger(__name__)
 log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
@@ -21,7 +21,7 @@ logging.basicConfig(level=logging.INFO, format=log_fmt)
 
 class LightGbmModel(object):
 
-    def __init__(self):
+    def __init__(self,feature_set):
         """Constructor for class LightGbmModel
 
         Parameters
@@ -31,7 +31,7 @@ class LightGbmModel(object):
         y : DataFrame
             y_train DataFrame from build_features.py
         """
-        self.X_train, self.y_train, self.X_test = read_feature_data()
+        self.X_train, self.y_train, self.X_test = read_feature_data(feature_set)
         self.test_ids = self.X_test['OBS_ID']
         self.X_test = self.X_test.drop('OBS_ID', axis=1)
 
@@ -118,9 +118,10 @@ class LightGbmModel(object):
         fileName = 'data/submissions/submission' + next_submission_number + '.csv'
         df_submission.to_csv(fileName, index=None)
 
-
-def main():
-    model = LightGbmModel()
+@click.command()
+@click.argument('feature_set')
+def main(feature_set):
+    model = LightGbmModel(feature_set)
     model.cross_validation()
     model.create_evaluation_file()
 
