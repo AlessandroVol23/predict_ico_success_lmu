@@ -5,7 +5,6 @@ import logging
 import pandas as pd
 import numpy as np
 from sklearn import preprocessing
-import json
 
 logger = logging.getLogger(__name__)
 log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
@@ -44,9 +43,6 @@ class FeatureEngineering(object):
         # Create empty dataframe to add features
         self.df_features = self.df[['OBS_ID', 'success']].copy()
 
-    def read_feature_meta(self):
-        with open("data/features/feature_set_meta/feature_set_meta.json") as f:
-            return (json.load(f))
 
     def _fill_na(self, df_in, column, strategy):
         """Function to fill NA values
