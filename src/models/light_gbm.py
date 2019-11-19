@@ -107,7 +107,6 @@ class LightGbmModel(object):
     # TODO get current submission_number and increment it after writing
     def create_evaluation_file(self, increment=True):
         next_submission_number = self.get_submission_number()
-        print(next_submission_number)
         if increment:
             self.increment_submission_number(next_submission_number)
 

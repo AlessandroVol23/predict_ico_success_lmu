@@ -63,7 +63,6 @@ class FeatureEngineering(object):
         assert len(self.df) == 5758, "Length has to be 5758, check conattanation!"
         # Fill all from test set with TEST
         self.df.loc[self.df.success.isna(), 'success'] = "TEST"
-        print(self.df)
         self.df_bitcoin = df_bitcoin
 
         # Label Encoder
