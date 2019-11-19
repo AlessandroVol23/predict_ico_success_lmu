@@ -167,7 +167,6 @@ class FeatureEngineering(object):
 
         # Fill NAs
         df_copy = self._nan_values_to_string(df_copy, column)
-
         label_name = column + "_"
 
         # Tansform one hot encoded
