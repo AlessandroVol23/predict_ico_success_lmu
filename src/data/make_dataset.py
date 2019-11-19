@@ -6,6 +6,46 @@ import numpy as np
 import click
 logger = logging.getLogger(__name__)
 
+_COLS_TO_CONVERT = [
+    'market_data_current_price_usd',
+    'market_data_circulating_supply',
+    'market_data_ath_usd',
+    'market_data_high_24h_usd',
+    'market_data_low_24h_usd',
+    'KW1',
+    'KW2',
+    'KW3',
+    'KW4',
+    'KW5',
+    'KW6',
+    'KW7',
+    'KW8',
+    'KW9',
+    'KW10',
+    'KW11',
+    'KW12',
+    'KW13',
+    'KW14',
+    'KW15',
+    'KW16',
+    'KW17',
+    'KW18',
+    'KW19',
+    'KW20',
+    'KW21',
+    'KW22',
+    'KW23',
+    'KW24',
+    'KW25',
+    'KW26',
+    'KW27',
+    'KW28',
+    'KW29',
+    'KW30',
+    'KW31',
+    'KW32'
+]
+
 
 def read_in_data(path_bitcoin_df='data/raw/1_training_data_sets/1_bitcoin_price_data_set.csv',
                  path_training_df='data/raw/1_training_data_sets/1_training_data.csv',
@@ -80,16 +120,8 @@ def preprocess(df_in):
     # Copy DataFrame -> If not you edit the original one in the memory
     df = df_in.copy()
 
-    # market_data_current_price_usd
-    df = _replace_convert_float(df, 'market_data_current_price_usd')
-
-    # market_data_ath_usd
-    df = _replace_convert_float(df, 'market_data_ath_usd')
-    df = _replace_convert_float(df, 'market_data_high_24h_usd')
-    df = _replace_convert_float(df, 'market_data_low_24h_usd')
-
-    # market_data_circulating_supply
-    df = _replace_convert_float(df, 'market_data_circulating_supply')
+    for col in _COLS_TO_CONVERT:
+        df = _replace_convert_float(df, col)
 
     logger.info("Preprocessing done!")
     return df
