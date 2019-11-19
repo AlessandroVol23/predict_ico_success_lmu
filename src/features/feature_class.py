@@ -11,23 +11,38 @@ log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 logging.basicConfig(level=logging.INFO, format=log_fmt)
 
 _categorical_featuers = [
-            'categories_0',
-            'country_origin',
-            'ico_data_country_origin',
-            'ico_data_hardcap_currency',
-            'ico_data_softcap_currency',
-            'ico_data_total_raised_currency',
-        ]
+    'categories_0',
+    'country_origin',
+    'ico_data_country_origin',
+    'ico_data_hardcap_currency',
+    'ico_data_softcap_currency',
+    'ico_data_total_raised_currency',
+    'ico_data_country_origin'
+]
 
 _numerical_features = [
-            'transaction_count',
-            'holder_count',
-            'market_data_current_price_usd',
-            'market_data_ath_usd',
-            'market_data_total_supply',
-            'market_data_circulating_supply',
-            'public_interest_stats_bing_matches'
-        ]    
+    'transaction_count',
+    'holder_count',
+    'market_data_current_price_usd',
+    'market_data_ath_usd',
+    'market_data_total_supply',
+    'market_data_circulating_supply',
+    'market_data_high_24h_usd',
+    'market_data_low_24h_usd',
+    'public_interest_stats_bing_matches',
+    'community_data_facebook_likes',
+    'community_data_twitter_followers',
+    'community_data_reddit_subscribers',
+    'developer_data_stars',
+    'developer_data_subscribers',
+    'developer_data_total_issues',
+    'developer_data_closed_issues',
+    'developer_data_pull_requests_merged',
+    'developer_data_commit_count_4_weeks',
+    'ico_data_hardcap_amount',
+    'ico_data_softcap_amount']
+
+
 class FeatureEngineering(object):
 
     # Constructor
@@ -44,13 +59,13 @@ class FeatureEngineering(object):
             Test DataFrame
         """
 
-
         self.df = pd.concat([df, df_test])
+        assert len(self.df) == 5758, "Length has to be 5758, check conattanation!"
         # Fill all from test set with TEST
         self.df.loc[self.df.success.isna(), 'success'] = "TEST"
         print(self.df)
         self.df_bitcoin = df_bitcoin
-        
+
         # Label Encoder
         self.le = preprocessing.LabelEncoder()
 
@@ -102,7 +117,7 @@ class FeatureEngineering(object):
         return labels
 
     def one_hote_encoder(self, df, column):
-        categorical_data =df[column].values.reshape(-1,1)
+        categorical_data = df[column].values.reshape(-1, 1)
         onehot_encoded = self.enc.fit_transform(categorical_data).toarray()
         return onehot_encoded
 
@@ -153,20 +168,21 @@ class FeatureEngineering(object):
 
         # Fill NAs
         df_copy = self._nan_values_to_string(df_copy, column)
-        
+
         label_name = column + "_"
 
         # Tansform one hot encoded
         labels = self.one_hote_encoder(df_copy, column)
-        dfOneHot = pd.DataFrame(labels, columns = [label_name + str(int(i)) for i in range(labels.shape[1])])
+        dfOneHot = pd.DataFrame(
+            labels, columns=[label_name + str(int(i)) for i in range(labels.shape[1])])
 
-        # Concat to 
+        # Concat to
         df_copy = df_copy.join(dfOneHot)
 
-        # TODO 
-        # Currently little tricky, as we iterrate over the onHoteEncoded data but provide the df_copy dataframe as parameter 
+        # TODO
+        # Currently little tricky, as we iterrate over the onHoteEncoded data but provide the df_copy dataframe as parameter
         # maybe we should just concatinate the one_hote_encoded datafarame to the object dataframe in a seperate function ??
-        for col in dfOneHot.columns: 
+        for col in dfOneHot.columns:
             self._add_column_to_data_frame(df_copy, col)
 
     def _add_holder_count(self):
@@ -214,7 +230,7 @@ class FeatureEngineering(object):
 
     def construct_numerical_featuers(self):
         """This function is the pipeline for adding all numerical features to the dataset
-        """  
+        """
 
         for col in _numerical_features:
             self._transform_numerical_variables(col)
@@ -232,7 +248,6 @@ class FeatureEngineering(object):
 
         for col in _categorical_featuers:
             self._transform_categorical_variables_one_hot_encoded(col)
-
 
     def construct_features(self):
         """This function is the pipeline for adding all features to the dataset

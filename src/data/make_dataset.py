@@ -85,6 +85,8 @@ def preprocess(df_in):
 
     # market_data_ath_usd
     df = _replace_convert_float(df, 'market_data_ath_usd')
+    df = _replace_convert_float(df, 'market_data_high_24h_usd')
+    df = _replace_convert_float(df, 'market_data_low_24h_usd')
 
     # market_data_circulating_supply
     df = _replace_convert_float(df, 'market_data_circulating_supply')

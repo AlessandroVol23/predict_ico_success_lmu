@@ -56,16 +56,16 @@ class LightGbmModel(object):
             val_x, val_y = self.X_train.iloc[val_idx], self.y_train.iloc[val_idx]
 
             clf = LGBMClassifier(
-                n_estimators=2000,
-                learning_rate=0.005,
-                num_leaves=123,
-                colsample_bytree=.8,
-                subsample=.9,
-                max_depth=15,
-                reg_alpha=.1,
-                reg_lambda=.1,
-                min_split_gain=.01,
-                min_child_weight=2
+                n_estimators=500,
+                learning_rate=0.005
+                # num_leaves=123,
+                # colsample_bytree=.8,
+                # subsample=.9,
+                # max_depth=15,
+                # reg_alpha=.1,
+                # reg_lambda=.1,
+                # min_split_gain=.01,
+                # min_child_weight=2
             )
 
             clf.fit(trn_x, trn_y,
@@ -124,7 +124,6 @@ def main():
     model = LightGbmModel()
     model.cross_validation()
     model.create_evaluation_file()
-    pass
 
 
 if __name__ == "__main__":
