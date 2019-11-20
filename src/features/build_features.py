@@ -1,12 +1,10 @@
-#! /bin/bash
-# -*- coding: utf-8 -*-
-from tqdm import tqdm
 import numpy as np
 import click
 from feature_class import FeatureEngineering
 from utils import read_processed_data
 import logging
 import json
+from tqdm import tqdm
 
 logger = logging.getLogger(__name__)
 log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
@@ -23,7 +21,8 @@ def main():
     feature_sets = read_feature_meta()
 
     for(key, value) in tqdm(feature_sets.items()):
-        logger.info("Building feature set: {}".format(key))
+        logger.info("building features for feature_set {} ".format(key))
+        fe = FeatureEngineering(df, df_bitcoin, df_test)
         fe.construct_feature_set(value)
         X_train, y_train, X_test = fe.get_X_y()
         print("UNIQUE: {}".format(np.unique(y_train, return_counts=True)))
