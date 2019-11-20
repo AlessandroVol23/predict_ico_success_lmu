@@ -7,8 +7,8 @@ import numpy as np
 from sklearn import preprocessing
 
 logger = logging.getLogger(__name__)
-log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-logging.basicConfig(level=logging.INFO, format=log_fmt)
+# log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+# logging.basicConfig(level=logging.INFO, format=log_fmt)
 
 
 class FeatureEngineering(object):
@@ -27,7 +27,7 @@ class FeatureEngineering(object):
             Test DataFrame
         """
 
-        self.df = pd.concat([df, df_test])
+        self.df = pd.concat([df, df_test], sort=True)
         assert len(self.df) == 5758, "Length has to be 5758, check conattanation!"
         # Fill all from test set with TEST
         self.df.loc[self.df.success.isna(), 'success'] = "TEST"
@@ -56,12 +56,12 @@ class FeatureEngineering(object):
             DataFrame -- DataFrame with filled NA values
         """
 
-        logger.info("Start filling NA values in {} with strategy".format(column, strategy))
+        logger.debug("Start filling NA values in {} with strategy".format(column, strategy))
         
         df = df_in.copy()
 
 
-        logger.info("Found {} NA values in column {}".format(
+        logger.debug("Found {} NA values in column {}".format(
             df[column].isna().sum(), column))
 
         if strategy.find(":") != -1:
@@ -82,7 +82,7 @@ class FeatureEngineering(object):
                 raise ValueError("Unrecognized na strategy for {column}")
             df[column].fillna(to_fill, inplace=True)
 
-        logger.info("Filled NA values")
+        logger.debug("Filled NA values")
         return df
 
     def _add_column_to_data_frame(self, df, column):
@@ -100,7 +100,7 @@ class FeatureEngineering(object):
         return onehot_encoded
 
     def _transform_numerical_variables(self, column, na_strategy='mean'):
-        logger.info("Transform numerical variable for column {}".format(column))
+        logger.debug("Transform numerical variable for column {}".format(column))
 
         # Copy Dataframe
         df_copy = self.df
@@ -111,7 +111,7 @@ class FeatureEngineering(object):
         self._add_column_to_data_frame(df_copy, column)
 
     def _transform_categorical_variables_label_encoded(self, column, na_strategy='set:NAN'):
-        logger.info(
+        logger.debug(
             "Transform categorical variable to label encoding for column {}".format(column))
 
         label_name = "labels_" + column
@@ -130,7 +130,7 @@ class FeatureEngineering(object):
         self._add_column_to_data_frame(df_copy, self.label_dict[column])
 
     def _transform_categorical_variables_one_hot_encoded(self, column,na_strategy='set:NAN'):
-        logger.info(
+        logger.debug(
             "Transform categorical variable to one hot encoded for column {}".format(column))
         # Copy Dataframe
         df_copy = self.df.copy()
@@ -163,15 +163,11 @@ class FeatureEngineering(object):
             X_train, y_train, X_test
         """
         df_train = self.df_features.loc[self.df_features.success != 'TEST']
-        logger.info("DF_train shape: {}".format(df_train.shape))
         df_test = self.df_features.loc[self.df_features.success == 'TEST']
-        logger.info("df_test shape: {}".format(df_train.shape))
 
         self.X_train = df_train.drop(
             ['success', 'OBS_ID'], axis=1)
         self.y_train = df_train.loc[:, 'success'].values.astype(int)
-        logger.info("Y_train unique values: {}".format(
-            np.unique(self.y_train, return_counts=True)))
 
         self.X_test = df_test.drop('success', axis=1)
 
