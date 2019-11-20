@@ -7,6 +7,9 @@ import numpy as np
 from sklearn import preprocessing
 
 logger = logging.getLogger(__name__)
+
+
+
 # log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 # logging.basicConfig(level=logging.INFO, format=log_fmt)
 
@@ -43,7 +46,6 @@ class FeatureEngineering(object):
         # Create empty dataframe to add features
         self.df_features = self.df[['OBS_ID', 'success']].copy()
 
-
     def _fill_na(self, df_in, column, strategy):
         """Function to fill NA values
 
@@ -57,9 +59,8 @@ class FeatureEngineering(object):
         """
 
         logger.debug("Start filling NA values in {} with strategy".format(column, strategy))
-        
-        df = df_in.copy()
 
+        df = df_in.copy()
 
         logger.debug("Found {} NA values in column {}".format(
             df[column].isna().sum(), column))
@@ -93,7 +94,7 @@ class FeatureEngineering(object):
             self.df_features, df[['OBS_ID', column]])
         assert column in self.df_features.columns, "No {column} in df_features!"
 
-    def _label_encode_categorical_feature(self, df,  column):
+    def _label_encode_categorical_feature(self, df, column):
         labels = self.le.fit_transform(df[column])
         return labels
 
@@ -113,7 +114,7 @@ class FeatureEngineering(object):
 
         self._add_column_to_data_frame(df_copy, column)
 
-    def _transform_binary_variables(self, column, na_strategy='mean'):
+    def _transform_binary_variables(self, column, na_strategy='set:0'):
         logger.debug("Transform binary variable for column {}".format(column))
 
         # Copy Dataframe
@@ -121,6 +122,7 @@ class FeatureEngineering(object):
 
         # Fill NAs
         df_copy = self._fill_na(df_copy, column, na_strategy)
+        df_copy[column][df_copy[column] != '0'] = 1
 
         df_copy[column] = df_copy[column].astype(int)
 
@@ -145,7 +147,7 @@ class FeatureEngineering(object):
 
         self._add_column_to_data_frame(df_copy, self.label_dict[column])
 
-    def _transform_categorical_variables_one_hot_encoded(self, column,na_strategy='set:NAN'):
+    def _transform_categorical_variables_one_hot_encoded(self, column, na_strategy='set:NAN'):
         logger.debug(
             "Transform categorical variable to one hot encoded for column {}".format(column))
         # Copy Dataframe
@@ -195,14 +197,12 @@ class FeatureEngineering(object):
 
         return self.X_train, self.y_train, self.X_test
 
-            
-
-    def construct_feature_set(self,featuers):
+    def construct_feature_set(self, featuers):
         """This function is the pipeline for adding all features to the dataset
         """
         for feature in featuers:
             assert ('column' in feature), "No column key provided"
-            assert("type" in feature), "No column type provided"
+            assert ("type" in feature), "No column type provided"
 
             feature_type = feature["type"]
             feature_name = feature["column"]
@@ -212,10 +212,10 @@ class FeatureEngineering(object):
                 feauter_encoder = feature["encoder"]
 
                 if feauter_encoder == "label":
-                   self._transform_categorical_variables_label_encoded(feature_name)
+                    self._transform_categorical_variables_label_encoded(feature_name)
                 elif feauter_encoder == "one_hot":
-                   self._transform_categorical_variables_one_hot_encoded(feature_name)
-                else: 
+                    self._transform_categorical_variables_one_hot_encoded(feature_name)
+                else:
                     raise ValueError("Feauter encoder not recognized")
 
             elif feature_type == "numerical":
@@ -224,9 +224,6 @@ class FeatureEngineering(object):
                 self._transform_numerical_variables(feature_name, strategy)
 
             elif feature_type == "binary":
-                assert ('na_strategy' in feature), "No na_strategy for categorical feauter {feature_name} provided"
-                strategy = feature["na_strategy"]
-                self._transform_binary_variables(feature_name, strategy)
+                self._transform_binary_variables(feature_name)
             else:
                 raise ValueError('feature type not recognized')
-
