@@ -33,9 +33,9 @@ features:
 
 lbm_model:
 ifdef feature_set
-	$(PYTHON_INTERPRETER) src/models/light_gbm.py $(feature_set)
+	$(PYTHON_INTERPRETER) src/models/build_model.py $(feature_set)
 else
-	$(PYTHON_INTERPRETER) src/models/light_gbm.py 1
+	$(PYTHON_INTERPRETER) src/models/build_model.py 1
 endif
 
 

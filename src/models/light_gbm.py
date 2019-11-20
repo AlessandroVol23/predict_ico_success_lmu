@@ -4,7 +4,6 @@
 import logging
 import os
 
-import click
 import numpy as np
 import pandas as pd
 from sklearn.metrics import matthews_corrcoef, roc_auc_score
@@ -38,6 +37,13 @@ class LightGbmModel(object):
         logger.info("X_train shape: {}".format(self.X_train.shape))
         logger.info("y_train shape: {}".format(self.y_train.shape))
         logger.info("x_test shape: {}".format(self.X_test.shape))
+
+    def get_values(self):
+
+        return self.test_ids, self.sub_preds_abs
+
+    def get_name(self):
+        return "lbm"
 
     def cross_validation(self):
         """Cross validation
@@ -92,39 +98,7 @@ class LightGbmModel(object):
             del clf, trn_x, trn_y, val_x, val_y
 
         self.sub_preds_abs = sub_preds.round()
-        print("Overall MCC was: {}".format(np.array(mcc_folds).mean()))
+        mean_mcc = np.array(mcc_folds).mean()
+        print("Overall MCC was: {}".format(mean_mcc))
+        return mean_mcc
 
-    def get_submission_number(self):
-        with open("SUBMISSION_NUMBER", "r") as f:
-            return f.readline()
-
-    def increment_submission_number(self, current_number=0):
-        new_build_number = int(current_number) + 1
-        print('New submission number is now: %2d' % (new_build_number))
-        with open("SUBMISSION_NUMBER", "w") as f:
-            f.write(str(new_build_number))
-
-    # TODO get current submission_number and increment it after writing
-    def create_evaluation_file(self, increment=True):
-        next_submission_number = self.get_submission_number()
-        if increment:
-            self.increment_submission_number(next_submission_number)
-
-        df_submission = pd.DataFrame(
-            [self.test_ids.values, self.sub_preds_abs]).transpose()
-        df_submission.columns = ['OBS_ID', 'success']
-        df_submission['OBS_ID'] = df_submission.OBS_ID.astype(int)
-        df_submission['success'] = df_submission.success.astype(int)
-        fileName = 'data/submissions/submission' + next_submission_number + '.csv'
-        df_submission.to_csv(fileName, index=None)
-
-@click.command()
-@click.argument('feature_set')
-def main(feature_set):
-    model = LightGbmModel(feature_set)
-    model.cross_validation()
-    model.create_evaluation_file()
-
-
-if __name__ == "__main__":
-    main()
