@@ -577,12 +577,12 @@
     {
       "column": "ico_data_kyc_required",
       "type": "binary",
-      "na_strategy": "set:0"
+      "na_strategy": "False"
     },
     {
       "column": "ico_data_pre_sale_available",
       "type": "binary",
-      "na_strategy": "set:0"
+      "na_strategy": "False"
     },
     {
       "column": "ico_data_softcap_amount",

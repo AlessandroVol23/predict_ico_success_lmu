@@ -78,6 +78,9 @@ class FeatureEngineering(object):
             elif strategy == 'median':
                 to_fill = df[column].median()
 
+            elif strategy == 'False':
+                to_fill = False
+
             else:
                 raise ValueError("Unrecognized na strategy for {column}")
             df[column].fillna(to_fill, inplace=True)
@@ -107,6 +110,19 @@ class FeatureEngineering(object):
 
         # Fill NAs
         df_copy = self._fill_na(df_copy, column, na_strategy)
+
+        self._add_column_to_data_frame(df_copy, column)
+
+    def _transform_binary_variables(self, column, na_strategy='mean'):
+        logger.debug("Transform binary variable for column {}".format(column))
+
+        # Copy Dataframe
+        df_copy = self.df
+
+        # Fill NAs
+        df_copy = self._fill_na(df_copy, column, na_strategy)
+
+        df_copy[column] = df_copy[column].astype(int)
 
         self._add_column_to_data_frame(df_copy, column)
 
@@ -206,6 +222,11 @@ class FeatureEngineering(object):
                 assert ('na_strategy' in feature), "No na_strategy for categorical feauter {feature_name} provided"
                 strategy = feature["na_strategy"]
                 self._transform_numerical_variables(feature_name, strategy)
+
+            elif feature_type == "binary":
+                assert ('na_strategy' in feature), "No na_strategy for categorical feauter {feature_name} provided"
+                strategy = feature["na_strategy"]
+                self._transform_binary_variables(feature_name, strategy)
             else:
                 raise ValueError('feature type not recognized')
 
