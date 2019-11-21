@@ -41,6 +41,7 @@ def _create_evaluation_file(test_ids, sub_preds_abs,increment=True):
     df_submission['success'] = df_submission.success.astype(int)
     fileName = 'data/submissions/submission' + next_submission_number + '.csv'
     df_submission.to_csv(fileName, index=None)
+    logger.info("Write submission file to: {}".format(fileName))
 
 def _write_results(feature_set_number, mean_mcc,model_name):
     feature_sets = read_feature_meta()
@@ -71,7 +72,7 @@ def main(feature_set):
     test_ids, sub_preds_abs = model.get_values()
     model_name = model.get_name()
 
-    #_create_evaluation_file(test_ids, sub_preds_abs, True)
+    _create_evaluation_file(test_ids, sub_preds_abs, True)
     
     _write_results(feature_set, mean_mcc,model_name)
 

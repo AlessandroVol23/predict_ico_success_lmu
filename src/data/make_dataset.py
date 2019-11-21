@@ -4,6 +4,7 @@ import logging
 import pandas as pd
 import numpy as np
 import click
+
 logger = logging.getLogger(__name__)
 
 _COLS_TO_CONVERT = [
@@ -43,7 +44,15 @@ _COLS_TO_CONVERT = [
     'KW29',
     'KW30',
     'KW31',
-    'KW32'
+    'KW32',
+    'KW33',
+    'KW34',
+    'KW35',
+    'KW36',
+    'KW37',
+    'KW38',
+    'KW39',
+    'ico_data_total_raised'
 ]
 
 
@@ -109,6 +118,7 @@ def preprocess(df_in):
     DataFrame
         Preprocessed DataFrame
     """
+
     def _replace_convert_float(df, column, to_replace=',', replace_with='.', convert_to='float'):
         logger.info("Replacing {} ".format(column))
         df[column] = df[column].astype(str)
