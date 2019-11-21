@@ -51,19 +51,11 @@ class LightGbmModel(object):
         # Modeling
         # folds = KFold(n_splits=5, shuffle=True, random_state=123)
         # StratifiedKFold
-        folds = StratifiedKFold(n_splits=10, shuffle=True, random_state=123)
+        folds = StratifiedKFold(n_splits=5, shuffle=True, random_state=123)
         # skf.get_n_splits(self.X_train, self.y_train)
         hyperparam = {
-            'n_estimators':2000,
-            'learning_rate':0.01,
-            'num_leaves':123,
-            'colsample_bytree':.8,
-            'subsample':.9,
-            'max_depth':15,
-            'reg_alpha':.1,
-            'reg_lambda':.1,
-            'min_split_gain':.01,
-            'min_child_weight':2
+            'n_estimators''=2000,
+            'learning_rate'='0.003'
         }
         oof_preds = np.zeros(self.X_train.shape[0])
         sub_preds = np.zeros(self.X_test.shape[0])
@@ -74,7 +66,7 @@ class LightGbmModel(object):
 
             # clf = LGBMClassifier(
             #     n_estimators=2000,
-            #     learning_rate=0.001,
+            #     learning_rate=0.003,
             #     num_leaves=123,
             #     colsample_bytree=.8,
             #     subsample=.9,
