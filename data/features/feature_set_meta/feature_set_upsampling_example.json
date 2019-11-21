@@ -1,0 +1,15 @@
+{
+    "1": [
+        {
+            "meta": {
+                "upsampling": "0.5"
+            }
+        },
+        {
+            "column": "categories_0",
+            "type": "categorical",
+            "encoder": "one_hot",
+            "na_strategy": "set:NA"
+        }
+    ]
+}
