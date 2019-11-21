@@ -15,6 +15,7 @@ def read_feature_meta():
     with open("data/features/feature_set_meta/feature_set_meta.json") as f:
         return (json.load(f))
 
+
 @click.command()
 def main():
     df_bitcoin, df, df_test = read_processed_data()
@@ -30,6 +31,10 @@ def main():
                        key+'.csv', index=None)
         y_train.tofile('data/features/features_y_train_'+key+'.np')
         X_test.to_csv('data/features/features_x_test_'+key+'.csv', index=None)
+
+    for(key, value) in tqdm(feature_sets.items()):
+        tqdm.write("Apply meta features for {}".format(key))
+        fe.apply_meta_config(value)
 
 
 if __name__ == "__main__":

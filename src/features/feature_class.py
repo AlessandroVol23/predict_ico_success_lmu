@@ -9,7 +9,6 @@ from sklearn import preprocessing
 logger = logging.getLogger(__name__)
 
 
-
 # log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 # logging.basicConfig(level=logging.INFO, format=log_fmt)
 
@@ -58,7 +57,8 @@ class FeatureEngineering(object):
             DataFrame -- DataFrame with filled NA values
         """
 
-        logger.debug("Start filling NA values in {} with strategy".format(column, strategy))
+        logger.debug(
+            "Start filling NA values in {} with strategy".format(column, strategy))
 
         df = df_in.copy()
 
@@ -104,7 +104,8 @@ class FeatureEngineering(object):
         return onehot_encoded
 
     def _transform_numerical_variables(self, column, na_strategy='mean'):
-        logger.debug("Transform numerical variable for column {}".format(column))
+        logger.debug(
+            "Transform numerical variable for column {}".format(column))
 
         # Copy Dataframe
         df_copy = self.df
@@ -201,25 +202,31 @@ class FeatureEngineering(object):
         """This function is the pipeline for adding all features to the dataset
         """
         for feature in featuers:
+            if 'meta' in feature:
+                break
             assert ('column' in feature), "No column key provided"
-            assert ("type" in feature), "No column type provided"
+            assert ('type' in feature), "No column type provided"
 
             feature_type = feature["type"]
             feature_name = feature["column"]
 
             if feature_type == "categorical":
-                assert ('encoder' in feature), "No encoder for categorical feauter {feature_name} provided"
+                assert (
+                    'encoder' in feature), "No encoder for categorical feauter {feature_name} provided"
                 feauter_encoder = feature["encoder"]
 
                 if feauter_encoder == "label":
-                    self._transform_categorical_variables_label_encoded(feature_name)
+                    self._transform_categorical_variables_label_encoded(
+                        feature_name)
                 elif feauter_encoder == "one_hot":
-                    self._transform_categorical_variables_one_hot_encoded(feature_name)
+                    self._transform_categorical_variables_one_hot_encoded(
+                        feature_name)
                 else:
                     raise ValueError("Feauter encoder not recognized")
 
             elif feature_type == "numerical":
-                assert ('na_strategy' in feature), "No na_strategy for categorical feauter {feature_name} provided"
+                assert (
+                    'na_strategy' in feature), "No na_strategy for categorical feauter {feature_name} provided"
                 strategy = feature["na_strategy"]
                 self._transform_numerical_variables(feature_name, strategy)
 
@@ -227,3 +234,11 @@ class FeatureEngineering(object):
                 self._transform_binary_variables(feature_name)
             else:
                 raise ValueError('feature type not recognized')
+
+    def apply_meta_config(self, values):
+        # Iterate through value till first appearance of meta
+        print(values)
+        for item in values:
+            print(item['meta']['upsampling'])
+            if 'meta' in item:
+                break
