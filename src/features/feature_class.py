@@ -99,9 +99,9 @@ class FeatureEngineering(object):
         return labels
 
     def _one_hote_encoder(self, df, column):
-        categorical_data = df[column].values.reshape(-1, 1)
-        onehot_encoded = self.enc.fit_transform(categorical_data).toarray()
-        return onehot_encoded
+        one_hot = pd.get_dummies(df[column], prefix=column)
+        df = df.join(pd.get_dummies(df[column]))
+        return df
 
     def _transform_numerical_variables(self, column, na_strategy='mean'):
         logger.debug("Transform numerical variable for column {}".format(column))
@@ -155,20 +155,17 @@ class FeatureEngineering(object):
 
         # Fill NAs
         df_copy = self._fill_na(df_copy, column, na_strategy)
-        label_name = column + "_"
 
         # Tansform one hot encoded
-        labels = self._one_hote_encoder(df_copy, column)
-        dfOneHot = pd.DataFrame(
-            labels, columns=[label_name + str(int(i)) for i in range(labels.shape[1])])
+        df_copy = self._one_hote_encoder(df_copy, column)
 
         # Concat to
-        df_copy = df_copy.join(dfOneHot)
+       #  df_copy = df_copy.join(df_copy)
 
         # TODO
         # Currently little tricky, as we iterrate over the onHoteEncoded data but provide the df_copy dataframe as parameter
         # maybe we should just concatinate the one_hote_encoded datafarame to the object dataframe in a seperate function ??
-        for col in dfOneHot.columns:
+        for col in df_copy.columns:
             self._add_column_to_data_frame(df_copy, col)
 
     def get_X_y(self):
