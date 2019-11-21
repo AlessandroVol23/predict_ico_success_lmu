@@ -29,8 +29,7 @@ def _increment_submission_number(current_number=0):
     with open("SUBMISSION_NUMBER", "w") as f:
         f.write(str(new_build_number))
 
-def _create_evaluation_file(test_ids, sub_preds_abs,increment=True):
-    next_submission_number = _get_submission_number()
+def _create_evaluation_file(test_ids, sub_preds_abs,next_submission_number, increment=True):
     if increment:
         _increment_submission_number(next_submission_number)
 
@@ -43,7 +42,7 @@ def _create_evaluation_file(test_ids, sub_preds_abs,increment=True):
     df_submission.to_csv(fileName, index=None)
     logger.info("Write submission file to: {}".format(fileName))
 
-def _write_results(feature_set_number, mean_mcc,model_name):
+def _write_results(feature_set_number, mean_mcc,model_name,next_submission_number, hyperparam={"n_estimators":"1", "max_leafs":"5"}):
     feature_sets = read_feature_meta()
     feature_set = feature_sets[feature_set_number]
 
@@ -57,7 +56,9 @@ def _write_results(feature_set_number, mean_mcc,model_name):
         'feature_set': feature_set_number,
         'features':feature_set,
         'metrics':metrics,
-        'model_name':model_name
+        'model_name':model_name,
+        'hyperparam':hyperparam,
+        'submission':next_submission_number
     })
     _write_result_json(result)
 
@@ -68,13 +69,15 @@ def main(feature_set):
     logger.info("Building model with featuer set {}".format(feature_set))
     model = LightGbmModel(feature_set)
 
-    mean_mcc = model.cross_validation()
+    next_submission_number = _get_submission_number()
+
+    mean_mcc, hyperparam = model.cross_validation()
     test_ids, sub_preds_abs = model.get_values()
     model_name = model.get_name()
 
-    _create_evaluation_file(test_ids, sub_preds_abs, True)
+    _create_evaluation_file(test_ids, sub_preds_abs,next_submission_number, True)
     
-    _write_results(feature_set, mean_mcc,model_name)
+    _write_results(feature_set, mean_mcc,model_name, next_submission_number, hyperparam)
 
 
 if __name__ == "__main__":
