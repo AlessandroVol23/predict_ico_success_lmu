@@ -54,8 +54,8 @@ class LightGbmModel(object):
         folds = StratifiedKFold(n_splits=5, shuffle=True, random_state=123)
         # skf.get_n_splits(self.X_train, self.y_train)
         hyperparam = {
-            'n_estimators''=2000,
-            'learning_rate'='0.003'
+            'n_estimators':2000,
+            'learning_rate':'0.003'
         }
         oof_preds = np.zeros(self.X_train.shape[0])
         sub_preds = np.zeros(self.X_test.shape[0])
