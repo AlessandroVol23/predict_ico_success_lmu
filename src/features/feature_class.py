@@ -9,7 +9,6 @@ from sklearn import preprocessing
 logger = logging.getLogger(__name__)
 
 
-
 # log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 # logging.basicConfig(level=logging.INFO, format=log_fmt)
 
@@ -58,7 +57,8 @@ class FeatureEngineering(object):
             DataFrame -- DataFrame with filled NA values
         """
 
-        logger.debug("Start filling NA values in {} with strategy".format(column, strategy))
+        logger.debug(
+            "Start filling NA values in {} with strategy".format(column, strategy))
 
         df = df_in.copy()
 
@@ -94,17 +94,29 @@ class FeatureEngineering(object):
             self.df_features, df[['OBS_ID', column]])
         assert column in self.df_features.columns, "No {column} in df_features!"
 
+    def _add_df_to_feature_df(self, df):
+        """Adds a DataFrame based on OBS_ID to feature df
+
+        Arguments:
+            df {DataFrame} -- DataFrame to join
+        """
+        assert 'OBS_ID' in list(df.columns), "No OBS_ID in df!"
+        self.df_features = pd.merge(self.df_features, df)
+
     def _label_encode_categorical_feature(self, df, column):
         labels = self.le.fit_transform(df[column])
         return labels
 
     def _one_hote_encoder(self, df, column):
         one_hot = pd.get_dummies(df[column], prefix=column)
-        df = df.join(pd.get_dummies(df[column]))
-        return df
+        df_one_hot_with_id = pd.concat([df[['OBS_ID']], one_hot], axis=1)
+        # self.df_features = pd.merge(self.df_features, df_ohe_with_ide)
+        assert len(df) == 5758, "Length is wrong! One Hot Encoding failed"
+        return df_one_hot_with_id
 
     def _transform_numerical_variables(self, column, na_strategy='mean'):
-        logger.debug("Transform numerical variable for column {}".format(column))
+        logger.debug(
+            "Transform numerical variable for column {}".format(column))
 
         # Copy Dataframe
         df_copy = self.df
@@ -122,7 +134,8 @@ class FeatureEngineering(object):
 
         # Fill NAs
         df_copy = self._fill_na(df_copy, column, na_strategy)
-        df_copy[column][df_copy[column] != '0'] = 1
+        # df_copy[column][df_copy[column] != '0'] = 1
+        df_copy.loc[df_copy[column] != '0', column] = 1
 
         df_copy[column] = df_copy[column].astype(int)
 
@@ -157,16 +170,9 @@ class FeatureEngineering(object):
         df_copy = self._fill_na(df_copy, column, na_strategy)
 
         # Tansform one hot encoded
-        df_copy = self._one_hote_encoder(df_copy, column)
+        df_ohe_id = self._one_hote_encoder(df_copy, column)
 
-        # Concat to
-       #  df_copy = df_copy.join(df_copy)
-
-        # TODO
-        # Currently little tricky, as we iterrate over the onHoteEncoded data but provide the df_copy dataframe as parameter
-        # maybe we should just concatinate the one_hote_encoded datafarame to the object dataframe in a seperate function ??
-        for col in df_copy.columns:
-            self._add_column_to_data_frame(df_copy, col)
+        self._add_df_to_feature_df(df_ohe_id)
 
     def get_X_y(self):
         """This function returns X_train, y_train and X_test.
@@ -188,9 +194,9 @@ class FeatureEngineering(object):
 
         # self.X_train = self.X_train.values
         # self.y_train = self.y_train.values.astype(int)
-        logger.info("X_train shape: {}".format(self.X_train.shape))
-        logger.info("y_train shape: {}".format(self.y_train.shape))
-        logger.info("X_test shape: {}".format(self.X_test.shape))
+        logger.debug("X_train shape: {}".format(self.X_train.shape))
+        logger.debug("y_train shape: {}".format(self.y_train.shape))
+        logger.debug("X_test shape: {}".format(self.X_test.shape))
 
         return self.X_train, self.y_train, self.X_test
 
@@ -205,18 +211,22 @@ class FeatureEngineering(object):
             feature_name = feature["column"]
 
             if feature_type == "categorical":
-                assert ('encoder' in feature), "No encoder for categorical feauter {feature_name} provided"
+                assert (
+                    'encoder' in feature), "No encoder for categorical feauter {feature_name} provided"
                 feauter_encoder = feature["encoder"]
 
                 if feauter_encoder == "label":
-                    self._transform_categorical_variables_label_encoded(feature_name)
+                    self._transform_categorical_variables_label_encoded(
+                        feature_name)
                 elif feauter_encoder == "one_hot":
-                    self._transform_categorical_variables_one_hot_encoded(feature_name)
+                    self._transform_categorical_variables_one_hot_encoded(
+                        feature_name)
                 else:
                     raise ValueError("Feauter encoder not recognized")
 
             elif feature_type == "numerical":
-                assert ('na_strategy' in feature), "No na_strategy for categorical feauter {feature_name} provided"
+                assert (
+                    'na_strategy' in feature), "No na_strategy for categorical feauter {feature_name} provided"
                 strategy = feature["na_strategy"]
                 self._transform_numerical_variables(feature_name, strategy)
 
