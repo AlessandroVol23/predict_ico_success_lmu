@@ -99,7 +99,7 @@ class FeatureEngineering(object):
             elif strategy == 'False':
                 to_fill = False
             elif strategy == "delete":
-                to_fill = False
+                return df
             else:
                 raise ValueError("Unrecognized na strategy for {column}")
             df[column].fillna(to_fill, inplace=True)
