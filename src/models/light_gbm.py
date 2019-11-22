@@ -51,9 +51,12 @@ class LightGbmModel(object):
         # Modeling
         # folds = KFold(n_splits=5, shuffle=True, random_state=123)
         # StratifiedKFold
-        folds = StratifiedKFold(n_splits=10, shuffle=True, random_state=123)
+        folds = StratifiedKFold(n_splits=5, shuffle=True, random_state=123)
         # skf.get_n_splits(self.X_train, self.y_train)
-
+        hyperparam = {
+            'n_estimators':2000,
+            'learning_rate':'0.01'
+        }
         oof_preds = np.zeros(self.X_train.shape[0])
         sub_preds = np.zeros(self.X_test.shape[0])
         mcc_folds = []
@@ -63,7 +66,7 @@ class LightGbmModel(object):
 
             # clf = LGBMClassifier(
             #     n_estimators=2000,
-            #     learning_rate=0.001,
+            #     learning_rate=0.003,
             #     num_leaves=123,
             #     colsample_bytree=.8,
             #     subsample=.9,
@@ -75,13 +78,12 @@ class LightGbmModel(object):
             # )
 
             clf = LGBMClassifier(
-                n_estimators=2000,
-                learning_rate=0.003
+               **hyperparam
             )
 
             clf.fit(trn_x, trn_y,
                     eval_set=[(trn_x, trn_y), (val_x, val_y)],
-                    eval_metric='binary_logloss', verbose=250, early_stopping_rounds=300
+                    eval_metric='binary_logloss', verbose=250, early_stopping_rounds=150
                     )
 
             oof_preds[val_idx] = clf.predict_proba(
@@ -105,5 +107,5 @@ class LightGbmModel(object):
         self.sub_preds_abs = sub_preds.round()
         mean_mcc = np.array(mcc_folds).mean()
         print("Overall MCC was: {}".format(mean_mcc))
-        return mean_mcc
+        return mean_mcc, hyperparam
 
