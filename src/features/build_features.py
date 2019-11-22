@@ -1,7 +1,7 @@
 import numpy as np
 import click
-from feature_class import FeatureEngineering
-from utils import read_processed_data
+from src.features.feature_class import FeatureEngineering
+from src.features.utils import read_processed_data
 import logging
 import json
 from tqdm import tqdm
@@ -14,6 +14,7 @@ logging.basicConfig(level=logging.INFO, format=log_fmt)
 def read_feature_meta():
     with open("data/features/feature_set_meta/feature_set_meta.json") as f:
         return (json.load(f))
+
 
 @click.command()
 def main():
@@ -30,6 +31,7 @@ def main():
                        key+'.csv', index=None)
         y_train.tofile('data/features/features_y_train_'+key+'.np')
         X_test.to_csv('data/features/features_x_test_'+key+'.csv', index=None)
+
 
 
 if __name__ == "__main__":

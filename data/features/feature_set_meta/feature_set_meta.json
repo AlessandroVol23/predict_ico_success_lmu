@@ -1152,7 +1152,6 @@
       "column": "links_twitter_screen_name",
       "type": "binary"
     }
-
   ],
   "na_less_20_media": [
     {
@@ -1716,6 +1715,19 @@
       "column": "community_data_twitter_followers",
       "type": "numerical",
       "na_strategy": "median"
+    }
+  ],
+  "upsample_test": [
+    {
+      "meta": {
+        "upsampling": "hallo"
+      }
+    },
+    {
+      "column": "categories_0",
+      "type": "categorical",
+      "encoder": "one_hot",
+      "na_strategy": "set:NA"
     }
   ]
 }
