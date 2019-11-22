@@ -6,6 +6,89 @@
       "encoder": "one_hot",
       "na_strategy": "set:NA"
     }
+  ],   "delete_na_test": [
+    {
+      "column": "categories_0",
+      "type": "categorical",
+      "encoder": "one_hot",
+      "na_strategy": "delete"
+    },
+    {
+      "column": "country_origin",
+      "type": "categorical",
+      "encoder": "one_hot",
+      "na_strategy": "delete"
+    },
+    {
+      "column": "ico_data_country_origin",
+      "type": "categorical",
+      "encoder": "one_hot",
+      "na_strategy": "delete"
+    },
+    {
+      "column": "ico_data_hardcap_currency",
+      "type": "categorical",
+      "encoder": "one_hot",
+      "na_strategy": "delete"
+    },
+    {
+      "column": "ico_data_softcap_currency",
+      "type": "categorical",
+      "encoder": "one_hot",
+      "na_strategy": "delete"
+    },
+    {
+      "column": "ico_data_total_raised_currency",
+      "type": "categorical",
+      "encoder": "one_hot",
+      "na_strategy": "delete"
+    },
+    {
+      "column": "ico_data_country_origin",
+      "type": "categorical",
+      "encoder": "one_hot",
+      "na_strategy": "delete"
+    },
+    {
+      "column": "holder_count",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "transaction_count",
+      "type": "numerical",
+      "na_strategy": "mean"
+    },
+    {
+      "column": "market_data_current_price_usd",
+      "type": "numerical",
+      "na_strategy": "mean"
+    },
+    {
+      "column": "market_data_ath_usd",
+      "type": "numerical",
+      "na_strategy": "mean"
+    },
+    {
+      "column": "market_data_total_supply",
+      "type": "numerical",
+      "na_strategy": "mean"
+    },
+    {
+      "column": "market_data_circulating_supply",
+      "type": "numerical",
+      "na_strategy": "mean"
+    },
+    {
+      "column": "market_data_high_24h_usd",
+      "type": "numerical",
+      "na_strategy": "mean"
+    },
+    {
+      "column": "market_data_low_24h_usd",
+      "type": "numerical",
+      "na_strategy": "mean"
+    }
   ],
   "1": [
     {
