@@ -1,7 +1,7 @@
 import numpy as np
 import click
-from feature_class import FeatureEngineering
-from utils import read_processed_data
+from src.features.feature_class import FeatureEngineering
+from src.features.utils import read_processed_data
 import logging
 import json
 from tqdm import tqdm
@@ -32,9 +32,6 @@ def main():
         y_train.tofile('data/features/features_y_train_'+key+'.np')
         X_test.to_csv('data/features/features_x_test_'+key+'.csv', index=None)
 
-    for(key, value) in tqdm(feature_sets.items()):
-        tqdm.write("Apply meta features for {}".format(key))
-        fe.apply_meta_config(value)
 
 
 if __name__ == "__main__":
