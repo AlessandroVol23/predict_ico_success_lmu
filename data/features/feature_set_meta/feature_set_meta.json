@@ -1724,5 +1724,18 @@
       "type": "numerical",
       "na_strategy": "median"
     }
+  ],
+  "upsample_test": [
+    {
+      "meta": {
+        "upsampling": "hallo"
+      }
+    },
+    {
+      "column": "categories_0",
+      "type": "categorical",
+      "encoder": "one_hot",
+      "na_strategy": "set:NA"
+    }
   ]
 }
