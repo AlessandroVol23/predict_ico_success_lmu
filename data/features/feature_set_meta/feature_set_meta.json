@@ -1,4 +1,12 @@
 {
+  "test": [
+    {
+      "column": "categories_0",
+      "type": "categorical",
+      "encoder": "one_hot",
+      "na_strategy": "set:NA"
+    }
+  ],
   "1": [
     {
       "column": "categories_0",

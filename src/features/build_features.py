@@ -22,11 +22,12 @@ def main():
     feature_sets = read_feature_meta()
 
     for(key, value) in tqdm(feature_sets.items()):
-        logger.info("building features for feature_set {} ".format(key))
+        tqdm.write("building features for feature_set {} ".format(key))
         fe = FeatureEngineering(df, df_bitcoin, df_test)
         fe.construct_feature_set(value)
         X_train, y_train, X_test = fe.get_X_y()
-        print("UNIQUE: {}".format(np.unique(y_train, return_counts=True)))
+        logger.debug("UNIQUE: {}".format(
+            np.unique(y_train, return_counts=True)))
         X_train.to_csv('data/features/features_x_train_' +
                        key+'.csv', index=None)
         y_train.tofile('data/features/features_y_train_'+key+'.np')
