@@ -234,7 +234,6 @@ class FeatureEngineering(object):
         
         for feature in featuers:
             if 'meta' in feature:
-                # meta_obj = feature.pop('meta')
                 continue
 
             assert ('column' in feature), "No column key provided"

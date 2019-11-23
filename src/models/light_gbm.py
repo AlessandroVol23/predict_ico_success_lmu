@@ -55,7 +55,7 @@ class LightGbmModel(object):
         # skf.get_n_splits(self.X_train, self.y_train)
         hyperparam = {
             'n_estimators':2000,
-            'learning_rate':'0.01'
+            'learning_rate':'0.003'
         }
         oof_preds = np.zeros(self.X_train.shape[0])
         sub_preds = np.zeros(self.X_test.shape[0])
@@ -83,7 +83,7 @@ class LightGbmModel(object):
 
             clf.fit(trn_x, trn_y,
                     eval_set=[(trn_x, trn_y), (val_x, val_y)],
-                    eval_metric='binary_logloss', verbose=250, early_stopping_rounds=150
+                    eval_metric='binary_logloss', verbose=250, early_stopping_rounds=300
                     )
 
             oof_preds[val_idx] = clf.predict_proba(
