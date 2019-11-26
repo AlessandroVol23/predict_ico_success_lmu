@@ -47,10 +47,14 @@ def _create_evaluation_file(test_ids, sub_preds_abs, next_submission_number, inc
     df_submission.to_csv(fileName, index=None)
     logger.info("Write submission file to: {}".format(fileName))
 
-
-def _write_results(feature_set_meta, feature_set_number, mean_mcc, model_name, next_submission_number, hyperparam):
-
-    feature_set = feature_set_meta[feature_set_number]
+def _write_results(feature_set_number, mean_mcc,model_name,next_submission_number, hyperparam={"n_estimators":"1", "max_leafs":"5"}):
+    feature_sets = read_feature_meta()
+    if (feature_set_number in feature_sets):
+        feature_set = feature_sets[feature_set_number]
+    else: 
+        feature_sets = read_feature_meta(True)
+        feature_set = feature_sets[feature_set_number]
+    
 
     result = _read_result_json()
 
