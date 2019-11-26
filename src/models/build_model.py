@@ -44,8 +44,12 @@ def _create_evaluation_file(test_ids, sub_preds_abs,next_submission_number, incr
 
 def _write_results(feature_set_number, mean_mcc,model_name,next_submission_number, hyperparam={"n_estimators":"1", "max_leafs":"5"}):
     feature_sets = read_feature_meta()
-    feature_set = feature_sets[feature_set_number]
-
+    if (feature_set_number in feature_sets):
+        feature_set = feature_sets[feature_set_number]
+    else: 
+        feature_sets = read_feature_meta(True)
+        feature_set = feature_sets[feature_set_number]
+    
     result = _read_result_json()
 
     metrics ={}

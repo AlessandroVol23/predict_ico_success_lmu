@@ -29,7 +29,17 @@ lint:
 	flake8 src
 
 features:
-	$(PYTHON_INTERPRETER) src/features/build_features.py
+	$(PYTHON_INTERPRETER) src/features/build_features.py False
+
+features_random_meta:
+ifdef max
+	$(PYTHON_INTERPRETER) src/features/random_features.py $(max)
+else
+	$(PYTHON_INTERPRETER) src/features/random_features.py 10
+endif
+
+features_random:
+		$(PYTHON_INTERPRETER) src/features/build_features.py True
 
 lbm_model:
 ifdef feature_set

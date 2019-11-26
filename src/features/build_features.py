@@ -11,15 +11,26 @@ log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 logging.basicConfig(level=logging.INFO, format=log_fmt)
 
 
-def read_feature_meta():
+def _read_feature_meta():
     with open("data/features/feature_set_meta/feature_set_meta.json") as f:
+        return (json.load(f))
+
+def _read_random_feature_meta():
+    with open("data/features/feature_set_meta/random_feature_sets_meta.json") as f:
         return (json.load(f))
 
 
 @click.command()
-def main():
+@click.argument('random')
+def main(random):
     df_bitcoin, df, df_test = read_processed_data()
-    feature_sets = read_feature_meta()
+    feature_sets = []
+    random = bool(random)
+
+    if random: 
+        feature_sets = _read_random_feature_meta()
+    else:
+        feature_sets = _read_feature_meta()
 
     for(key, value) in tqdm(feature_sets.items()):
         tqdm.write("building features for feature_set {} ".format(key))
@@ -28,10 +39,10 @@ def main():
         X_train, y_train, X_test = fe.get_X_y()
         logger.debug("UNIQUE: {}".format(
             np.unique(y_train, return_counts=True)))
-        X_train.to_csv('data/features/features_x_train_' +
+        X_train.to_csv('data/features/feature_sets/features_x_train_' +
                        key+'.csv', index=None)
-        y_train.tofile('data/features/features_y_train_'+key+'.np')
-        X_test.to_csv('data/features/features_x_test_'+key+'.csv', index=None)
+        y_train.tofile('data/features/feature_sets/features_y_train_'+key+'.np')
+        X_test.to_csv('data/features/feature_sets/features_x_test_'+key+'.csv', index=None)
 
 
 
