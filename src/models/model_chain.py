@@ -1,6 +1,6 @@
 import click
 from src.utils import read_feature_meta
-from src.models import build_model
+from src.models.build_model import BuildModel
 
 
 @click.command()
@@ -14,9 +14,8 @@ def main(feature_set):
 
     for key in keys:
         print("FOR KEY: {}".format(key))
-        build_model.main([key])
-
-    pass
+        model = BuildModel()
+        model.train_model(key)
 
 
 if __name__ == "__main__":
