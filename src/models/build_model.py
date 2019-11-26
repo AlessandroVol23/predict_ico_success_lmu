@@ -11,17 +11,21 @@ logger = logging.getLogger(__name__)
 log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 logging.basicConfig(level=logging.INFO, format=log_fmt)
 
+
 def _read_result_json():
     with open("data/results/result.json", "r") as f:
         return (json.load(f))
+
 
 def _write_result_json(result):
     with open("data/results/result.json", "w") as f:
         json.dump(result, f)
 
+
 def _get_submission_number():
     with open("SUBMISSION_NUMBER", "r") as f:
         return f.readline()
+
 
 def _increment_submission_number(current_number=0):
     new_build_number = int(current_number) + 1
@@ -29,7 +33,8 @@ def _increment_submission_number(current_number=0):
     with open("SUBMISSION_NUMBER", "w") as f:
         f.write(str(new_build_number))
 
-def _create_evaluation_file(test_ids, sub_preds_abs,next_submission_number, increment=True):
+
+def _create_evaluation_file(test_ids, sub_preds_abs, next_submission_number, increment=True):
     if increment:
         _increment_submission_number(next_submission_number)
 
@@ -42,32 +47,48 @@ def _create_evaluation_file(test_ids, sub_preds_abs,next_submission_number, incr
     df_submission.to_csv(fileName, index=None)
     logger.info("Write submission file to: {}".format(fileName))
 
-def _write_results(feature_set_number, mean_mcc,model_name,next_submission_number, hyperparam={"n_estimators":"1", "max_leafs":"5"}):
-    feature_sets = read_feature_meta()
-    feature_set = feature_sets[feature_set_number]
+
+def _write_results(feature_set_meta, feature_set_number, mean_mcc, model_name, next_submission_number, hyperparam):
+
+    feature_set = feature_set_meta[feature_set_number]
 
     result = _read_result_json()
 
-    metrics ={}
+    metrics = {}
     metrics['mcc'] = mean_mcc
 
     result.append({
         'timestamp': str(time()),
         'feature_set': feature_set_number,
-        'features':feature_set,
-        'metrics':metrics,
-        'model_name':model_name,
-        'hyperparam':hyperparam,
-        'submission':next_submission_number
+        'features': feature_set,
+        'metrics': metrics,
+        'model_name': model_name,
+        'hyperparam': hyperparam,
+        'submission': next_submission_number
     })
     _write_result_json(result)
 
 
+def read_upsampling_feature_set(feature_set_meta, feature_set_key):
+    feature_set = feature_set_meta[feature_set_key]
+    for feature in feature_set:
+        if 'meta' in feature:
+            try:
+                upsampling = float(feature['meta']['upsampling'])
+                return upsampling
+            except ValueError:
+                logger.warning(
+                    "Won't upsample because no float value was provided!")
+
+
 @click.command()
-@click.argument('feature_set')
-def main(feature_set):
-    logger.info("Building model with featuer set {}".format(feature_set))
-    model = LightGbmModel(feature_set)
+@click.argument('feature_set_key')
+def main(feature_set_key):
+    logger.info("Building model with featuer set {}".format(feature_set_key))
+    feature_set_meta = read_feature_meta()
+    upsampling = read_upsampling_feature_set(feature_set_meta, feature_set_key)
+
+    model = LightGbmModel(feature_set_key, upsample=upsampling)
 
     next_submission_number = _get_submission_number()
 
@@ -75,9 +96,11 @@ def main(feature_set):
     test_ids, sub_preds_abs = model.get_values()
     model_name = model.get_name()
 
-    _create_evaluation_file(test_ids, sub_preds_abs,next_submission_number, True)
-    
-    _write_results(feature_set, mean_mcc,model_name, next_submission_number, hyperparam)
+    _create_evaluation_file(test_ids, sub_preds_abs,
+                            next_submission_number, True)
+
+    _write_results(feature_set_meta, feature_set_key, mean_mcc, model_name,
+                   next_submission_number, hyperparam)
 
 
 if __name__ == "__main__":
