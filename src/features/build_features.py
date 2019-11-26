@@ -25,9 +25,7 @@ def _read_random_feature_meta():
 def main(random):
     df_bitcoin, df, df_test = read_processed_data()
     feature_sets = []
-    random = bool(random)
-
-    if random: 
+    if random == "True": 
         feature_sets = _read_random_feature_meta()
     else:
         feature_sets = _read_feature_meta()
