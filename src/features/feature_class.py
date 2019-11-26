@@ -15,6 +15,7 @@ logging.basicConfig(level=logging.INFO, format=log_fmt)
 
 DATA_FRAME_LENGTH = 5758
 
+
 class FeatureEngineering(object):
 
     # Constructor
@@ -32,7 +33,8 @@ class FeatureEngineering(object):
         """
 
         self.df = pd.concat([df, df_test], sort=True)
-        assert len(self.df) == DATA_FRAME_LENGTH, "Length has to be 5758, check conattanation!"
+        assert len(
+            self.df) == DATA_FRAME_LENGTH, "Length has to be 5758, check conattanation!"
         # Fill all from test set with TEST
         self.df.loc[self.df.success.isna(), 'success'] = "TEST"
         self.df_bitcoin = df_bitcoin
@@ -45,7 +47,6 @@ class FeatureEngineering(object):
 
         self.label_dict = {}
 
-
     def _init_df_features(self):
         # Create empty dataframe to add features
         self.df_features = self.df[['OBS_ID', 'success']].copy()
@@ -57,11 +58,12 @@ class FeatureEngineering(object):
         Returns
         -------
         """
-        logger.debug("Removing NA values for feature {} in base dataframe".format(column))
+        logger.debug(
+            "Removing NA values for feature {} in base dataframe".format(column))
         logger.debug("Old shape of df {}".format(self.df.shape))
-        self.df= self.df.dropna(subset=[column])
-        logger.debug("New shape of df after dropping NA rows {}".format(self.df.shape))
-
+        self.df = self.df.dropna(subset=[column])
+        logger.debug(
+            "New shape of df after dropping NA rows {}".format(self.df.shape))
 
     def _execute_na_strategy(self, df_in, column, strategy):
         """Function to fill NA values
@@ -75,7 +77,8 @@ class FeatureEngineering(object):
             DataFrame -- DataFrame with filled NA values
         """
 
-        logger.debug("Start filling NA values in {} with strategy {}".format(column, strategy))
+        logger.debug(
+            "Start filling NA values in {} with strategy {}".format(column, strategy))
 
         df = df_in.copy()
 
@@ -129,7 +132,8 @@ class FeatureEngineering(object):
         one_hot = pd.get_dummies(df[column], prefix=column)
         df_one_hot_with_id = pd.concat([df[['OBS_ID']], one_hot], axis=1)
         # self.df_features = pd.merge(self.df_features, df_ohe_with_ide)
-        assert len(df) == self.df_feature_length, "Length is wrong! One Hot Encoding failed"
+        assert len(
+            df) == self.df_feature_length, "Length is wrong! One Hot Encoding failed"
         return df_one_hot_with_id
 
     def _transform_numerical_variables(self, column, na_strategy='mean'):
@@ -154,7 +158,6 @@ class FeatureEngineering(object):
         df_copy = self._execute_na_strategy(df_copy, column, na_strategy)
         # df_copy[column][df_copy[column] != '0'] = 1
         df_copy.loc[df_copy[column] != '0', column] = 1
-
 
         df_copy[column] = df_copy[column].astype(int)
 
@@ -193,14 +196,6 @@ class FeatureEngineering(object):
 
         self._add_df_to_feature_df(df_ohe_id)
 
-    def _upsample_data(self, percentage):
-        df_success = self.df_features.loc[self.df_features.success == 1]
-        quantity = int(len(df_success) * percentage)
-        to_append = df_success.sample(quantity, random_state=123)
-        df_upsampled = self.df_features.append(to_append)
-        assert len(df_upsampled) == (len(self.df_features) + len(to_append)), "Length is wrong after upsampling."
-        return df_upsampled
-
     def get_X_y(self):
         """This function returns X_train, y_train and X_test.
         These are not the splits for training! This is just for preprocessing both datasets.
@@ -230,8 +225,6 @@ class FeatureEngineering(object):
     def construct_feature_set(self, featuers):
         """This function is the pipeline for adding all features to the dataset
         """
-        meta_obj = None
-        
         for feature in featuers:
             if 'meta' in feature:
                 continue
@@ -246,7 +239,7 @@ class FeatureEngineering(object):
 
         for feature in featuers:
             if 'meta' in feature:
-                meta_obj = feature.pop('meta')
+                feature.pop('meta')
                 continue
 
             assert ('column' in feature), "No column key provided"
@@ -255,22 +248,21 @@ class FeatureEngineering(object):
             feature_type = feature["type"]
             feature_name = feature["column"]
 
-
             if feature_type == "categorical":
                 assert (
                     'encoder' in feature), "No encoder for categorical feauter {feature_name} provided"
 
                 feauter_encoder = feature["encoder"]
                 assert (
-                        'na_strategy' in feature), "No na_strategy for numerical feauter {feature_name} provided"
+                    'na_strategy' in feature), "No na_strategy for numerical feauter {feature_name} provided"
                 strategy = feature["na_strategy"]
 
                 if feauter_encoder == "label":
                     self._transform_categorical_variables_label_encoded(
-                        feature_name,strategy)
+                        feature_name, strategy)
                 elif feauter_encoder == "one_hot":
                     self._transform_categorical_variables_one_hot_encoded(
-                        feature_name,strategy)
+                        feature_name, strategy)
                 else:
                     raise ValueError("Feauter encoder not recognized")
 
@@ -284,14 +276,3 @@ class FeatureEngineering(object):
                 self._transform_binary_variables(feature_name)
             else:
                 raise ValueError('feature type not recognized')
-        if meta_obj:
-            self.apply_meta_config(meta_obj)
-
-    def apply_meta_config(self, meta_obj):
-        for item in meta_obj:
-            if 'upsampling' in meta_obj:
-                try:
-                    upsampling = float(meta_obj['upsampling'])
-                    self.df_features = self._upsample_data(upsampling)
-                except ValueError:
-                    logger.warning("Won't upsample because no float value was provided!")
