@@ -8,6 +8,7 @@ import numpy as np
 import pandas as pd
 from sklearn.metrics import matthews_corrcoef, roc_auc_score
 from sklearn.model_selection import KFold, StratifiedKFold, train_test_split
+from src.models.utils import upsample_data
 
 import lightgbm as lgb
 from lightgbm import LGBMClassifier
@@ -20,7 +21,7 @@ logging.basicConfig(level=logging.INFO, format=log_fmt)
 
 class LightGbmModel(object):
 
-    def __init__(self,feature_set):
+    def __init__(self, feature_set, upsample=None):
         """Constructor for class LightGbmModel
 
         Parameters
@@ -30,9 +31,11 @@ class LightGbmModel(object):
         y : DataFrame
             y_train DataFrame from build_features.py
         """
-        self.X_train, self.y_train, self.X_test = read_feature_data(feature_set)
+        self.X_train, self.y_train, self.X_test = read_feature_data(
+            feature_set)
         self.test_ids = self.X_test['OBS_ID']
         self.X_test = self.X_test.drop('OBS_ID', axis=1)
+        self.upsample = upsample
 
         logger.info("X_train shape: {}".format(self.X_train.shape))
         logger.info("y_train shape: {}".format(self.y_train.shape))
@@ -49,41 +52,31 @@ class LightGbmModel(object):
         """Cross validation
         """
         # Modeling
-        # folds = KFold(n_splits=5, shuffle=True, random_state=123)
+        folds = KFold(n_splits=5, shuffle=True, random_state=123)
         # StratifiedKFold
-        folds = StratifiedKFold(n_splits=5, shuffle=True, random_state=123)
+        # folds = StratifiedKFold(n_splits=10, shuffle=True, random_state=123)
         # skf.get_n_splits(self.X_train, self.y_train)
         hyperparam = {
-            'n_estimators':2000,
-            'learning_rate':'0.02'
+            'n_estimators': 2000,
+            'learning_rate': '0.005'
         }
         oof_preds = np.zeros(self.X_train.shape[0])
         sub_preds = np.zeros(self.X_test.shape[0])
         mcc_folds = []
         for n_fold, (trn_idx, val_idx) in enumerate(folds.split(self.X_train, self.y_train)):
             trn_x, trn_y = self.X_train.iloc[trn_idx], self.y_train.iloc[trn_idx]
+            if self.upsample:
+                trn_x, trn_y = upsample_data(trn_x, trn_y, self.upsample)
+
             val_x, val_y = self.X_train.iloc[val_idx], self.y_train.iloc[val_idx]
 
-            # clf = LGBMClassifier(
-            #     n_estimators=2000,
-            #     learning_rate=0.003,
-            #     num_leaves=123,
-            #     colsample_bytree=.8,
-            #     subsample=.9,
-            #     max_depth=15,
-            #     reg_alpha=.1,
-            #     reg_lambda=.1,
-            #     min_split_gain=.01,
-            #     min_child_weight=2
-            # )
-
             clf = LGBMClassifier(
-               **hyperparam
+                **hyperparam
             )
 
             clf.fit(trn_x, trn_y,
                     eval_set=[(trn_x, trn_y), (val_x, val_y)],
-                    eval_metric='binary_logloss', verbose=250, early_stopping_rounds=150
+                    eval_metric='binary_logloss', verbose=250, early_stopping_rounds=300
                     )
 
             oof_preds[val_idx] = clf.predict_proba(
@@ -108,4 +101,3 @@ class LightGbmModel(object):
         mean_mcc = np.array(mcc_folds).mean()
         print("Overall MCC was: {}".format(mean_mcc))
         return mean_mcc, hyperparam
-
