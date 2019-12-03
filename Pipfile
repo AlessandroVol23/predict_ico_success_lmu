@@ -21,6 +21,7 @@ jupyter = "*"
 scipy = "*"
 src = {editable = true,path = "."}
 lightgbm = "*"
+catboost = "*"
 tqdm = "*"
 
 [requires]
