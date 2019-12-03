@@ -48,6 +48,8 @@ else
 	$(PYTHON_INTERPRETER) src/models/build_model.py 1
 endif
 
+fit_models:
+	$(PYTHON_INTERPRETER) src/models/base_model.py
 
 #################################################################################
 # PROJECT RULES                                                                 #
