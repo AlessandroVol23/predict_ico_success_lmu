@@ -1,58 +1,47 @@
 # data_science_for_business_lmu
 
-```bash
-make data -> creates data
-make features -> creates features
-make lbm_model -> creates lbm model and evaluation file with name submission6.csv in submissions
-```
+## Next Deadline 
 
-## Project Organization
+__13.12.2019__
 
-    ├── LICENSE
-    ├── Makefile           <- Makefile with commands like `make data` or `make train`
-    ├── README.md          <- The top-level README for developers using this project.
-    ├── data
-    │   ├── external       <- Data from third party sources.
-    │   ├── interim        <- Intermediate data that has been transformed.
-    │   ├── processed      <- The final, canonical data sets for modeling.
-    │   └── raw            <- The original, immutable data dump.
-    │
-    ├── docs               <- A default Sphinx project; see sphinx-doc.org for details
-    │
-    ├── models             <- Trained and serialized models, model predictions, or model summaries
-    │
-    ├── notebooks          <- Jupyter notebooks. Naming convention is a number (for ordering),
-    │                         the creator's initials, and a short `-` delimited description, e.g.
-    │                         `1.0-jqp-initial-data-exploration`.
-    │
-    ├── references         <- Data dictionaries, manuals, and all other explanatory materials.
-    │
-    ├── reports            <- Generated analysis as HTML, PDF, LaTeX, etc.
-    │   └── figures        <- Generated graphics and figures to be used in reporting
-    │
-    ├── requirements.txt   <- The requirements file for reproducing the analysis environment, e.g.
-    │                         generated with `pip freeze > requirements.txt`
-    │
-    ├── setup.py           <- makes project pip installable (pip install -e .) so src can be imported
-    ├── src                <- Source code for use in this project.
-    │   ├── __init__.py    <- Makes src a Python module
-    │   │
-    │   ├── data           <- Scripts to download or generate data
-    │   │   └── make_dataset.py
-    │   │
-    │   ├── features       <- Scripts to turn raw data into features for modeling
-    │   │   └── build_features.py
-    │   │
-    │   ├── models         <- Scripts to train models and then use trained models to make
-    │   │   │                 predictions
-    │   │   ├── predict_model.py
-    │   │   └── train_model.py
-    │   │
-    │   └── visualization  <- Scripts to create exploratory and results oriented visualizations
-    │       └── visualize.py
-    │
-    └── tox.ini            <- tox file with settings for running tox; see tox.testrun.org
+## Paper
 
----
+### Outline
+1. Introduction
+    1. ICO
+    2. Machine Learning - Motivation
+    3. ICO - ML - Motvation
+2. Approach
+3. Data Analysis
+    1. Description of data
+    2. EDA
+    3. "Statistical Analysis" -> Correlations / Min / Max / Mean
+4. Prediction Model
+    1. Pipeline
+    2. Data Preparation
+    3. Prediction Model
+        -> Random Forest / Light Gbm
+5. Results
+6. Conclusion and Outlook
 
-<p><small>Project based on the <a target="_blank" href="https://drivendata.github.io/cookiecutter-data-science/">cookiecutter data science project template</a>. #cookiecutterdatascience</small></p>
+
+## Currently implemented 
+
+### Data
+- Data pre-generation through make command 
+### Features
+- Automatically generation of Features
+- Automatically exporting of features into CSV files 
+- Custom Feature set description through a meta file saved in JSON data structure 
+- Random feature meta file generation 
+- Generation of random feature sets through random feature meta file 
+- NA-value Strategies [mean, median, delete, set]
+- Encoder strategies [one_hote, label]
+
+### Models
+- saving model results into result file 
+- automatically generating and incrementing of submission number, tied to result and feature set 
+- cross-fold validation
+- up sampling
+- pipeline to fit a model to random generated features 
+- implemented models [LightGBM]
