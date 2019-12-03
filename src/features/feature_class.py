@@ -5,6 +5,8 @@ import logging
 import pandas as pd
 import numpy as np
 from sklearn import preprocessing
+from sklearn.experimental import enable_iterative_imputer
+from sklearn.impute import IterativeImputer
 
 logger = logging.getLogger(__name__)
 
@@ -47,6 +49,9 @@ class FeatureEngineering(object):
 
         self.label_dict = {}
 
+        # List for saving columns to impute
+        self.to_impute = []
+
     def _init_df_features(self):
         # Create empty dataframe to add features
         self.df_features = self.df[['OBS_ID', 'success']].copy()
@@ -64,6 +69,26 @@ class FeatureEngineering(object):
         self.df = self.df.dropna(subset=[column])
         logger.debug(
             "New shape of df after dropping NA rows {}".format(self.df.shape))
+
+    def _execute_impulate_na(self):
+        imp = IterativeImputer(max_iter=10, random_state=123)
+
+        features = list(set(self.df_features.columns) -
+                        set(['success', 'OBS_ID']))
+
+        imp.fit(self.df_features[features])
+
+        for col in self.to_impute:
+            logger.debug("Impute {} now".format(col))
+            logger.debug("{} has {} empty entries".format(
+                col, self.df_features[col].isna().sum()))
+            index_of_col = features.index(col)
+
+            na_vals = self.df_features.loc[self.df_features[col].isna(
+            ), features]
+            imputed = imp.transform(na_vals)
+            self.df_features.loc[self.df_features[col].isna(),
+                                 col] = imputed[:, index_of_col]
 
     def _execute_na_strategy(self, df_in, column, strategy):
         """Function to fill NA values
@@ -103,6 +128,11 @@ class FeatureEngineering(object):
                 to_fill = False
             elif strategy == "delete":
                 return df
+            elif strategy == "impute":
+                # Fill temporary with np.nan and handle later
+                if df[column].isna().sum() > 0:
+                    self.to_impute.append(column)
+                to_fill = np.nan
             else:
                 raise ValueError("Unrecognized na strategy for {column}")
             df[column].fillna(to_fill, inplace=True)
@@ -225,6 +255,7 @@ class FeatureEngineering(object):
     def construct_feature_set(self, featuers):
         """This function is the pipeline for adding all features to the dataset
         """
+        # Iterate through features beforehand for deleting nas
         for feature in featuers:
             if 'meta' in feature:
                 continue
@@ -237,12 +268,14 @@ class FeatureEngineering(object):
 
         self._init_df_features()
 
+        # Iterating through features and construct feature set
         for feature in featuers:
             if 'meta' in feature:
                 feature.pop('meta')
                 continue
 
-            assert ('column' in feature), "No column key provided"
+            assert (
+                'column' in feature), "No column key provided in feature " + feature
             assert ('type' in feature), "No column type provided"
 
             feature_type = feature["type"]
@@ -276,3 +309,9 @@ class FeatureEngineering(object):
                 self._transform_binary_variables(feature_name)
             else:
                 raise ValueError('feature type not recognized')
+
+        # Check and impolate
+        if len(self.to_impute) > 0:
+            logger.debug("Start impulating NA values")
+            logger.debug("Length of to_impute: {}".format(len(self.to_impute)))
+            self._execute_impulate_na()
