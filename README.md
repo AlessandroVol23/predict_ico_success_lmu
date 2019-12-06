@@ -20,7 +20,7 @@ __13.12.2019__
     1. Pipeline
     2. Data Preparation
     3. Prediction Model
-        -> Random Forest / Light Gbm
+        -> Random Forrest / Light Gbm
 5. Results
 6. Conclusion and Outlook
 
@@ -42,6 +42,6 @@ __13.12.2019__
 - saving model results into result file 
 - automatically generating and incrementing of submission number, tied to result and feature set 
 - cross-fold validation
-- up sampling
+- up-sampling
 - pipeline to fit a model to random generated features 
-- implemented models [LightGBM]
+- implemented models [LightGBM, Catboost]
