@@ -22,6 +22,9 @@ scipy = "*"
 src = {editable = true,path = "."}
 lightgbm = "*"
 tqdm = "*"
+matplotlib = "*"
+seaborn = "*"
+yellowbrick = "*"
 
 [requires]
 python_version = "3.7"
