@@ -22,6 +22,7 @@ scipy = "*"
 src = {editable = true,path = "."}
 lightgbm = "*"
 tqdm = "*"
+chart-studio = "*"
 
 [requires]
 python_version = "3.7"
