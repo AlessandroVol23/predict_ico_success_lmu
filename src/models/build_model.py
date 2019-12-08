@@ -92,12 +92,16 @@ class BuildModel(object):
                     logger.warning(
                         "Won't upsample because no float value was provided!")
 
-    def train_model(self, feature_set_key):
+    def train_model(self, feature_set_key,modelName =""):
         """takes the list of models and fits them with cross validation"""
         
+
         for current_model_class in training_models:
+            
             # Init a model class inheritated from BaseModel class
             current_model = current_model_class()
+            if modelName != "" and modelName != current_model.get_name():
+                continue
             print
             logger.info(
                 "Building model with feature set {}".format(feature_set_key))
@@ -126,9 +130,10 @@ class BuildModel(object):
 
 @click.command()
 @click.argument('feature_set_key')
-def main(feature_set_key):
+@click.argument('model_name')
+def main(feature_set_key, model_name):
     build_model = BuildModel()
-    build_model.train_model(feature_set_key)
+    build_model.train_model(feature_set_key, model_name)
 
 
 if __name__ == "__main__":
