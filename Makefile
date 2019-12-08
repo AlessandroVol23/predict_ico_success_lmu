@@ -41,11 +41,25 @@ endif
 features_random:
 		$(PYTHON_INTERPRETER) src/features/build_features.py True
 
+train_models:
+ifdef feature_set
+	$(PYTHON_INTERPRETER) src/models/build_model.py $(feature_set) ""
+else
+	$(PYTHON_INTERPRETER) src/models/build_model.py 1 ""
+endif
+
 lbm_model:
 ifdef feature_set
-	$(PYTHON_INTERPRETER) src/models/build_model.py $(feature_set)
+	$(PYTHON_INTERPRETER) src/models/build_model.py $(feature_set) lbm
 else
-	$(PYTHON_INTERPRETER) src/models/build_model.py 1
+	$(PYTHON_INTERPRETER) src/models/build_model.py 1 lbm
+endif
+
+catboost_model:
+ifdef feature_set
+	$(PYTHON_INTERPRETER) src/models/build_model.py $(feature_set) catboost
+else
+	$(PYTHON_INTERPRETER) src/models/build_model.py 1 catboost
 endif
 
 fit_models:
