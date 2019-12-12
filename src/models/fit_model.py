@@ -21,7 +21,7 @@ logging.basicConfig(level=logging.INFO, format=log_fmt)
 
 class FittingModel(object):
 
-    def __init__(self, feature_set,model, upsample=None):
+    def __init__(self, feature_set,model,categorical_features, upsample=None ):
         """Constructor for class LightGbmModel
 
         Parameters
@@ -36,6 +36,7 @@ class FittingModel(object):
         self.test_ids = self.X_test['OBS_ID']
         self.X_test = self.X_test.drop('OBS_ID', axis=1)
         self.upsample = upsample
+        self.categorical_features = np.array(list(map(lambda x: self.X_train.columns.get_loc(x), categorical_features)))
         self.model = model
         self.traning_model = self.model.get_model()
         logger.info("X_train shape: {}".format(self.X_train.shape))
@@ -66,7 +67,7 @@ class FittingModel(object):
 
             val_x, val_y = self.X_train.iloc[val_idx], self.y_train.iloc[val_idx]
 
-            self.model.fit(trn_x, trn_y,val_x,val_y)
+            self.model.fit(trn_x, trn_y,val_x,val_y, self.categorical_features)
             oof_pred_abs = self.model.predict_proba(oof_preds,sub_preds,self.X_test,folds,val_idx,val_x )
             unique_elements, counts_elements = np.unique(
                 oof_pred_abs, return_counts=True)

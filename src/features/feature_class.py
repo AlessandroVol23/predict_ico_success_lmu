@@ -229,6 +229,17 @@ class FeatureEngineering(object):
 
         self._add_df_to_feature_df(df_ohe_id)
 
+
+    def _transform_categorical_skip_encoded(self, column, na_strategy='set:NAN'):
+        logger.debug(
+            "Transform categorical variable to one hot encoded for column {}".format(column))
+        # Copy Dataframe
+        df_copy = self.df.copy()
+        # Fill NAs
+        df_copy = self._execute_na_strategy(df_copy, column, na_strategy)
+
+        self._add_column_to_data_frame(df_copy, column)
+
     def get_X_y(self):
         """This function returns X_train, y_train and X_test.
         These are not the splits for training! This is just for preprocessing both datasets.
@@ -299,6 +310,8 @@ class FeatureEngineering(object):
                 elif feauter_encoder == "one_hot":
                     self._transform_categorical_variables_one_hot_encoded(
                         feature_name, strategy)
+                elif feauter_encoder == "skip":
+                    self._transform_categorical_skip_encoded(feature_name, strategy)
                 else:
                     raise ValueError("Feauter encoder not recognized")
 

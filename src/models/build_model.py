@@ -5,6 +5,7 @@ from src.models.catboost_model import CatBoostModel
 import logging
 import json
 import pandas as pd
+import numpy as np
 from src.utils import read_feature_meta
 from time import time
 
@@ -93,6 +94,18 @@ class BuildModel(object):
                 except ValueError:
                     logger.warning(
                         "Won't upsample because no float value was provided!")
+    def _read_categorical_features(self, feature_set_meta, feature_set_key):
+        feature_set = feature_set_meta[feature_set_key]
+        cateogircal_features = []
+        for feature in feature_set:
+            if 'meta' in feature:
+                continue
+            feature_name = feature["column"]           
+            feature_type = feature["type"]
+            if feature_type == "categorical":
+                cateogircal_features.append(feature_name)
+        
+        return cateogircal_features
 
     def train_model(self, feature_set_key, modelName=""):
         """takes the list of models and fits them with cross validation"""
@@ -109,13 +122,19 @@ class BuildModel(object):
             upsampling = self.read_upsampling_feature_set(
                 feature_set_meta, feature_set_key)
 
+            categorical_features = self._read_categorical_features(
+               feature_set_meta, feature_set_key)
             # Fitting model that trains and cross validates, takes the underlying model to train as a param
-            fitting_model = FittingModel(feature_set_key, current_model, upsample=upsampling)
+            fitting_model = FittingModel(feature_set_key, current_model, categorical_features, upsample=upsampling)
 
             next_submission_number = self._get_submission_number()
 
             # Get values from fitting model
-            mean_mcc = fitting_model.cross_validation()
+            try:
+                mean_mcc = fitting_model.cross_validation()
+            except:
+                logger.warning("Could not run model {}".format(current_model.get_name()))
+                return
             test_ids, sub_preds_abs = fitting_model.get_values()
             # get name and params from underlying model
             model_name = current_model.get_name()
