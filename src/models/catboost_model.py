@@ -3,7 +3,6 @@
 
 import logging
 import os
-
 from src.models.base_model import BaseModel
 from catboost import CatBoostClassifier, Pool
 
@@ -19,7 +18,6 @@ class CatBoostModel(BaseModel):
           #  'learning_rate': 0.1,
             'use_best_model': True,
             'early_stopping_rounds': 100,
-            'task_type': 'GPU',
             'logging_level':'Verbose'
         }
         self.model = CatBoostClassifier(
@@ -39,9 +37,12 @@ class CatBoostModel(BaseModel):
             )
         return self.model
 
-    def fit(self, trn_x, trn_y, val_x, val_y):
+    def fit(self, trn_x, trn_y, val_x, val_y, categorical_features = []):
+        print(categorical_features[0])
+        print("categorical ", int(categorical_features[0]))
         self.model.fit(trn_x, trn_y,
                        eval_set=[(val_x, val_y)],
+                       cat_features=categorical_features,
                        )
 
     def predict_proba(self, oof_preds, sub_preds, X_test, folds, val_idx, val_x):
