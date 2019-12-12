@@ -23,6 +23,10 @@ src = {editable = true,path = "."}
 lightgbm = "*"
 catboost = "*"
 tqdm = "*"
+matplotlib = "*"
+seaborn = "*"
+yellowbrick = "*"
+chart-studio = "*"
 
 [requires]
 python_version = "3.7"

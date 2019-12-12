@@ -1,20 +1,18 @@
 import click
-from fit_model import FittingModel
-from light_gbm import LightGbmModel
-from catboost_model import CatBoostModel
+from src.models.fit_model import FittingModel
+from src.models.light_gbm import LightGbmModel
+from src.models.catboost_model import CatBoostModel
 import logging
 import json
-import numpy as np
 import pandas as pd
 from src.utils import read_feature_meta
 from time import time
-import os
 
 logger = logging.getLogger(__name__)
 log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 logging.basicConfig(level=logging.INFO, format=log_fmt)
 
-training_models =[
+training_models = [
     CatBoostModel,
     LightGbmModel
 
@@ -57,7 +55,8 @@ class BuildModel(object):
         df_submission.to_csv(fileName, index=None)
         logger.info("Write submission file to: {}".format(fileName))
 
-    def _write_results(self, feature_set_meta, feature_set_number, mean_mcc, model_name, next_submission_number, hyperparam):
+    def _write_results(self, feature_set_meta, feature_set_number, mean_mcc, model_name, next_submission_number,
+                       hyperparam):
         feature_sets = read_feature_meta()
         if (feature_set_number in feature_sets):
             feature_set = feature_sets[feature_set_number]
@@ -65,7 +64,10 @@ class BuildModel(object):
             feature_sets = read_feature_meta(True)
             feature_set = feature_sets[feature_set_number]
 
-        result = self._read_result_json()
+        try:
+            result = self._read_result_json()
+        except json.decoder.JSONDecodeError:
+            result = []
 
         metrics = {}
         metrics['mcc'] = mean_mcc
@@ -92,25 +94,23 @@ class BuildModel(object):
                     logger.warning(
                         "Won't upsample because no float value was provided!")
 
-    def train_model(self, feature_set_key,modelName =""):
+    def train_model(self, feature_set_key, modelName=""):
         """takes the list of models and fits them with cross validation"""
-        
 
         for current_model_class in training_models:
-            
+
             # Init a model class inheritated from BaseModel class
             current_model = current_model_class()
             if modelName != "" and modelName != current_model.get_name():
                 continue
-            print
             logger.info(
                 "Building model with feature set {}".format(feature_set_key))
             feature_set_meta = read_feature_meta()
             upsampling = self.read_upsampling_feature_set(
                 feature_set_meta, feature_set_key)
-    
+
             # Fitting model that trains and cross validates, takes the underlying model to train as a param
-            fitting_model = FittingModel(feature_set_key,current_model, upsample=upsampling)
+            fitting_model = FittingModel(feature_set_key, current_model, upsample=upsampling)
 
             next_submission_number = self._get_submission_number()
 
@@ -120,9 +120,9 @@ class BuildModel(object):
             # get name and params from underlying model
             model_name = current_model.get_name()
             hyperparams = current_model.get_params()
-            
+
             self._create_evaluation_file(test_ids, sub_preds_abs,
-                                        next_submission_number, True)
+                                         next_submission_number, True)
 
             self._write_results(feature_set_meta, feature_set_key, mean_mcc, model_name,
                                 next_submission_number, hyperparams)
