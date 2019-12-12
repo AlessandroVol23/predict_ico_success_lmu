@@ -130,7 +130,11 @@ class BuildModel(object):
             next_submission_number = self._get_submission_number()
 
             # Get values from fitting model
-            mean_mcc = fitting_model.cross_validation()
+            try:
+                mean_mcc = fitting_model.cross_validation()
+            except:
+                logger.warning("Could not run model {}".format(current_model.get_name()))
+                return
             test_ids, sub_preds_abs = fitting_model.get_values()
             # get name and params from underlying model
             model_name = current_model.get_name()
