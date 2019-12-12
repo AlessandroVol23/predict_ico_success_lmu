@@ -1,5 +1,7 @@
 import click
+from fit_model import FittingModel
 from light_gbm import LightGbmModel
+from catboost_model import CatBoostModel
 import logging
 import json
 import numpy as np
@@ -11,6 +13,12 @@ import os
 logger = logging.getLogger(__name__)
 log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 logging.basicConfig(level=logging.INFO, format=log_fmt)
+
+training_models =[
+    CatBoostModel,
+    LightGbmModel
+
+]
 
 
 class BuildModel(object):
@@ -84,33 +92,48 @@ class BuildModel(object):
                     logger.warning(
                         "Won't upsample because no float value was provided!")
 
-    def train_model(self, feature_set_key):
-        logger.info(
-            "Building model with feature set {}".format(feature_set_key))
-        feature_set_meta = read_feature_meta()
-        upsampling = self.read_upsampling_feature_set(
-            feature_set_meta, feature_set_key)
+    def train_model(self, feature_set_key,modelName =""):
+        """takes the list of models and fits them with cross validation"""
+        
 
-        model = LightGbmModel(feature_set_key, upsample=upsampling)
+        for current_model_class in training_models:
+            
+            # Init a model class inheritated from BaseModel class
+            current_model = current_model_class()
+            if modelName != "" and modelName != current_model.get_name():
+                continue
+            print
+            logger.info(
+                "Building model with feature set {}".format(feature_set_key))
+            feature_set_meta = read_feature_meta()
+            upsampling = self.read_upsampling_feature_set(
+                feature_set_meta, feature_set_key)
+    
+            # Fitting model that trains and cross validates, takes the underlying model to train as a param
+            fitting_model = FittingModel(feature_set_key,current_model, upsample=upsampling)
 
-        next_submission_number = self._get_submission_number()
+            next_submission_number = self._get_submission_number()
 
-        mean_mcc, hyperparam = model.cross_validation()
-        test_ids, sub_preds_abs = model.get_values()
-        model_name = model.get_name()
+            # Get values from fitting model
+            mean_mcc = fitting_model.cross_validation()
+            test_ids, sub_preds_abs = fitting_model.get_values()
+            # get name and params from underlying model
+            model_name = current_model.get_name()
+            hyperparams = current_model.get_params()
+            
+            self._create_evaluation_file(test_ids, sub_preds_abs,
+                                        next_submission_number, True)
 
-        self._create_evaluation_file(test_ids, sub_preds_abs,
-                                     next_submission_number, True)
-
-        self._write_results(feature_set_meta, feature_set_key, mean_mcc, model_name,
-                            next_submission_number, hyperparam)
+            self._write_results(feature_set_meta, feature_set_key, mean_mcc, model_name,
+                                next_submission_number, hyperparams)
 
 
 @click.command()
 @click.argument('feature_set_key')
-def main(feature_set_key):
+@click.argument('model_name')
+def main(feature_set_key, model_name):
     build_model = BuildModel()
-    build_model.train_model(feature_set_key)
+    build_model.train_model(feature_set_key, model_name)
 
 
 if __name__ == "__main__":
