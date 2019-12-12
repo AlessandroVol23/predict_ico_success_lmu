@@ -1,14 +1,12 @@
 import click
-from fit_model import FittingModel
-from light_gbm import LightGbmModel
-from catboost_model import CatBoostModel
+from src.models.fit_model import FittingModel
+from src.models.light_gbm import LightGbmModel
+from src.models.catboost_model import CatBoostModel
 import logging
 import json
-import numpy as np
 import pandas as pd
 from src.utils import read_feature_meta
 from time import time
-import os
 
 logger = logging.getLogger(__name__)
 log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
@@ -102,7 +100,6 @@ class BuildModel(object):
             current_model = current_model_class()
             if modelName != "" and modelName != current_model.get_name():
                 continue
-            print
             logger.info(
                 "Building model with feature set {}".format(feature_set_key))
             feature_set_meta = read_feature_meta()

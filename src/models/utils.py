@@ -26,13 +26,13 @@ def upsample_data(x, y, upsampling):
     df = x.assign(success=y)
     df_success = df.loc[df.success == 1]
     quantity = int(len(df_success) * upsampling)
-    to_append = df_success.sample(quantity, random_state=123)
+    to_append = df_success.sample(quantity, random_state=123, replace=True)
     df_upsampled = df.append(to_append)
     assert len(df_upsampled) == (len(df) + len(to_append)
                                  ), "Length is wrong after upsampling."
 
-    trn_X = df.drop('success', axis=1)
-    trn_y = df.success
+    trn_X = df_upsampled.drop('success', axis=1)
+    trn_y = df_upsampled.success
     return trn_X, trn_y
 
 

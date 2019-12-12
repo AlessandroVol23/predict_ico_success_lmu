@@ -10,9 +10,6 @@ def main(feature_set):
     keys = feature_set_meta.keys()
 
     for key in keys:
-        print(key)
-
-    for key in keys:
         print("FOR KEY: {}".format(key))
         model = BuildModel()
         model.train_model(key)

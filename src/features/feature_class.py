@@ -123,7 +123,10 @@ class FeatureEngineering(object):
 
             elif strategy == 'median':
                 to_fill = df[column].median()
-
+            elif strategy == 'min':
+                to_fill = df[column].min()
+            elif strategy == 'max':
+                to_fill = df[column].max()
             elif strategy == 'False':
                 to_fill = False
             elif strategy == "delete":
