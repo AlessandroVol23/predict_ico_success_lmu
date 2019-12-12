@@ -1021,6 +1021,694 @@
       "type": "binary"
     }
   ],
+  "na_less_20_median_upsample_75": [
+    {
+      "meta": {
+        "upsampling": "0.75"
+      }
+    },
+    {
+      "meta": {
+        "upsampling": "0.5"
+      }
+    },
+    {
+      "column": "KW1",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW2",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW3",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW4",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW5",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW6",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW7",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW8",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW9",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW10",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW11",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW12",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW13",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW14",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW15",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW16",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW17",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW18",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW19",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW20",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW21",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW22",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW23",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW24",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW25",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW26",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW27",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW28",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW29",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW30",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW31",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW32",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW33",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW34",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW35",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW36",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW37",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW38",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW39",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "community_data_reddit_accounts_active_48h",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "community_data_reddit_average_comments_48h",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "community_data_reddit_average_posts_48h",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "community_data_reddit_subscribers",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "developer_data_forks",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "developer_data_stars",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "developer_data_subscribers",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "developer_data_closed_issues",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "developer_data_closed_issues",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "developer_data_pull_requests_merged",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "developer_data_total_issues",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "developer_data_commit_count_4_weeks",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "developer_data_pull_request_contributors",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "public_interest_stats_bing_matches",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "public_interest_stats_alexa_rank",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "community_data_facebook_likes",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "community_data_twitter_followers",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "market_data_circulating_supply",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "market_data_current_price_usd",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "market_data_ath_usd",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "links_homepage",
+      "type": "binary",
+      "na_strategy": "False"
+    },
+    {
+      "column": "market_data_low_24h_usd",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "market_data_high_24h_usd",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "market_data_high_24h_usd",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "links_blockchain_site",
+      "type": "binary"
+    },
+    {
+      "column": "market_data_first_time_trading",
+      "type": "binary"
+    },
+    {
+      "column": "market_data_total_supply",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "links_twitter_screen_name",
+      "type": "binary"
+    }
+  ],
+  "na_less_20_median_upsample_100": [
+    {
+      "meta": {
+        "upsampling": "1.00"
+      }
+    },
+    {
+      "meta": {
+        "upsampling": "0.5"
+      }
+    },
+    {
+      "column": "KW1",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW2",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW3",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW4",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW5",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW6",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW7",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW8",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW9",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW10",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW11",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW12",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW13",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW14",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW15",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW16",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW17",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW18",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW19",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW20",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW21",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW22",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW23",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW24",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW25",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW26",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW27",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW28",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW29",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW30",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW31",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW32",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW33",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW34",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW35",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW36",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW37",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW38",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW39",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "community_data_reddit_accounts_active_48h",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "community_data_reddit_average_comments_48h",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "community_data_reddit_average_posts_48h",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "community_data_reddit_subscribers",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "developer_data_forks",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "developer_data_stars",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "developer_data_subscribers",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "developer_data_closed_issues",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "developer_data_closed_issues",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "developer_data_pull_requests_merged",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "developer_data_total_issues",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "developer_data_commit_count_4_weeks",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "developer_data_pull_request_contributors",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "public_interest_stats_bing_matches",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "public_interest_stats_alexa_rank",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "community_data_facebook_likes",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "community_data_twitter_followers",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "market_data_circulating_supply",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "market_data_current_price_usd",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "market_data_ath_usd",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "links_homepage",
+      "type": "binary",
+      "na_strategy": "False"
+    },
+    {
+      "column": "market_data_low_24h_usd",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "market_data_high_24h_usd",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "market_data_high_24h_usd",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "links_blockchain_site",
+      "type": "binary"
+    },
+    {
+      "column": "market_data_first_time_trading",
+      "type": "binary"
+    },
+    {
+      "column": "market_data_total_supply",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "links_twitter_screen_name",
+      "type": "binary"
+    }
+  ],
   "na_less_20_mean_upsample_50": [
     {
       "meta": {
@@ -1366,9 +2054,11 @@
         "upsampling": "0.0"
       }
     },
-    {"meta": {
-      "upsampling": "0.5"
-    }},
+    {
+      "meta": {
+        "upsampling": "0.5"
+      }
+    },
     {
       "column": "KW1",
       "type": "numerical",
@@ -3582,345 +4272,6 @@
       "type": "binary"
     }
   ],
-  "na_less_20_median_upsample_100": [
-    {
-      "meta": {
-        "upsampling": "1"
-      }
-    },
-    {
-      "column": "KW1",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "KW2",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "KW3",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "KW4",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "KW5",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "KW6",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "KW7",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "KW8",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "KW9",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "KW10",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "KW11",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "KW12",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "KW13",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "KW14",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "KW15",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "KW16",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "KW17",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "KW18",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "KW19",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "KW20",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "KW21",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "KW22",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "KW23",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "KW24",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "KW25",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "KW26",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "KW27",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "KW28",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "KW29",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "KW30",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "KW31",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "KW32",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "KW33",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "KW34",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "KW35",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "KW36",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "KW37",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "KW38",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "KW39",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "community_data_reddit_accounts_active_48h",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "community_data_reddit_average_comments_48h",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "community_data_reddit_average_posts_48h",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "community_data_reddit_subscribers",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "developer_data_forks",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "developer_data_stars",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "developer_data_subscribers",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "developer_data_closed_issues",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "developer_data_closed_issues",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "developer_data_pull_requests_merged",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "developer_data_total_issues",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "developer_data_commit_count_4_weeks",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "developer_data_pull_request_contributors",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "public_interest_stats_bing_matches",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "public_interest_stats_alexa_rank",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "community_data_facebook_likes",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "community_data_twitter_followers",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "market_data_circulating_supply",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "market_data_current_price_usd",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "market_data_ath_usd",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "links_homepage",
-      "type": "binary",
-      "na_strategy": "False"
-    },
-    {
-      "column": "market_data_low_24h_usd",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "market_data_high_24h_usd",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "market_data_high_24h_usd",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "links_blockchain_site",
-      "type": "binary"
-    },
-    {
-      "column": "market_data_first_time_trading",
-      "type": "binary"
-    },
-    {
-      "column": "market_data_total_supply",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "links_twitter_screen_name",
-      "type": "binary"
-    }
-  ],
   "na_less_20_mean_upsample_50": [
     {
       "meta": {
@@ -4784,11 +5135,120 @@
       "na_strategy": "median"
     }
   ],
-    "correlation_positive_u100": [
+  "na_less_50_mixed_upsampling_40": [
     {
       "meta": {
-        "upsampling": "1"
+        "upsampling": "0.4"
       }
+    },
+    {
+      "column": "transaction_count",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "holder_count",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "timestamp",
+      "type": "binary",
+      "na_strategy": "False"
+    },
+    {
+      "column": "contract_address",
+      "type": "binary",
+      "na_strategy": "False"
+    },
+    {
+      "column": "community_data_reddit_subscribers",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "developer_data_stars",
+      "type": "binary",
+      "na_strategy": "False"
+    },
+    {
+      "column": "developer_data_subscribers",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "developer_data_closed_issues",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "developer_data_commit_count_4_weeks",
+      "type": "binary",
+      "na_strategy": "False"
+    },
+    {
+      "column": "public_interest_stats_alexa_rank",
+      "type": "numerical",
+      "na_strategy": "mean"
+    },
+    {
+      "column": "community_data_facebook_likes",
+      "type": "numerical",
+      "na_strategy": "mean"
+    },
+    {
+      "column": "community_data_twitter_followers",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "market_data_circulating_supply",
+      "type": "numerical",
+      "na_strategy": "mean"
+    },
+    {
+      "column": "market_data_current_price_usd",
+      "type": "numerical",
+      "na_strategy": "mean"
+    },
+    {
+      "column": "market_data_ath_usd",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "links_homepage",
+      "type": "binary",
+      "na_strategy": "False"
+    },
+    {
+      "column": "market_data_low_24h_usd",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "market_data_high_24h_usd",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "market_data_high_24h_usd",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "links_blockchain_site",
+      "type": "binary",
+      "na_strategy": "False"
+    },
+    {
+      "column": "market_data_first_time_trading",
+      "type": "binary"
+    },
+    {
+      "column": "market_data_total_supply",
+      "type": "numerical",
+      "na_strategy": "mean"
     },
     {
       "column": "KW1",
@@ -4923,7 +5383,7 @@
     {
       "column": "KW27",
       "type": "numerical",
-      "na_strategy": "median"
+      "na_strategy": "mean"
     },
     {
       "column": "KW28",
@@ -4943,7 +5403,7 @@
     {
       "column": "KW31",
       "type": "numerical",
-      "na_strategy": "median"
+      "na_strategy": "mean"
     },
     {
       "column": "KW32",
@@ -4973,78 +5433,18 @@
     {
       "column": "KW37",
       "type": "numerical",
-      "na_strategy": "median"
+      "na_strategy": "mean"
     },
     {
       "column": "KW38",
       "type": "numerical",
-      "na_strategy": "median"
+      "na_strategy": "mean"
     },
     {
       "column": "KW39",
       "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "developer_data_forks",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "developer_data_stars",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "developer_data_subscribers",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "developer_data_pull_requests_merged",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "developer_data_commit_count_4_weeks",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "developer_data_pull_request_contributors",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "community_data_twitter_followers",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "market_data_current_price_usd",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "market_data_ath_usd",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "market_data_high_24h_usd",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "market_data_total_supply",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "ico_data_total_raised",
-      "type": "numerical",
-      "na_strategy": "median"
+      "na_strategy": "mean"
     }
   ]
-
 }
+
