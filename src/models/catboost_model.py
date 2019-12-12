@@ -12,12 +12,12 @@ class CatBoostModel(BaseModel):
     def __init__(self):
         self.hyperparam = {
             'iterations': 2000,
-          #  'depth': 8,
+            # 'depth': 8,
             'eval_metric': 'MCC',
             'loss_function': 'Logloss',
           #  'learning_rate': 0.1,
             'use_best_model': True,
-            'early_stopping_rounds': 100,
+            'early_stopping_rounds': 200,
             'logging_level':'Verbose'
         }
         self.model = CatBoostClassifier(
@@ -38,8 +38,6 @@ class CatBoostModel(BaseModel):
         return self.model
 
     def fit(self, trn_x, trn_y, val_x, val_y, categorical_features = []):
-        print(categorical_features[0])
-        print("categorical ", int(categorical_features[0]))
         self.model.fit(trn_x, trn_y,
                        eval_set=[(val_x, val_y)],
                        cat_features=categorical_features,
