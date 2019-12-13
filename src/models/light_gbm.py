@@ -14,7 +14,7 @@ class LightGbmModel(BaseModel):
         self. hyperparam = {
             'n_estimators': 2000,
             'learning_rate': '0.003',
-            'device':'GPU'
+            'device':'CPU'
         }
         self.model = LGBMClassifier(
                 **self.hyperparam

@@ -38,8 +38,6 @@ class CatBoostModel(BaseModel):
         return self.model
 
     def fit(self, trn_x, trn_y, val_x, val_y, categorical_features = []):
-        print(categorical_features[0])
-        print("categorical ", int(categorical_features[0]))
         self.model.fit(trn_x, trn_y,
                        eval_set=[(val_x, val_y)],
                        cat_features=categorical_features,
