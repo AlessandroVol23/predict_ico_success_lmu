@@ -1,3 +1,2 @@
 feature_set,hp_early_stopping_rounds,hp_iterations,hp_learning_rate,hp_loss_function,hp_n_estimators,hp_use_best_model,mcc_cv,model_name,submission_number,submission_score,timestamp
-na_less_50_mixed_upsampling_40_1,100.0,2000.0,,Logloss,,1.0,0.2931717839169033,catboost,191,TO_FILL,2019-12-15T18:25:43.564835
-na_less_50_mixed_upsampling_40_1,100.0,2000.0,NA,Logloss,NA,1.0,0.2931717839169033,catboost,192,TO_FILL,2019-12-15T18:26:51.794783
+na_less_50_mixed_upsampling_00_1,100.0,2000.0,NA,Logloss,NA,1.0,0.23520345046155158,catboost,185,TO_FILL,2019-12-15T19:16:46.594057

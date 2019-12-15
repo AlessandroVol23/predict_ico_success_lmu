@@ -32,7 +32,7 @@ class BuildModel(object):
 
     def _read_result_csv(self):
         try:
-            df = pd.read_csv('data/results/result.csv')
+            df = pd.read_excel('data/results/result.csv')
         except FileNotFoundError:
             logger.info("File wasn't found. Create new one")
             df = pd.DataFrame()
@@ -45,7 +45,7 @@ class BuildModel(object):
     def _write_result_csv(self, result, result_ser):
         df = result.append(result_ser, ignore_index=True)
         df.to_csv('data/results/result.csv', index=None)
-        df.to_excel('data/results/result.xlsx', index=None)
+        #df.to_excel('data/results/result.xlsx', index=None)
 
     def _get_submission_number(self):
         with open("SUBMISSION_NUMBER", "r") as f:
