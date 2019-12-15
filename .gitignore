@@ -84,3 +84,6 @@ target/
 
 # Mypy cache
 .mypy_cache/
+
+# Feature sets
+data/feature/feature_set
