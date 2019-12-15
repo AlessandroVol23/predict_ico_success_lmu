@@ -8,6 +8,7 @@ import pandas as pd
 import numpy as np
 from src.utils import read_feature_meta
 from time import time
+import datetime
 
 logger = logging.getLogger(__name__)
 log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
@@ -29,9 +30,22 @@ class BuildModel(object):
         with open("data/results/result.json", "r") as f:
             return (json.load(f))
 
+    def _read_result_csv(self):
+        try:
+            df = pd.read_csv('data/results/result.csv')
+        except FileNotFoundError:
+            logger.info("File wasn't found. Create new one")
+            df = pd.DataFrame()
+        return df
+
     def _write_result_json(self, result):
         with open("data/results/result.json", "w") as f:
             json.dump(result, f)
+
+    def _write_result_csv(self, result, result_ser):
+        df = result.append(result_ser, ignore_index=True)
+        df.to_csv('data/results/result.csv', index=None)
+        df.to_excel('data/results/result.xlsx', index=None)
 
     def _get_submission_number(self):
         with open("SUBMISSION_NUMBER", "r") as f:
@@ -65,24 +79,24 @@ class BuildModel(object):
             feature_sets = read_feature_meta(True)
             feature_set = feature_sets[feature_set_number]
 
-        try:
-            result = self._read_result_json()
-        except json.decoder.JSONDecodeError:
-            result = []
+        result = self._read_result_csv()
 
-        metrics = {}
-        metrics['mcc'] = mean_mcc
-
-        result.append({
-            'timestamp': str(time()),
+        result_ser = pd.Series({
+            'timestamp': datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f"),
             'feature_set': feature_set_number,
-            'features': feature_set,
-            'metrics': metrics,
+            # 'features': feature_set,
             'model_name': model_name,
-            'hyperparam': hyperparam,
-            'submission': next_submission_number
+            'submission_number': next_submission_number,
+            'mcc_cv': mean_mcc,
+            'submission_score': 'TO_FILL',
+            'hp_iterations': hyperparam.get('iterations', 'NA'),
+            'hp_early_stopping_rounds': hyperparam.get('early_stopping_rounds', 'NA'),
+            'hp_n_estimators': hyperparam.get('n_estimators', 'NA'),
+            'hp_learning_rate': hyperparam.get('learning_rate', 'NA'),
+            'hp_loss_function': hyperparam.get('loss_function', 'NA'),
+            'hp_use_best_model': hyperparam.get('use_best_model', 'NA')
         })
-        self._write_result_json(result)
+        self._write_result_csv(result, result_ser)
 
     def read_upsampling_feature_set(self, feature_set_meta, feature_set_key):
         feature_set = feature_set_meta[feature_set_key]
@@ -94,17 +108,18 @@ class BuildModel(object):
                 except ValueError:
                     logger.warning(
                         "Won't upsample because no float value was provided!")
+
     def _read_categorical_features(self, feature_set_meta, feature_set_key):
         feature_set = feature_set_meta[feature_set_key]
         cateogircal_features = []
         for feature in feature_set:
             if 'meta' in feature:
                 continue
-            feature_name = feature["column"]           
+            feature_name = feature["column"]
             feature_type = feature["type"]
             if feature_type == "categorical":
                 cateogircal_features.append(feature_name)
-        
+
         return cateogircal_features
 
     def train_model(self, feature_set_key, modelName=""):
@@ -123,9 +138,10 @@ class BuildModel(object):
                 feature_set_meta, feature_set_key)
 
             categorical_features = self._read_categorical_features(
-               feature_set_meta, feature_set_key)
+                feature_set_meta, feature_set_key)
             # Fitting model that trains and cross validates, takes the underlying model to train as a param
-            fitting_model = FittingModel(feature_set_key, current_model, categorical_features, upsample=upsampling)
+            fitting_model = FittingModel(
+                feature_set_key, current_model, categorical_features, upsample=upsampling)
 
             next_submission_number = self._get_submission_number()
 
