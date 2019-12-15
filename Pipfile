@@ -27,6 +27,8 @@ matplotlib = "*"
 seaborn = "*"
 yellowbrick = "*"
 chart-studio = "*"
+xlwt = "*"
+openpyxl = "*"
 
 [requires]
 python_version = "3.7"
