@@ -1,5 +1,5 @@
 {
-  "na_less_50_mixed_upsampling_40_w_cat": [
+  "na_less_50_mixed_upsampling_40_1": [
     {
       "meta": {
         "upsampling": "0.4"
@@ -24,11 +24,6 @@
       "column": "contract_address",
       "type": "binary",
       "na_strategy": "False"
-    },
-    {
-      "column": "community_data_reddit_subscribers",
-      "type": "numerical",
-      "na_strategy": "median"
     },
     {
       "column": "developer_data_stars",
@@ -56,6 +51,11 @@
       "na_strategy": "mean"
     },
     {
+      "column": "community_data_reddit_subscribers",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
       "column": "community_data_facebook_likes",
       "type": "numerical",
       "na_strategy": "mean"
@@ -64,6 +64,16 @@
       "column": "community_data_twitter_followers",
       "type": "numerical",
       "na_strategy": "median"
+    },
+    {
+      "column": "links_homepage",
+      "type": "binary",
+      "na_strategy": "False"
+    },
+    {
+      "column": "links_blockchain_site",
+      "type": "binary",
+      "na_strategy": "False"
     },
     {
       "column": "market_data_circulating_supply",
@@ -81,11 +91,6 @@
       "na_strategy": "set:0"
     },
     {
-      "column": "links_homepage",
-      "type": "binary",
-      "na_strategy": "False"
-    },
-    {
       "column": "market_data_low_24h_usd",
       "type": "numerical",
       "na_strategy": "set:0"
@@ -93,17 +98,7 @@
     {
       "column": "market_data_high_24h_usd",
       "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "market_data_high_24h_usd",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "links_blockchain_site",
-      "type": "binary",
-      "na_strategy": "False"
+      "na_strategy": "min"
     },
     {
       "column": "market_data_first_time_trading",
@@ -115,42 +110,27 @@
       "na_strategy": "mean"
     },
     {
+      "column": "ico_data_total_raised",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "ico_data_amount_for_sale",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "ico_data_hardcap_amount",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "ico_data_softcap_amount",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
       "column": "KW1",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "KW2",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "KW3",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "KW4",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "KW5",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "KW6",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "KW7",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "KW8",
       "type": "numerical",
       "na_strategy": "median"
     },
@@ -160,97 +140,7 @@
       "na_strategy": "median"
     },
     {
-      "column": "KW10",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "KW11",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "KW12",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "KW13",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "KW14",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "KW15",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "KW16",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "KW17",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "KW18",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
       "column": "KW19",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "KW20",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "KW21",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "KW22",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "KW23",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "KW24",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "KW25",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "KW26",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "KW27",
-      "type": "numerical",
-      "na_strategy": "mean"
-    },
-    {
-      "column": "KW28",
       "type": "numerical",
       "na_strategy": "median"
     },
@@ -258,68 +148,17 @@
       "column": "KW29",
       "type": "numerical",
       "na_strategy": "median"
-    },
-    {
-      "column": "KW30",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "KW31",
-      "type": "numerical",
-      "na_strategy": "mean"
-    },
-    {
-      "column": "KW32",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "KW33",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "KW34",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "KW35",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "KW36",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "KW37",
-      "type": "numerical",
-      "na_strategy": "mean"
-    },
-    {
-      "column": "KW38",
-      "type": "numerical",
-      "na_strategy": "mean"
     },
     {
       "column": "KW39",
       "type": "numerical",
       "na_strategy": "mean"
-    },
-    {
-      "column": "categories_0",
-      "type": "categorical",
-      "encoder": "skip",
-      "na_strategy": "set:NichtVorhanden"
     }
   ],
-  "na_less_50_mixed_upsampling_40": [
+  "na_less_50_mixed_upsampling_00_1": [
     {
       "meta": {
-        "upsampling": "0.4"
+        "upsampling": "0.0"
       }
     },
     {
@@ -341,11 +180,6 @@
       "column": "contract_address",
       "type": "binary",
       "na_strategy": "False"
-    },
-    {
-      "column": "community_data_reddit_subscribers",
-      "type": "numerical",
-      "na_strategy": "median"
     },
     {
       "column": "developer_data_stars",
@@ -373,6 +207,11 @@
       "na_strategy": "mean"
     },
     {
+      "column": "community_data_reddit_subscribers",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
       "column": "community_data_facebook_likes",
       "type": "numerical",
       "na_strategy": "mean"
@@ -381,6 +220,16 @@
       "column": "community_data_twitter_followers",
       "type": "numerical",
       "na_strategy": "median"
+    },
+    {
+      "column": "links_homepage",
+      "type": "binary",
+      "na_strategy": "False"
+    },
+    {
+      "column": "links_blockchain_site",
+      "type": "binary",
+      "na_strategy": "False"
     },
     {
       "column": "market_data_circulating_supply",
@@ -398,11 +247,6 @@
       "na_strategy": "set:0"
     },
     {
-      "column": "links_homepage",
-      "type": "binary",
-      "na_strategy": "False"
-    },
-    {
       "column": "market_data_low_24h_usd",
       "type": "numerical",
       "na_strategy": "set:0"
@@ -410,17 +254,7 @@
     {
       "column": "market_data_high_24h_usd",
       "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "market_data_high_24h_usd",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "links_blockchain_site",
-      "type": "binary",
-      "na_strategy": "False"
+      "na_strategy": "min"
     },
     {
       "column": "market_data_first_time_trading",
@@ -432,42 +266,27 @@
       "na_strategy": "mean"
     },
     {
+      "column": "ico_data_total_raised",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "ico_data_amount_for_sale",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "ico_data_hardcap_amount",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "ico_data_softcap_amount",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
       "column": "KW1",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "KW2",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "KW3",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "KW4",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "KW5",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "KW6",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "KW7",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "KW8",
       "type": "numerical",
       "na_strategy": "median"
     },
@@ -477,97 +296,7 @@
       "na_strategy": "median"
     },
     {
-      "column": "KW10",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "KW11",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "KW12",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "KW13",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "KW14",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "KW15",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "KW16",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "KW17",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "KW18",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
       "column": "KW19",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "KW20",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "KW21",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "KW22",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "KW23",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "KW24",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "KW25",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "KW26",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "KW27",
-      "type": "numerical",
-      "na_strategy": "mean"
-    },
-    {
-      "column": "KW28",
       "type": "numerical",
       "na_strategy": "median"
     },
@@ -575,51 +304,6 @@
       "column": "KW29",
       "type": "numerical",
       "na_strategy": "median"
-    },
-    {
-      "column": "KW30",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "KW31",
-      "type": "numerical",
-      "na_strategy": "mean"
-    },
-    {
-      "column": "KW32",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "KW33",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "KW34",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "KW35",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "KW36",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "KW37",
-      "type": "numerical",
-      "na_strategy": "mean"
-    },
-    {
-      "column": "KW38",
-      "type": "numerical",
-      "na_strategy": "mean"
     },
     {
       "column": "KW39",
