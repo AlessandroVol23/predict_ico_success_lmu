@@ -15,10 +15,10 @@ class CatBoostModel(BaseModel):
             # 'depth': 8,
             'eval_metric': 'MCC',
             'loss_function': 'Logloss',
-          #  'learning_rate': 0.1,
+            #  'learning_rate': 0.1,
             'use_best_model': True,
-            'early_stopping_rounds': 200,
-            'logging_level':'Verbose'
+            'early_stopping_rounds': 100,
+            'logging_level': 'Verbose'
         }
         self.model = CatBoostClassifier(
             **self.hyperparam
@@ -37,7 +37,7 @@ class CatBoostModel(BaseModel):
             )
         return self.model
 
-    def fit(self, trn_x, trn_y, val_x, val_y, categorical_features = []):
+    def fit(self, trn_x, trn_y, val_x, val_y, categorical_features=[]):
         self.model.fit(trn_x, trn_y,
                        eval_set=[(val_x, val_y)],
                        cat_features=categorical_features,
@@ -47,7 +47,7 @@ class CatBoostModel(BaseModel):
         oof_preds[val_idx] = self.model.predict_proba(
             val_x)[:, 1]
         sub_preds += self.model.predict_proba(X_test)[
-                     :, 1] / folds.n_splits
+            :, 1] / folds.n_splits
 
         oof_pred_abs = oof_preds.round()
 
