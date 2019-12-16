@@ -182,6 +182,34 @@ class FeatureEngineering(object):
         df_copy = self._execute_na_strategy(df_copy, column, na_strategy)
 
         self._add_column_to_data_frame(df_copy, column)
+    def _transform_numerical_difference(self, column,include_columns, na_strategy='set:0'):
+        """Subtracts two or more columns from each other
+
+        Arguments:
+            column {String} -- The new features name
+            include_columns {Array} -- The features which will be subtracted from each other from left to right
+            na_strategy {String} -- A valid na_strategy which is executed before subtraction
+        """
+        logger.debug(
+            "Difference of numerical variables for columns {}".format(include_columns))
+
+        # Copy Dataframe
+        df_copy = self.df
+        # Fill NAs and change dtype to numerical  
+        for feature in include_columns:
+            df_copy = self._execute_na_strategy(df_copy, feature, na_strategy)
+            df_copy[feature] = pd.to_numeric(df_copy[feature])
+
+        # subtract all given columns
+        for feature in include_columns:
+            if include_columns[0] == feature:
+                df_copy[column] = df_copy[feature]
+                continue
+            df_copy[column] = df_copy[column] - df_copy[feature]
+
+        df_copy.loc[df_copy[column] <0, column] = 0
+
+        self._add_column_to_data_frame(df_copy, column)
 
     def _transform_binary_variables(self, column, na_strategy='set:0'):
         logger.debug("Transform binary variable for column {}".format(column))
@@ -368,11 +396,11 @@ class FeatureEngineering(object):
 
             if feature_type == "categorical":
                 assert (
-                        'encoder' in feature), "No encoder for categorical feauter {feature_name} provided"
+                        'encoder' in feature), "No encoder for categorical feauter {} provided".format(feature_name)
 
                 feauter_encoder = feature["encoder"]
                 assert (
-                        'na_strategy' in feature), "No na_strategy for numerical feauter {feature_name} provided"
+                        'na_strategy' in feature), "No na_strategy for numerical feauter {} provided".format(feature_name)
                 strategy = feature["na_strategy"]
 
                 if feauter_encoder == "label":
@@ -388,9 +416,20 @@ class FeatureEngineering(object):
 
             elif feature_type == "numerical":
                 assert (
-                        'na_strategy' in feature), "No na_strategy for categorical feauter {feature_name} provided"
+                        'na_strategy' in feature), "No na_strategy for categorical feauter {} provided".format(feature_name)
                 strategy = feature["na_strategy"]
                 self._transform_numerical_variables(feature_name, strategy)
+
+            elif feature_type == "difference":
+                assert (
+                        'na_strategy' in feature), "No na_strategy for categorical feauter {} provided".format(feature_name)
+                strategy = feature["na_strategy"]
+                assert (
+                        'columns' in feature), "No columns for difference in feature {} provided".format(feature_name)
+                columns =feature["columns"]
+                assert (
+                    len(columns) >1), "Please provide at least 2 columns for difference {} provided".format(feature_name)
+                self._transform_numerical_difference(feature_name,columns, strategy)
 
             elif feature_type == "binary":
                 self._transform_binary_variables(feature_name)
