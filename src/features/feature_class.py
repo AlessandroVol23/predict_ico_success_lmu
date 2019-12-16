@@ -8,6 +8,7 @@ from sklearn import preprocessing
 from sklearn.experimental import enable_iterative_imputer
 from sklearn.impute import IterativeImputer
 from tqdm import tqdm
+import re
 
 logger = logging.getLogger(__name__)
 
@@ -273,6 +274,7 @@ class FeatureEngineering(object):
         """
         cols = list(self.df.columns)
         kws = [s for s in cols if "kw" in s.lower()]
+        kws.sort(key=self.natural_keys)
         return kws
 
     def remove_kw_from_column(self, kws):
@@ -286,9 +288,20 @@ class FeatureEngineering(object):
 
         return new_cols
 
-    def _build_bitcoin_difference(self):
+    def atof(self, text):
+        try:
+            retval = float(text)
+        except ValueError:
+            retval = text
+        return retval
+
+    def natural_keys(self, text):
+        return [self.atof(c) for c in re.split(r'[+-]?([0-9]+(?:[.][0-9]*)?|[.][0-9]+)', text)]
+
+    def _build_bitcoin_difference(self, amt_weeks:int):
         """
         Function to build difference between bitcoin price and ico price.
+        amt_weeks: Number of weeks to go back from last week
         """
         logger.info("Create bitcoin difference feature")
         kws = self.get_all_kw_cols()
@@ -296,6 +309,10 @@ class FeatureEngineering(object):
         df_kws = self.df.loc[:, kws]
 
         kws_wo_id = set(kws) - set(['OBS_ID'])
+        kws_wo_id = list(kws_wo_id)
+        kws_wo_id.sort(key=self.natural_keys)
+
+        kws_slice = kws_wo_id[-amt_weeks:]
 
         grouped_prices_kws = self.df_gem_btc_usd.groupby('calendar_week').mean()['High']
 
@@ -304,11 +321,11 @@ class FeatureEngineering(object):
 
         new_df = pd.DataFrame(df_kws.OBS_ID)
 
-        for week in range(cols.min(), cols.max() + 1, 1):
-            cur_col = 'KW' + str(week)
-            new_col = 'difference_BTC_' + cur_col
-            btc_price = grouped_prices_kws[week]
-            difference = df_kws.loc[:, cur_col] - btc_price
+        for week in kws_slice:
+            new_col = 'difference_BTC_' + week
+            btc_col = int(re.findall(r'[+-]?([0-9]+(?:[.][0-9]*)?|[.][0-9]+)', new_col)[0])
+            btc_price = grouped_prices_kws[btc_col]
+            difference = df_kws.loc[:, week] - btc_price
             new_df.loc[:, new_col] = difference
 
         self._add_df_to_feature_df(new_df)
@@ -338,7 +355,8 @@ class FeatureEngineering(object):
                 continue
 
             if feature['column'] == 'bitcoin_difference':
-                self._build_bitcoin_difference()
+                amt_weeks = int(feature['amt_weeks'])
+                self._build_bitcoin_difference(amt_weeks)
                 continue
 
             assert (

@@ -7,7 +7,8 @@
     },
     {
       "column": "bitcoin_difference",
-      "type": "custom"
+      "type": "custom",
+      "amt_weeks": "4"
     },
     {
       "column": "transaction_count",
