@@ -7,9 +7,9 @@ import numpy as np
 from sklearn import preprocessing
 from sklearn.experimental import enable_iterative_imputer
 from sklearn.impute import IterativeImputer
+from tqdm import tqdm
 
 logger = logging.getLogger(__name__)
-
 
 log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
@@ -21,7 +21,7 @@ DATA_FRAME_LENGTH = 5758
 class FeatureEngineering(object):
 
     # Constructor
-    def __init__(self, df, df_bitcoin, df_test):
+    def __init__(self, df, df_bitcoin, df_test, df_gem_btc_usd):
         """Constructor for class FeatureEngineering
 
         Parameters
@@ -40,6 +40,7 @@ class FeatureEngineering(object):
         # Fill all from test set with TEST
         self.df.loc[self.df.success.isna(), 'success'] = "TEST"
         self.df_bitcoin = df_bitcoin
+        self.df_gem_btc_usd = df_gem_btc_usd
 
         # Label Encoder
         self.le = preprocessing.LabelEncoder()
@@ -229,7 +230,6 @@ class FeatureEngineering(object):
 
         self._add_df_to_feature_df(df_ohe_id)
 
-
     def _transform_categorical_skip_encoded(self, column, na_strategy='set:NAN'):
         logger.debug(
             "Transform categorical variable to one hot encoded for column {}".format(column))
@@ -266,15 +266,58 @@ class FeatureEngineering(object):
 
         return self.X_train, self.y_train, self.X_test
 
+    def get_all_kw_cols(self):
+        """
+        Get all columns which are associated to KW
+        returns: list with kw columns
+        """
+        cols = list(self.df.columns)
+        kws = [s for s in cols if "kw" in s.lower()]
+        return kws
+
+    def remove_kw_from_column(self, kws):
+        """
+        Removes all string chars from KW columns
+        returns: list
+        """
+        new_cols = []
+        for i in list(kws):
+            new_cols.append(i.replace('KW', ''))
+
+        return new_cols
+
     def _build_bitcoin_difference(self):
+        """
+        Function to build difference between bitcoin price and ico price.
+        """
+        logger.info("Create bitcoin difference feature")
+        kws = self.get_all_kw_cols()
+        kws.append('OBS_ID')
+        df_kws = self.df.loc[:, kws]
 
-        pass
+        kws_wo_id = set(kws) - set(['OBS_ID'])
 
-    def construct_feature_set(self, featuers):
+        grouped_prices_kws = self.df_gem_btc_usd.groupby('calendar_week').mean()['High']
+
+        cols = self.remove_kw_from_column(kws_wo_id)
+        cols = np.array(cols, dtype=int)
+
+        new_df = pd.DataFrame(df_kws.OBS_ID)
+
+        for week in range(cols.min(), cols.max() + 1, 1):
+            cur_col = 'KW' + str(week)
+            new_col = 'difference_BTC_' + cur_col
+            btc_price = grouped_prices_kws[week]
+            difference = df_kws.loc[:, cur_col] - btc_price
+            new_df.loc[:, new_col] = difference
+
+        self._add_df_to_feature_df(new_df)
+
+    def construct_feature_set(self, features):
         """This function is the pipeline for adding all features to the dataset
         """
         # Iterate through features beforehand for deleting nas
-        for feature in featuers:
+        for feature in features:
             if 'meta' in feature:
                 continue
 
@@ -287,19 +330,19 @@ class FeatureEngineering(object):
         self._init_df_features()
 
         # Iterating through features and construct feature set
-        for feature in featuers:
+        for feature in features:
             logger.debug("Feature: {}".format(feature))
-
-            if feature == 'bitcoin_difference':
-                self._build_bitcoin_difference()
-                continue
 
             if 'meta' in feature:
                 feature.pop('meta')
                 continue
 
+            if feature['column'] == 'bitcoin_difference':
+                self._build_bitcoin_difference()
+                continue
+
             assert (
-                'column' in feature), "No column key provided in feature " + feature
+                    'column' in feature), "No column key provided in feature " + feature
             assert ('type' in feature), "No column type provided"
 
             feature_type = feature["type"]
@@ -307,11 +350,11 @@ class FeatureEngineering(object):
 
             if feature_type == "categorical":
                 assert (
-                    'encoder' in feature), "No encoder for categorical feauter {feature_name} provided"
+                        'encoder' in feature), "No encoder for categorical feauter {feature_name} provided"
 
                 feauter_encoder = feature["encoder"]
                 assert (
-                    'na_strategy' in feature), "No na_strategy for numerical feauter {feature_name} provided"
+                        'na_strategy' in feature), "No na_strategy for numerical feauter {feature_name} provided"
                 strategy = feature["na_strategy"]
 
                 if feauter_encoder == "label":
@@ -327,7 +370,7 @@ class FeatureEngineering(object):
 
             elif feature_type == "numerical":
                 assert (
-                    'na_strategy' in feature), "No na_strategy for categorical feauter {feature_name} provided"
+                        'na_strategy' in feature), "No na_strategy for categorical feauter {feature_name} provided"
                 strategy = feature["na_strategy"]
                 self._transform_numerical_variables(feature_name, strategy)
 
