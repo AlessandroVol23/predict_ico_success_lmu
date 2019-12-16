@@ -15,6 +15,7 @@ def _read_feature_meta():
     with open("data/features/feature_set_meta/feature_set_meta.json") as f:
         return (json.load(f))
 
+
 def _read_random_feature_meta():
     with open("data/features/feature_set_meta/random_feature_sets_meta.json") as f:
         return (json.load(f))
@@ -23,25 +24,24 @@ def _read_random_feature_meta():
 @click.command()
 @click.argument('random')
 def main(random):
-    df_bitcoin, df, df_test = read_processed_data()
+    df_bitcoin, df, df_test, df_gem_btc_usd = read_processed_data()
     feature_sets = []
-    if random == "True": 
+    if random == "True":
         feature_sets = _read_random_feature_meta()
     else:
         feature_sets = _read_feature_meta()
 
-    for(key, value) in tqdm(feature_sets.items()):
+    for (key, value) in tqdm(feature_sets.items()):
         tqdm.write("building features for feature_set {} ".format(key))
-        fe = FeatureEngineering(df, df_bitcoin, df_test)
+        fe = FeatureEngineering(df, df_bitcoin, df_test, df_gem_btc_usd)
         fe.construct_feature_set(value)
         X_train, y_train, X_test = fe.get_X_y()
         logger.debug("UNIQUE: {}".format(
             np.unique(y_train, return_counts=True)))
         X_train.to_csv('data/features/feature_sets/features_x_train_' +
-                       key+'.csv', index=None)
-        y_train.tofile('data/features/feature_sets/features_y_train_'+key+'.np')
-        X_test.to_csv('data/features/feature_sets/features_x_test_'+key+'.csv', index=None)
-
+                       key + '.csv', index=None)
+        y_train.tofile('data/features/feature_sets/features_y_train_' + key + '.np')
+        X_test.to_csv('data/features/feature_sets/features_x_test_' + key + '.csv', index=None)
 
 
 if __name__ == "__main__":

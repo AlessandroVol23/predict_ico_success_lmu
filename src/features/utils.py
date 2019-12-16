@@ -10,7 +10,8 @@ logger = logging.getLogger(__name__)
 
 def read_processed_data(path_bitcoin_df='data/processed/df_bitcoin_pp.csv',
                         path_training_df='data/processed/df_train_pp.csv',
-                        path_test_df='data/processed/df_test_pp.csv'):
+                        path_test_df='data/processed/df_test_pp.csv',
+                        path_gemini_btc_usd='data/processed/df_gem_btc_usd.csv'):
     """Function to read in data
 
     Parameters
@@ -28,15 +29,15 @@ def read_processed_data(path_bitcoin_df='data/processed/df_bitcoin_pp.csv',
     tuple (df, df, df)
         df_bitcoin, df, df_test
     """
-    df_bitcoin = pd.read_csv(
-        path_bitcoin_df, encoding="ISO-8859-1", delimiter=';')
+    df_bitcoin = pd.read_csv(path_bitcoin_df)
     df = pd.read_csv(path_training_df, encoding="ISO-8859-1")
 
     df_test = pd.read_csv(path_test_df, encoding="ISO-8859-1")
+    df_gem_btc_usd = pd.read_csv(path_gemini_btc_usd)
 
     logger.info("Shape of df_bitcoin: {}".format(df_bitcoin.shape))
     logger.info("Shape of df: {}".format(df.shape))
-    return df_bitcoin, df, df_test
+    return df_bitcoin, df, df_test, df_gem_btc_usd
 
 
 def save_x_y(X_train, y_train, X_test):

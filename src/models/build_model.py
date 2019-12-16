@@ -111,16 +111,16 @@ class BuildModel(object):
 
     def _read_categorical_features(self, feature_set_meta, feature_set_key):
         feature_set = feature_set_meta[feature_set_key]
-        cateogircal_features = []
+        categorical_features = []
         for feature in feature_set:
             if 'meta' in feature:
                 continue
             feature_name = feature["column"]
             feature_type = feature["type"]
             if feature_type == "categorical":
-                cateogircal_features.append(feature_name)
+                categorical_features.append(feature_name)
 
-        return cateogircal_features
+        return categorical_features
 
     def train_model(self, feature_set_key, modelName=""):
         """takes the list of models and fits them with cross validation"""
