@@ -266,6 +266,10 @@ class FeatureEngineering(object):
 
         return self.X_train, self.y_train, self.X_test
 
+    def _build_bitcoin_difference(self):
+
+        pass
+
     def construct_feature_set(self, featuers):
         """This function is the pipeline for adding all features to the dataset
         """
@@ -284,6 +288,12 @@ class FeatureEngineering(object):
 
         # Iterating through features and construct feature set
         for feature in featuers:
+            logger.debug("Feature: {}".format(feature))
+
+            if feature == 'bitcoin_difference':
+                self._build_bitcoin_difference()
+                continue
+
             if 'meta' in feature:
                 feature.pop('meta')
                 continue

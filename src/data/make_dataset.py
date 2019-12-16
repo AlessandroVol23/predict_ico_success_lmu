@@ -4,6 +4,7 @@ import logging
 import pandas as pd
 import numpy as np
 import click
+from datetime import datetime
 
 logger = logging.getLogger(__name__)
 
@@ -137,6 +138,20 @@ def preprocess(df_in):
     return df
 
 
+def preprocess_bitcoin(df: pd.DataFrame):
+    logger.info("Preprocess bitcoin dataset. Shape: {}".format(df.shape))
+    logger.info("Build timestamps from milliseconds")
+    df['time'] = df.date_in_ms.apply(lambda x: datetime.fromtimestamp(x / 1000.0))
+
+    logger.info("Remove all bitcoin prices which are not from 2019")
+    df = df.loc[df.time.dt.year == 2019]
+
+    logger.info("Create calendar week.")
+    df = df.assign(calendar_week=df.time.dt.week)
+    logger.info("End shape of bitcoin dataset: {}".format(df.shape))
+    return df
+
+
 def get_preprocessed_datasets(path_bitcoin_df='data/raw/1_training_data_sets/1_bitcoin_price_data_set.csv',
                               path_training_df='data/raw/1_training_data_sets/1_training_data.csv',
                               path_test_df='data/raw/2_classification_data.csv'):
@@ -159,11 +174,13 @@ def get_preprocessed_datasets(path_bitcoin_df='data/raw/1_training_data_sets/1_b
     df = df.loc[df.success != "TEST"]
     assert len(df) == 4757, "Shape of DF has to be 4757"
     assert len(df_test) == 1001, "Shape of DF test has to be 1001"
+
+    df_bitcoin = preprocess_bitcoin(df_bitcoin)
     return df_bitcoin, df, df_test
 
 
 def _save_processed_data(df_bitcoin, df, df_test):
-    df_bitcoin.to_csv('data/processed/df_bitcoin_pp.csv')
+    df_bitcoin.to_csv('data/processed/df_bitcoin_pp.csv', index=None)
     df.to_csv('data/processed/df_train_pp.csv')
     df_test.to_csv('data/processed/df_test_pp.csv')
 
