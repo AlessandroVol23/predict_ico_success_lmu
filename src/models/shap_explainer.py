@@ -32,7 +32,7 @@ def evaluate_model(feature_set_key):
     shap_values = explainer.shap_values(X)
 
     # visualize the first prediction's explanation (use matplotlib=True to avoid Javascript)
-    shap.summary_plot(shap_values, X, show=False)
+    shap.summary_plot(shap_values, X, plot_type='bar', show=False)
     plt.savefig('shap_plot.png', bbox_inches='tight')
 
 @click.command()
