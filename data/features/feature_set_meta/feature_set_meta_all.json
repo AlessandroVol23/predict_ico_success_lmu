@@ -143,7 +143,7 @@
       "type": "numerical",
       "na_strategy": "median"
     }
-  ]
+  ],
   "less_50_btc_2_week": [
     {
       "meta": {
