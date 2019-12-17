@@ -1,157 +1,17 @@
 {
-  "na_less_50_mixed_eth_btc_ltc_avg_coeffs": [
+  "less_50_btc_eth_2_week_50": [
     {
       "meta": {
-        "upsampling": "0.0"
-      }
-    },
-    {
-      "column": "bitcoin_avg_difference",
-      "type": "custom"
-    },
-    {
-      "column": "eth_avg_difference",
-      "type": "custom"
-    },
-    {
-      "column": "ltc_avg_difference",
-      "type": "custom"
-    },
-    {
-      "column": "btc_coeff",
-      "type": "custom"
-    },
-    {
-      "column": "eth_coeff",
-      "type": "custom"
-    },
-    {
-      "column": "ltc_coeff",
-      "type": "custom"
-    },
-    {
-      "column": "timestamp",
-      "type": "binary",
-      "na_strategy": "False"
-    },
-    {
-      "column": "contract_address",
-      "type": "binary",
-      "na_strategy": "False"
-    },
-    {
-      "column": "developer_data_stars",
-      "type": "binary",
-      "na_strategy": "False"
-    },
-    {
-      "column": "developer_data_subscribers",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "developer_data_closed_issues",
-      "type": "numerical",
-      "na_strategy": "set:0"
-    },
-    {
-      "column": "developer_data_commit_count_4_weeks",
-      "type": "binary",
-      "na_strategy": "False"
-    },
-    {
-      "column": "public_interest_stats_alexa_rank",
-      "type": "numerical",
-      "na_strategy": "mean"
-    },
-    {
-      "column": "community_data_reddit_subscribers",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "community_data_facebook_likes",
-      "type": "numerical",
-      "na_strategy": "mean"
-    },
-    {
-      "column": "community_data_twitter_followers",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "links_homepage",
-      "type": "binary",
-      "na_strategy": "False"
-    },
-    {
-      "column": "links_blockchain_site",
-      "type": "binary",
-      "na_strategy": "False"
-    },
-    {
-      "column": "market_data_circulating_supply",
-      "type": "numerical",
-      "na_strategy": "mean"
-    },
-    {
-      "column": "market_data_current_price_usd",
-      "type": "numerical",
-      "na_strategy": "mean"
-    },
-    {
-      "column": "market_data_ath_usd",
-      "type": "numerical",
-      "na_strategy": "set:0"
-    },
-    {
-      "column": "market_data_low_24h_usd",
-      "type": "numerical",
-      "na_strategy": "set:0"
-    },
-    {
-      "column": "market_data_high_24h_usd",
-      "type": "numerical",
-      "na_strategy": "set:0"
-    },
-    {
-      "column": "market_data_first_time_trading",
-      "type": "binary"
-    },
-    {
-      "column": "market_data_total_supply",
-      "type": "numerical",
-      "na_strategy": "mean"
-    },
-    {
-      "column": "ico_data_total_raised",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "ico_data_amount_for_sale",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "ico_data_hardcap_amount",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "ico_data_softcap_amount",
-      "type": "numerical",
-      "na_strategy": "median"
-    }
-  ],
-  "less_50_btc_2_week": [
-    {
-      "meta": {
-        "upsampling": "0.0"
+        "upsampling": "0.50"
       }
     },
     {
       "column": "bitcoin_difference",
+      "type": "custom",
+      "amt_weeks": 2
+    },
+    {
+      "column": "eth_difference",
       "type": "custom",
       "amt_weeks": 2
     },
@@ -313,11 +173,899 @@
       "na_strategy": "mean"
     }
   ],
-  "na_less_50_mixed_upsampling_40_1": [
+  "less_50_btc_eth_2_week_25": [
     {
       "meta": {
-        "upsampling": "0.4"
+        "upsampling": "0.25"
       }
+    },
+    {
+      "column": "bitcoin_difference",
+      "type": "custom",
+      "amt_weeks": 2
+    },
+    {
+      "column": "eth_difference",
+      "type": "custom",
+      "amt_weeks": 2
+    },
+    {
+      "column": "btc_coeff",
+      "type": "custom"
+    },
+    {
+      "column": "transaction_count",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "bitcoin_avg_difference",
+      "type": "custom"
+    },
+    {
+      "column": "holder_count",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "timestamp",
+      "type": "binary",
+      "na_strategy": "False"
+    },
+    {
+      "column": "contract_address",
+      "type": "binary",
+      "na_strategy": "False"
+    },
+    {
+      "column": "developer_data_stars",
+      "type": "binary",
+      "na_strategy": "False"
+    },
+    {
+      "column": "developer_data_subscribers",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "developer_data_closed_issues",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "developer_data_commit_count_4_weeks",
+      "type": "binary",
+      "na_strategy": "False"
+    },
+    {
+      "column": "public_interest_stats_alexa_rank",
+      "type": "numerical",
+      "na_strategy": "mean"
+    },
+    {
+      "column": "community_data_reddit_subscribers",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "community_data_facebook_likes",
+      "type": "numerical",
+      "na_strategy": "mean"
+    },
+    {
+      "column": "community_data_twitter_followers",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "links_homepage",
+      "type": "binary",
+      "na_strategy": "False"
+    },
+    {
+      "column": "links_blockchain_site",
+      "type": "binary",
+      "na_strategy": "False"
+    },
+    {
+      "column": "market_data_circulating_supply",
+      "type": "numerical",
+      "na_strategy": "mean"
+    },
+    {
+      "column": "market_data_current_price_usd",
+      "type": "numerical",
+      "na_strategy": "mean"
+    },
+    {
+      "column": "market_data_ath_usd",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "market_data_low_24h_usd",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "market_data_high_24h_usd",
+      "type": "numerical",
+      "na_strategy": "min"
+    },
+    {
+      "column": "market_data_first_time_trading",
+      "type": "binary"
+    },
+    {
+      "column": "market_data_total_supply",
+      "type": "numerical",
+      "na_strategy": "mean"
+    },
+    {
+      "column": "ico_data_total_raised",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "ico_data_amount_for_sale",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "ico_data_hardcap_amount",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "ico_data_softcap_amount",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW1",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW9",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW19",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW29",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW39",
+      "type": "numerical",
+      "na_strategy": "mean"
+    }
+  ],
+  "less_50_btc_eth_2_week_diff_total_circulating": [
+    {
+      "meta": {
+        "upsampling": "0.0"
+      }
+    },
+    {
+      "column": "dif_total_circulating",
+      "type": "difference",
+      "na_strategy": "set:0",
+      "columns": [
+        "market_data_total_supply",
+        "market_data_circulating_supply"
+      ]
+    },
+    {
+      "column": "bitcoin_difference",
+      "type": "custom",
+      "amt_weeks": 2
+    },
+    {
+      "column": "eth_difference",
+      "type": "custom",
+      "amt_weeks": 2
+    },
+    {
+      "column": "btc_coeff",
+      "type": "custom"
+    },
+    {
+      "column": "transaction_count",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "bitcoin_avg_difference",
+      "type": "custom"
+    },
+    {
+      "column": "holder_count",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "timestamp",
+      "type": "binary",
+      "na_strategy": "False"
+    },
+    {
+      "column": "contract_address",
+      "type": "binary",
+      "na_strategy": "False"
+    },
+    {
+      "column": "developer_data_stars",
+      "type": "binary",
+      "na_strategy": "False"
+    },
+    {
+      "column": "developer_data_subscribers",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "developer_data_closed_issues",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "developer_data_commit_count_4_weeks",
+      "type": "binary",
+      "na_strategy": "False"
+    },
+    {
+      "column": "public_interest_stats_alexa_rank",
+      "type": "numerical",
+      "na_strategy": "mean"
+    },
+    {
+      "column": "community_data_reddit_subscribers",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "community_data_facebook_likes",
+      "type": "numerical",
+      "na_strategy": "mean"
+    },
+    {
+      "column": "community_data_twitter_followers",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "links_homepage",
+      "type": "binary",
+      "na_strategy": "False"
+    },
+    {
+      "column": "links_blockchain_site",
+      "type": "binary",
+      "na_strategy": "False"
+    },
+    {
+      "column": "market_data_circulating_supply",
+      "type": "numerical",
+      "na_strategy": "mean"
+    },
+    {
+      "column": "market_data_current_price_usd",
+      "type": "numerical",
+      "na_strategy": "mean"
+    },
+    {
+      "column": "market_data_ath_usd",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "market_data_low_24h_usd",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "market_data_high_24h_usd",
+      "type": "numerical",
+      "na_strategy": "min"
+    },
+    {
+      "column": "market_data_first_time_trading",
+      "type": "binary"
+    },
+    {
+      "column": "market_data_total_supply",
+      "type": "numerical",
+      "na_strategy": "mean"
+    },
+    {
+      "column": "ico_data_total_raised",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "ico_data_amount_for_sale",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "ico_data_hardcap_amount",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "ico_data_softcap_amount",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW1",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW9",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW19",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW29",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW39",
+      "type": "numerical",
+      "na_strategy": "mean"
+    }
+  ],
+  "less_50_btc_eth_2_week_stars_numeric_median": [
+    {
+      "meta": {
+        "upsampling": "0.0"
+      }
+    },
+    {
+      "column": "bitcoin_difference",
+      "type": "custom",
+      "amt_weeks": 2
+    },
+    {
+      "column": "eth_difference",
+      "type": "custom",
+      "amt_weeks": 2
+    },
+    {
+      "column": "btc_coeff",
+      "type": "custom"
+    },
+    {
+      "column": "transaction_count",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "bitcoin_avg_difference",
+      "type": "custom"
+    },
+    {
+      "column": "holder_count",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "timestamp",
+      "type": "binary",
+      "na_strategy": "False"
+    },
+    {
+      "column": "contract_address",
+      "type": "binary",
+      "na_strategy": "False"
+    },
+    {
+      "column": "developer_data_stars",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "developer_data_subscribers",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "developer_data_closed_issues",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "developer_data_commit_count_4_weeks",
+      "type": "binary",
+      "na_strategy": "False"
+    },
+    {
+      "column": "public_interest_stats_alexa_rank",
+      "type": "numerical",
+      "na_strategy": "mean"
+    },
+    {
+      "column": "community_data_reddit_subscribers",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "community_data_facebook_likes",
+      "type": "numerical",
+      "na_strategy": "mean"
+    },
+    {
+      "column": "community_data_twitter_followers",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "links_homepage",
+      "type": "binary",
+      "na_strategy": "False"
+    },
+    {
+      "column": "links_blockchain_site",
+      "type": "binary",
+      "na_strategy": "False"
+    },
+    {
+      "column": "market_data_circulating_supply",
+      "type": "numerical",
+      "na_strategy": "mean"
+    },
+    {
+      "column": "market_data_current_price_usd",
+      "type": "numerical",
+      "na_strategy": "mean"
+    },
+    {
+      "column": "market_data_ath_usd",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "market_data_low_24h_usd",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "market_data_high_24h_usd",
+      "type": "numerical",
+      "na_strategy": "min"
+    },
+    {
+      "column": "market_data_first_time_trading",
+      "type": "binary"
+    },
+    {
+      "column": "market_data_total_supply",
+      "type": "numerical",
+      "na_strategy": "mean"
+    },
+    {
+      "column": "ico_data_total_raised",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "ico_data_amount_for_sale",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "ico_data_hardcap_amount",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "ico_data_softcap_amount",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW1",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW9",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW19",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW29",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW39",
+      "type": "numerical",
+      "na_strategy": "mean"
+    }
+  ],
+  "less_50_btc_eth_2_week_categories": [
+    {
+      "meta": {
+        "upsampling": "0.0"
+      }
+    },
+    {
+      "column": "categories_0",
+      "type": "binary"
+    },
+    {
+      "column": "bitcoin_difference",
+      "type": "custom",
+      "amt_weeks": 2
+    },
+    {
+      "column": "eth_difference",
+      "type": "custom",
+      "amt_weeks": 2
+    },
+    {
+      "column": "btc_coeff",
+      "type": "custom"
+    },
+    {
+      "column": "transaction_count",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "bitcoin_avg_difference",
+      "type": "custom"
+    },
+    {
+      "column": "holder_count",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "timestamp",
+      "type": "binary",
+      "na_strategy": "False"
+    },
+    {
+      "column": "contract_address",
+      "type": "binary",
+      "na_strategy": "False"
+    },
+    {
+      "column": "developer_data_stars",
+      "type": "binary",
+      "na_strategy": "False"
+    },
+    {
+      "column": "developer_data_subscribers",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "developer_data_closed_issues",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "developer_data_commit_count_4_weeks",
+      "type": "binary",
+      "na_strategy": "False"
+    },
+    {
+      "column": "public_interest_stats_alexa_rank",
+      "type": "numerical",
+      "na_strategy": "mean"
+    },
+    {
+      "column": "community_data_reddit_subscribers",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "community_data_facebook_likes",
+      "type": "numerical",
+      "na_strategy": "mean"
+    },
+    {
+      "column": "community_data_twitter_followers",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "links_homepage",
+      "type": "binary",
+      "na_strategy": "False"
+    },
+    {
+      "column": "links_blockchain_site",
+      "type": "binary",
+      "na_strategy": "False"
+    },
+    {
+      "column": "market_data_circulating_supply",
+      "type": "numerical",
+      "na_strategy": "mean"
+    },
+    {
+      "column": "market_data_current_price_usd",
+      "type": "numerical",
+      "na_strategy": "mean"
+    },
+    {
+      "column": "market_data_ath_usd",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "market_data_low_24h_usd",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "market_data_high_24h_usd",
+      "type": "numerical",
+      "na_strategy": "min"
+    },
+    {
+      "column": "market_data_first_time_trading",
+      "type": "binary"
+    },
+    {
+      "column": "market_data_total_supply",
+      "type": "numerical",
+      "na_strategy": "mean"
+    },
+    {
+      "column": "ico_data_total_raised",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "ico_data_amount_for_sale",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "ico_data_hardcap_amount",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "ico_data_softcap_amount",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW1",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW9",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW19",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW29",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW39",
+      "type": "numerical",
+      "na_strategy": "mean"
+    }
+  ],
+  "less_50_btc_eth_2_week": [
+    {
+      "meta": {
+        "upsampling": "0.0"
+      }
+    },
+    {
+      "column": "bitcoin_difference",
+      "type": "custom",
+      "amt_weeks": 2
+    },
+    {
+      "column": "eth_difference",
+      "type": "custom",
+      "amt_weeks": 2
+    },
+    {
+      "column": "btc_coeff",
+      "type": "custom"
+    },
+    {
+      "column": "transaction_count",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "bitcoin_avg_difference",
+      "type": "custom"
+    },
+    {
+      "column": "holder_count",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "timestamp",
+      "type": "binary",
+      "na_strategy": "False"
+    },
+    {
+      "column": "contract_address",
+      "type": "binary",
+      "na_strategy": "False"
+    },
+    {
+      "column": "developer_data_stars",
+      "type": "binary",
+      "na_strategy": "False"
+    },
+    {
+      "column": "developer_data_subscribers",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "developer_data_closed_issues",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "developer_data_commit_count_4_weeks",
+      "type": "binary",
+      "na_strategy": "False"
+    },
+    {
+      "column": "public_interest_stats_alexa_rank",
+      "type": "numerical",
+      "na_strategy": "mean"
+    },
+    {
+      "column": "community_data_reddit_subscribers",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "community_data_facebook_likes",
+      "type": "numerical",
+      "na_strategy": "mean"
+    },
+    {
+      "column": "community_data_twitter_followers",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "links_homepage",
+      "type": "binary",
+      "na_strategy": "False"
+    },
+    {
+      "column": "links_blockchain_site",
+      "type": "binary",
+      "na_strategy": "False"
+    },
+    {
+      "column": "market_data_circulating_supply",
+      "type": "numerical",
+      "na_strategy": "mean"
+    },
+    {
+      "column": "market_data_current_price_usd",
+      "type": "numerical",
+      "na_strategy": "mean"
+    },
+    {
+      "column": "market_data_ath_usd",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "market_data_low_24h_usd",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "market_data_high_24h_usd",
+      "type": "numerical",
+      "na_strategy": "min"
+    },
+    {
+      "column": "market_data_first_time_trading",
+      "type": "binary"
+    },
+    {
+      "column": "market_data_total_supply",
+      "type": "numerical",
+      "na_strategy": "mean"
+    },
+    {
+      "column": "ico_data_total_raised",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "ico_data_amount_for_sale",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "ico_data_hardcap_amount",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "ico_data_softcap_amount",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW1",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW9",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW19",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW29",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW39",
+      "type": "numerical",
+      "na_strategy": "mean"
+    }
+  ],
+  "na_less_50_mixed_upsampling_00_1": [
+    {
+      "meta": {
+        "upsampling": "0.0"
+      }
+    },
+    {
+      "column": "bitcoin_difference",
+      "type": "custom",
+      "amt_weeks": "4"
     },
     {
       "column": "transaction_count",
@@ -469,10 +1217,677 @@
       "na_strategy": "mean"
     }
   ],
-  "na_less_50_mixed_upsampling_00_1": [
+  "na_less_50_mixed_upsampling_00_2": [
     {
       "meta": {
         "upsampling": "0.0"
+      }
+    },
+    {
+      "column": "bitcoin_difference",
+      "type": "custom",
+      "amt_weeks": "4"
+    },
+    {
+      "column": "transaction_count",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "holder_count",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "timestamp",
+      "type": "binary",
+      "na_strategy": "False"
+    },
+    {
+      "column": "contract_address",
+      "type": "binary",
+      "na_strategy": "False"
+    },
+    {
+      "column": "developer_data_stars",
+      "type": "binary",
+      "na_strategy": "False"
+    },
+    {
+      "column": "developer_data_subscribers",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "developer_data_closed_issues",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "developer_data_commit_count_4_weeks",
+      "type": "binary",
+      "na_strategy": "False"
+    },
+    {
+      "column": "public_interest_stats_alexa_rank",
+      "type": "numerical",
+      "na_strategy": "mean"
+    },
+    {
+      "column": "community_data_reddit_subscribers",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "community_data_facebook_likes",
+      "type": "numerical",
+      "na_strategy": "mean"
+    },
+    {
+      "column": "community_data_twitter_followers",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "links_homepage",
+      "type": "binary",
+      "na_strategy": "False"
+    },
+    {
+      "column": "links_blockchain_site",
+      "type": "binary",
+      "na_strategy": "False"
+    },
+    {
+      "column": "market_data_circulating_supply",
+      "type": "numerical",
+      "na_strategy": "mean"
+    },
+    {
+      "column": "market_data_current_price_usd",
+      "type": "numerical",
+      "na_strategy": "mean"
+    },
+    {
+      "column": "market_data_ath_usd",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "market_data_low_24h_usd",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "market_data_high_24h_usd",
+      "type": "numerical",
+      "na_strategy": "min"
+    },
+    {
+      "column": "market_data_first_time_trading",
+      "type": "binary"
+    },
+    {
+      "column": "market_data_total_supply",
+      "type": "numerical",
+      "na_strategy": "mean"
+    },
+    {
+      "column": "ico_data_total_raised",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "ico_data_amount_for_sale",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "ico_data_hardcap_amount",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "ico_data_softcap_amount",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW1",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW9",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW19",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW29",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW39",
+      "type": "numerical",
+      "na_strategy": "mean"
+    },
+    {
+      "column": "duration_last_first_trade",
+      "type": "duration",
+      "na_strategy": "set:0",
+      "columns": [
+        "timestamp",
+        "market_data_first_time_trading"
+      ]
+    },
+    {
+      "column": "dif_total_circulating",
+      "type": "difference",
+      "na_strategy": "set:0",
+      "columns": [
+        "market_data_total_supply",
+        "market_data_circulating_supply"
+      ]
+    }
+  ],
+  "na_less_50_mixed_eth_btc_ltc_avg_coeffs": [
+    {
+      "meta": {
+        "upsampling": "0.0"
+      }
+    },
+    {
+      "column": "bitcoin_avg_difference",
+      "type": "custom"
+    },
+    {
+      "column": "eth_avg_difference",
+      "type": "custom"
+    },
+    {
+      "column": "ltc_avg_difference",
+      "type": "custom"
+    },
+    {
+      "column": "btc_coeff",
+      "type": "custom"
+    },
+    {
+      "column": "eth_coeff",
+      "type": "custom"
+    },
+    {
+      "column": "ltc_coeff",
+      "type": "custom"
+    },
+    {
+      "column": "timestamp",
+      "type": "binary",
+      "na_strategy": "False"
+    },
+    {
+      "column": "contract_address",
+      "type": "binary",
+      "na_strategy": "False"
+    },
+    {
+      "column": "developer_data_stars",
+      "type": "binary",
+      "na_strategy": "False"
+    },
+    {
+      "column": "developer_data_subscribers",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "developer_data_closed_issues",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "developer_data_commit_count_4_weeks",
+      "type": "binary",
+      "na_strategy": "False"
+    },
+    {
+      "column": "public_interest_stats_alexa_rank",
+      "type": "numerical",
+      "na_strategy": "mean"
+    },
+    {
+      "column": "community_data_reddit_subscribers",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "community_data_facebook_likes",
+      "type": "numerical",
+      "na_strategy": "mean"
+    },
+    {
+      "column": "community_data_twitter_followers",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "links_homepage",
+      "type": "binary",
+      "na_strategy": "False"
+    },
+    {
+      "column": "links_blockchain_site",
+      "type": "binary",
+      "na_strategy": "False"
+    },
+    {
+      "column": "market_data_circulating_supply",
+      "type": "numerical",
+      "na_strategy": "mean"
+    },
+    {
+      "column": "market_data_current_price_usd",
+      "type": "numerical",
+      "na_strategy": "mean"
+    },
+    {
+      "column": "market_data_ath_usd",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "market_data_low_24h_usd",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "market_data_high_24h_usd",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "market_data_first_time_trading",
+      "type": "binary"
+    },
+    {
+      "column": "market_data_total_supply",
+      "type": "numerical",
+      "na_strategy": "mean"
+    },
+    {
+      "column": "ico_data_total_raised",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "ico_data_amount_for_sale",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "ico_data_hardcap_amount",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "ico_data_softcap_amount",
+      "type": "numerical",
+      "na_strategy": "median"
+    }
+  ],
+  "less_50_btc_2_week": [
+    {
+      "meta": {
+        "upsampling": "0.0"
+      }
+    },
+    {
+      "column": "transaction_count",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "bitcoin_difference",
+      "type": "custom",
+      "amt_weeks": 2
+    },
+    {
+      "column": "btc_coeff",
+      "type": "custom"
+    },
+    {
+      "column": "bitcoin_avg_difference",
+      "type": "custom"
+    },
+    {
+      "column": "holder_count",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "timestamp",
+      "type": "binary",
+      "na_strategy": "False"
+    },
+    {
+      "column": "contract_address",
+      "type": "binary",
+      "na_strategy": "False"
+    },
+    {
+      "column": "developer_data_stars",
+      "type": "binary",
+      "na_strategy": "False"
+    },
+    {
+      "column": "developer_data_subscribers",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "developer_data_closed_issues",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "developer_data_commit_count_4_weeks",
+      "type": "binary",
+      "na_strategy": "False"
+    },
+    {
+      "column": "public_interest_stats_alexa_rank",
+      "type": "numerical",
+      "na_strategy": "mean"
+    },
+    {
+      "column": "community_data_reddit_subscribers",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "community_data_facebook_likes",
+      "type": "numerical",
+      "na_strategy": "mean"
+    },
+    {
+      "column": "community_data_twitter_followers",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "links_homepage",
+      "type": "binary",
+      "na_strategy": "False"
+    },
+    {
+      "column": "links_blockchain_site",
+      "type": "binary",
+      "na_strategy": "False"
+    },
+    {
+      "column": "market_data_circulating_supply",
+      "type": "numerical",
+      "na_strategy": "mean"
+    },
+    {
+      "column": "market_data_current_price_usd",
+      "type": "numerical",
+      "na_strategy": "mean"
+    },
+    {
+      "column": "market_data_ath_usd",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "market_data_low_24h_usd",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "market_data_high_24h_usd",
+      "type": "numerical",
+      "na_strategy": "min"
+    },
+    {
+      "column": "market_data_first_time_trading",
+      "type": "binary"
+    },
+    {
+      "column": "market_data_total_supply",
+      "type": "numerical",
+      "na_strategy": "mean"
+    },
+    {
+      "column": "ico_data_total_raised",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "ico_data_amount_for_sale",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "ico_data_hardcap_amount",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "ico_data_softcap_amount",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW1",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW9",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW19",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW29",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW39",
+      "type": "numerical",
+      "na_strategy": "mean"
+    }
+  ],
+  "less_50_eth_2_week": [
+    {
+      "meta": {
+        "upsampling": "0.0"
+      }
+    },
+    {
+      "column": "eth_avg_difference",
+      "type": "custom",
+      "amt_weeks": 2
+    },
+    {
+      "column": "eth_difference",
+      "type": "custom",
+      "amt_weeks": 2
+    },
+    {
+      "column": "eth_coeff",
+      "type": "custom"
+    },
+    {
+      "column": "transaction_count",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "bitcoin_avg_difference",
+      "type": "custom"
+    },
+    {
+      "column": "holder_count",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "timestamp",
+      "type": "binary",
+      "na_strategy": "False"
+    },
+    {
+      "column": "contract_address",
+      "type": "binary",
+      "na_strategy": "False"
+    },
+    {
+      "column": "developer_data_stars",
+      "type": "binary",
+      "na_strategy": "False"
+    },
+    {
+      "column": "developer_data_subscribers",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "developer_data_closed_issues",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "developer_data_commit_count_4_weeks",
+      "type": "binary",
+      "na_strategy": "False"
+    },
+    {
+      "column": "public_interest_stats_alexa_rank",
+      "type": "numerical",
+      "na_strategy": "mean"
+    },
+    {
+      "column": "community_data_reddit_subscribers",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "community_data_facebook_likes",
+      "type": "numerical",
+      "na_strategy": "mean"
+    },
+    {
+      "column": "community_data_twitter_followers",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "links_homepage",
+      "type": "binary",
+      "na_strategy": "False"
+    },
+    {
+      "column": "links_blockchain_site",
+      "type": "binary",
+      "na_strategy": "False"
+    },
+    {
+      "column": "market_data_circulating_supply",
+      "type": "numerical",
+      "na_strategy": "mean"
+    },
+    {
+      "column": "market_data_current_price_usd",
+      "type": "numerical",
+      "na_strategy": "mean"
+    },
+    {
+      "column": "market_data_ath_usd",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "market_data_low_24h_usd",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "market_data_high_24h_usd",
+      "type": "numerical",
+      "na_strategy": "min"
+    },
+    {
+      "column": "market_data_first_time_trading",
+      "type": "binary"
+    },
+    {
+      "column": "market_data_total_supply",
+      "type": "numerical",
+      "na_strategy": "mean"
+    },
+    {
+      "column": "ico_data_total_raised",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "ico_data_amount_for_sale",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "ico_data_hardcap_amount",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "ico_data_softcap_amount",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW1",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW9",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW19",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW29",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW39",
+      "type": "numerical",
+      "na_strategy": "mean"
+    }
+  ],
+  "na_less_50_mixed_upsampling_40_1": [
+    {
+      "meta": {
+        "upsampling": "0.4"
       }
     },
     {

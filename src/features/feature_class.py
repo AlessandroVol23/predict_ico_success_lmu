@@ -190,7 +190,7 @@ class FeatureEngineering(object):
 
         self._add_column_to_data_frame(df_copy, column)
 
-def _calculate_difference(self, column, include_columns, df_copy):
+    def _calculate_difference(self, column, include_columns, df_copy):
         # subtract all given columns
         for feature in include_columns:
             if include_columns[0] == feature:
@@ -198,9 +198,11 @@ def _calculate_difference(self, column, include_columns, df_copy):
                 continue
             df_copy[column] = df_copy[column] - df_copy[feature]
 
-        df_copy.loc[df_copy[column] <0, column] = 0
+        df_copy.loc[df_copy[column] < 0, column] = 0
 
-        return df_copy    def _transform_numerical_difference(self, column, include_columns, na_strategy='set:0'):
+        return df_copy
+
+    def _transform_numerical_difference(self, column, include_columns, na_strategy='set:0'):
         """Subtracts two or more columns from each other
 
         Arguments:
@@ -218,12 +220,11 @@ def _calculate_difference(self, column, include_columns, df_copy):
             df_copy = self._execute_na_strategy(df_copy, feature, na_strategy)
             df_copy[feature] = pd.to_numeric(df_copy[feature])
 
-
-        df_copy = self._calculate_difference(column,include_columns, df_copy)
+        df_copy = self._calculate_difference(column, include_columns, df_copy)
 
         self._add_column_to_data_frame(df_copy, column)
 
-    def _transform_duration_feature(self, column,include_columns, na_strategy='set:0'):
+    def _transform_duration_feature(self, column, include_columns, na_strategy='set:0'):
         """Subtracts two or more columns from each other
 
         Arguments:
@@ -236,29 +237,27 @@ def _calculate_difference(self, column, include_columns, df_copy):
 
         # Copy Dataframe
         df_copy = self.df
-        years = column +'_years'
-        months = column +'_months'
-        days = column +'_days'
+        years = column + '_years'
+        months = column + '_months'
+        days = column + '_days'
 
         # Date time to unix timestamp
         for feature in include_columns:
-            df_copy[feature] = pd.to_datetime(df_copy[feature],infer_datetime_format=True,errors='coerce')
-
+            df_copy[feature] = pd.to_datetime(df_copy[feature], infer_datetime_format=True, errors='coerce')
 
         # calculate diffs
-        timeDiffs= df_copy[include_columns[0]] - df_copy[include_columns[1]]
-        #df_copy[years] = timeDiffs /np.timedelta64(1,'Y')
-        #df_copy[months] = timeDiffs /np.timedelta64(1,'M')
-        df_copy[column] = timeDiffs /np.timedelta64(1,'D')
+        timeDiffs = df_copy[include_columns[0]] - df_copy[include_columns[1]]
+        # df_copy[years] = timeDiffs /np.timedelta64(1,'Y')
+        # df_copy[months] = timeDiffs /np.timedelta64(1,'M')
+        df_copy[column] = timeDiffs / np.timedelta64(1, 'D')
 
         # fill na values
-        #df_copy = self._execute_na_strategy(df_copy, years, na_strategy)
-        #df_copy = self._execute_na_strategy(df_copy, months, na_strategy)
+        # df_copy = self._execute_na_strategy(df_copy, years, na_strategy)
+        # df_copy = self._execute_na_strategy(df_copy, months, na_strategy)
         df_copy = self._execute_na_strategy(df_copy, column, na_strategy)
 
-
-        #self._add_column_to_data_frame(df_copy, years)
-        #self._add_column_to_data_frame(df_copy, months)
+        # self._add_column_to_data_frame(df_copy, years)
+        # self._add_column_to_data_frame(df_copy, months)
         self._add_column_to_data_frame(df_copy, column)
 
     def _transform_binary_variables(self, column, na_strategy='set:0'):
@@ -564,7 +563,7 @@ def _calculate_difference(self, column, include_columns, df_copy):
                 continue
 
             assert (
-                'column' in feature), "No column key provided in feature " + feature
+                    'column' in feature), "No column key provided in feature " + feature
             assert ('type' in feature), "No column type provided"
 
             feature_type = feature["type"]
@@ -572,11 +571,11 @@ def _calculate_difference(self, column, include_columns, df_copy):
 
             if feature_type == "categorical":
                 assert (
-                    'encoder' in feature), "No encoder for categorical feauter {} provided".format(feature_name)
+                        'encoder' in feature), "No encoder for categorical feauter {} provided".format(feature_name)
 
                 feauter_encoder = feature["encoder"]
                 assert (
-                    'na_strategy' in feature), "No na_strategy for numerical feauter {} provided".format(
+                        'na_strategy' in feature), "No na_strategy for numerical feauter {} provided".format(
                     feature_name)
                 strategy = feature["na_strategy"]
 
@@ -594,21 +593,21 @@ def _calculate_difference(self, column, include_columns, df_copy):
 
             elif feature_type == "numerical":
                 assert (
-                    'na_strategy' in feature), "No na_strategy for categorical feauter {} provided".format(
+                        'na_strategy' in feature), "No na_strategy for categorical feauter {} provided".format(
                     feature_name)
                 strategy = feature["na_strategy"]
                 self._transform_numerical_variables(feature_name, strategy)
 
             elif feature_type == "difference":
                 assert (
-                    'na_strategy' in feature), "No na_strategy for difference {} provided".format(
+                        'na_strategy' in feature), "No na_strategy for difference {} provided".format(
                     feature_name)
                 strategy = feature["na_strategy"]
                 assert (
-                    'columns' in feature), "No columns for difference in feature {} provided".format(feature_name)
+                        'columns' in feature), "No columns for difference in feature {} provided".format(feature_name)
                 columns = feature["columns"]
                 assert (
-                    len(columns) > 1), "Please provide at least 2 columns for difference {} provided".format(
+                        len(columns) > 1), "Please provide at least 2 columns for difference {} provided".format(
                     feature_name)
                 self._transform_numerical_difference(
                     feature_name, columns, strategy)
@@ -618,10 +617,11 @@ def _calculate_difference(self, column, include_columns, df_copy):
                 strategy = feature["na_strategy"]
                 assert (
                         'columns' in feature), "No columns for duration in feature {} provided".format(feature_name)
-                columns =feature["columns"]
+                columns = feature["columns"]
                 assert (
-                    len(columns) == 2), "Please provide exact 2 columns for duration {} provided".format(feature_name)
-                self._transform_duration_feature(feature_name,columns, strategy)
+                        len(columns) == 2), "Please provide exact 2 columns for duration {} provided".format(
+                    feature_name)
+                self._transform_duration_feature(feature_name, columns, strategy)
 
             elif feature_type == "binary":
                 self._transform_binary_variables(feature_name)
