@@ -3,13 +3,14 @@
 
 import logging
 import pandas as pd
+from multiprocessing.pool import ThreadPool, Pool
 import numpy as np
 from sklearn import preprocessing
 from sklearn.experimental import enable_iterative_imputer
 from sklearn.impute import IterativeImputer
 from tqdm import tqdm
 import re
-
+import requests  
 logger = logging.getLogger(__name__)
 
 log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
@@ -45,6 +46,13 @@ class FeatureEngineering(object):
 
         # Label Encoder
         self.le = preprocessing.LabelEncoder()
+        self.url_reg_ex =  regex = re.compile(
+            r'^(?:http|ftp)s?://' # http:// or https://
+            r'(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+(?:[A-Z]{2,6}\.?|[A-Z0-9-]{2,}\.?)|' #domain...
+            r'localhost|' #localhost...
+            r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})' # ...or ip
+            r'(?::\d+)?' # optional port
+            r'(?:/?|[/?]\S+)$', re.IGNORECASE)
 
         # One Hot Encoder
         self.enc = preprocessing.OneHotEncoder(handle_unknown='ignore')
@@ -149,6 +157,30 @@ class FeatureEngineering(object):
         self.df_features = pd.merge(
             self.df_features, df[['OBS_ID', column]])
         assert column in self.df_features.columns, "No {} in df_features!".format(column)
+        
+    def _make_valid_url(self, url):
+
+        result = re.match(self.url_reg_ex, url)
+
+        if result:
+            return url
+        else:
+            return "https://"+url
+
+
+    def _check_http_status_code(self,url):
+        if url == "NAN":
+            return 0
+        url = self._make_valid_url(url)
+        try:
+            r = requests.head(url)
+            print(r.status_code)
+            if r.status_code >= 200 and r.status_code < 300:
+                return 1
+            else:
+                return 0
+        except requests.ConnectionError:
+            return 0
 
     def _remove_column_from_data_frame(self, column):
         self.df_features = self.df_features.drop(columns=[column])
@@ -325,6 +357,14 @@ class FeatureEngineering(object):
 
         self._remove_column_from_data_frame(column)
         self._add_column_to_data_frame(df_copy, rename)
+    
+    def _transform_link_binary(self, column, on_column, na_strategy ="set:NAN"):
+        df_copy = self.df.copy()
+        df_copy = self._execute_na_strategy(df_copy, on_column, na_strategy)
+        with Pool(processes=1000) as pool:
+            results = pool.map(self._check_http_status_code, df_copy[on_column])
+
+        return results
 
     def get_X_y(self):
         """This function returns X_train, y_train and X_test.
@@ -499,7 +539,13 @@ class FeatureEngineering(object):
                 self._transform_duration_feature(feature_name,columns, strategy)
 
             elif feature_type == "binary":
-                self._transform_binary_variables(feature_name)
+                self._transform_binary_variables(feature_name)            
+            
+            elif feature_type == "link":
+                assert (
+                        'on_column' in feature), "No on_column for http get check in feature {} provided".format(feature_name)
+                columns =feature["on_column"]
+                self._transform_link_binary(feature_name,columns)
             else:
                 raise ValueError('feature type not recognized')
             
