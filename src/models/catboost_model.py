@@ -17,7 +17,7 @@ class CatBoostModel(BaseModel):
             'loss_function': 'Logloss',
             #  'learning_rate': 0.1,
             'use_best_model': True,
-            'early_stopping_rounds': 100,
+            'early_stopping_rounds': 300,
             'logging_level': 'Verbose'
         }
         self.model = CatBoostClassifier(
