@@ -151,7 +151,11 @@ class FeatureEngineering(object):
     def _add_column_to_data_frame(self, df, column):
         self.df_features = pd.merge(
             self.df_features, df[['OBS_ID', column]])
-        assert column in self.df_features.columns, "No {column} in df_features!"
+        assert column in self.df_features.columns, "No {} in df_features!".format(column)
+
+    def _remove_column_from_data_frame(self, column):
+        self.df_features = self.df_features.drop(columns=[column])
+        assert column not in self.df_features.columns, "{} is in df_features!".format(column)
 
     def _add_df_to_feature_df(self, df):
         """Adds a DataFrame based on OBS_ID to feature df
@@ -186,7 +190,17 @@ class FeatureEngineering(object):
 
         self._add_column_to_data_frame(df_copy, column)
 
-    def _transform_numerical_difference(self, column, include_columns, na_strategy='set:0'):
+def _calculate_difference(self, column, include_columns, df_copy):
+        # subtract all given columns
+        for feature in include_columns:
+            if include_columns[0] == feature:
+                df_copy[column] = df_copy[feature]
+                continue
+            df_copy[column] = df_copy[column] - df_copy[feature]
+
+        df_copy.loc[df_copy[column] <0, column] = 0
+
+        return df_copy    def _transform_numerical_difference(self, column, include_columns, na_strategy='set:0'):
         """Subtracts two or more columns from each other
 
         Arguments:
@@ -204,15 +218,47 @@ class FeatureEngineering(object):
             df_copy = self._execute_na_strategy(df_copy, feature, na_strategy)
             df_copy[feature] = pd.to_numeric(df_copy[feature])
 
-        # subtract all given columns
+
+        df_copy = self._calculate_difference(column,include_columns, df_copy)
+
+        self._add_column_to_data_frame(df_copy, column)
+
+    def _transform_duration_feature(self, column,include_columns, na_strategy='set:0'):
+        """Subtracts two or more columns from each other
+
+        Arguments:
+            column {String} -- The new features name
+            include_columns {Array} -- The features which will be subtracted from each other from left to right
+            na_strategy {String} -- A valid na_strategy which is executed before subtraction
+        """
+        logger.debug(
+            "Difference of numerical variables for columns {}".format(include_columns))
+
+        # Copy Dataframe
+        df_copy = self.df
+        years = column +'_years'
+        months = column +'_months'
+        days = column +'_days'
+
+        # Date time to unix timestamp
         for feature in include_columns:
-            if include_columns[0] == feature:
-                df_copy[column] = df_copy[feature]
-                continue
-            df_copy[column] = df_copy[column] - df_copy[feature]
+            df_copy[feature] = pd.to_datetime(df_copy[feature],infer_datetime_format=True,errors='coerce')
 
-        df_copy.loc[df_copy[column] < 0, column] = 0
 
+        # calculate diffs
+        timeDiffs= df_copy[include_columns[0]] - df_copy[include_columns[1]]
+        #df_copy[years] = timeDiffs /np.timedelta64(1,'Y')
+        #df_copy[months] = timeDiffs /np.timedelta64(1,'M')
+        df_copy[column] = timeDiffs /np.timedelta64(1,'D')
+
+        # fill na values
+        #df_copy = self._execute_na_strategy(df_copy, years, na_strategy)
+        #df_copy = self._execute_na_strategy(df_copy, months, na_strategy)
+        df_copy = self._execute_na_strategy(df_copy, column, na_strategy)
+
+
+        #self._add_column_to_data_frame(df_copy, years)
+        #self._add_column_to_data_frame(df_copy, months)
         self._add_column_to_data_frame(df_copy, column)
 
     def _transform_binary_variables(self, column, na_strategy='set:0'):
@@ -272,6 +318,14 @@ class FeatureEngineering(object):
         df_copy = self._execute_na_strategy(df_copy, column, na_strategy)
 
         self._add_column_to_data_frame(df_copy, column)
+
+    def _rename_column(self, column, rename):
+        df_copy = self.df_features.copy()
+
+        df_copy[rename] = df_copy[column]
+
+        self._remove_column_from_data_frame(column)
+        self._add_column_to_data_frame(df_copy, rename)
 
     def get_X_y(self):
         """This function returns X_train, y_train and X_test.
@@ -547,7 +601,7 @@ class FeatureEngineering(object):
 
             elif feature_type == "difference":
                 assert (
-                    'na_strategy' in feature), "No na_strategy for categorical feauter {} provided".format(
+                    'na_strategy' in feature), "No na_strategy for difference {} provided".format(
                     feature_name)
                 strategy = feature["na_strategy"]
                 assert (
@@ -558,11 +612,25 @@ class FeatureEngineering(object):
                     feature_name)
                 self._transform_numerical_difference(
                     feature_name, columns, strategy)
+            elif feature_type == "duration":
+                assert (
+                        'na_strategy' in feature), "No na_strategy for duration {} provided".format(feature_name)
+                strategy = feature["na_strategy"]
+                assert (
+                        'columns' in feature), "No columns for duration in feature {} provided".format(feature_name)
+                columns =feature["columns"]
+                assert (
+                    len(columns) == 2), "Please provide exact 2 columns for duration {} provided".format(feature_name)
+                self._transform_duration_feature(feature_name,columns, strategy)
 
             elif feature_type == "binary":
                 self._transform_binary_variables(feature_name)
             else:
                 raise ValueError('feature type not recognized')
+
+            if "rename" in feature:
+                rename = feature["rename"]
+                self._rename_column(feature_name, rename)
 
         # Check and impolate
         if len(self.to_impute) > 0:
