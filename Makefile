@@ -65,6 +65,10 @@ endif
 fit_models:
 	$(PYTHON_INTERPRETER) src/models/base_model.py
 
+model_chain:
+	$(PYTHON_INTERPRETER) src/models/model_chain.py feature_set_meta.json
+
+
 #################################################################################
 # PROJECT RULES                                                                 #
 #################################################################################
