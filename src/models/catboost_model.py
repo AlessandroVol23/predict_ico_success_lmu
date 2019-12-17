@@ -9,20 +9,27 @@ from catboost import CatBoostClassifier, Pool
 
 class CatBoostModel(BaseModel):
 
-    def __init__(self):
-        self.hyperparam = {
-            'iterations': 2000,
-            # 'depth': 8,
-            'eval_metric': 'MCC',
-            'loss_function': 'Logloss',
-            #  'learning_rate': 0.1,
-            'use_best_model': True,
-            'early_stopping_rounds': 300,
-            'logging_level': 'Verbose'
-        }
-        self.model = CatBoostClassifier(
-            **self.hyperparam
-        )
+    def __init__(self, hyperparams=None):
+
+        if hyperparams is None:
+            self.hyperparam = {
+                'iterations': 2000,
+                # 'depth': 8,
+                'eval_metric': 'MCC',
+                'loss_function': 'Logloss',
+                # 'loss_function': 'CrossEntropy',
+                #  'learning_rate': 0.1,
+                'use_best_model': True,
+                'early_stopping_rounds': 300,
+                'logging_level': 'Verbose'
+            }
+            self.model = CatBoostClassifier(
+                **self.hyperparam
+            )
+        else:
+            self.hyperparam = hyperparams
+
+        self.model = self.get_model(reinitialize=True)
 
     def get_name(self):
         return "catboost"
@@ -37,18 +44,15 @@ class CatBoostModel(BaseModel):
             )
         return self.model
 
-    def fit(self, trn_x, trn_y, val_x, val_y, categorical_features=[]):
-        self.model.fit(trn_x, trn_y,
-                       eval_set=[(val_x, val_y)],
-                       cat_features=categorical_features,
-                       )
+    def fit(self, trn_x, trn_y, val_x=None, val_y=None, categorical_features=[]):
+        if val_x is not None:
+            self.model.fit(trn_x, trn_y,
+                           eval_set=[(val_x, val_y)],
+                           cat_features=categorical_features,
+                           )
+        else:
+            self.model.fit(trn_x, trn_y)
 
-    def predict_proba(self, oof_preds, sub_preds, X_test, folds, val_idx, val_x):
-        oof_preds[val_idx] = self.model.predict_proba(
-            val_x)[:, 1]
-        sub_preds += self.model.predict_proba(X_test)[
-            :, 1] / folds.n_splits
-
-        oof_pred_abs = oof_preds.round()
-
-        return oof_pred_abs
+    def predict_proba(self, test_set):
+        preds = self.model.predict_proba(test_set)
+        return preds

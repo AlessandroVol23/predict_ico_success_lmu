@@ -55,3 +55,14 @@ def create_submission_csv(model, X_test, path_to_save_csv):
     # Probabilities to classes
     classes_preds = preds.round().astype(int)
     df_submission = pd.DataFrame(classes_preds)
+
+def read_upsampling_feature_set(feature_set_meta, feature_set_key):
+    feature_set = feature_set_meta[feature_set_key]
+    for feature in feature_set:
+        if 'meta' in feature:
+            try:
+                upsampling = float(feature['meta']['upsampling'])
+                return upsampling
+            except ValueError:
+                logger.warning(
+                    "Won't upsample because no float value was provided!")
