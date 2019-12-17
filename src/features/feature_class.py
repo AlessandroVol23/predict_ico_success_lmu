@@ -148,7 +148,11 @@ class FeatureEngineering(object):
     def _add_column_to_data_frame(self, df, column):
         self.df_features = pd.merge(
             self.df_features, df[['OBS_ID', column]])
-        assert column in self.df_features.columns, "No {column} in df_features!"
+        assert column in self.df_features.columns, "No {} in df_features!".format(column)
+
+    def _remove_column_from_data_frame(self, column):
+        self.df_features = self.df_features.drop(columns=[column])
+        assert column not in self.df_features.columns, "{} is in df_features!".format(column)
 
     def _add_df_to_feature_df(self, df):
         """Adds a DataFrame based on OBS_ID to feature df
@@ -268,6 +272,14 @@ class FeatureEngineering(object):
         df_copy = self._execute_na_strategy(df_copy, column, na_strategy)
 
         self._add_column_to_data_frame(df_copy, column)
+    
+    def _rename_column(self, column, rename):
+        df_copy = self.df_features.copy()
+
+        df_copy[rename] = df_copy[column]
+
+        self._remove_column_from_data_frame(column)
+        self._add_column_to_data_frame(df_copy, rename)
 
     def get_X_y(self):
         """This function returns X_train, y_train and X_test.
@@ -435,6 +447,10 @@ class FeatureEngineering(object):
                 self._transform_binary_variables(feature_name)
             else:
                 raise ValueError('feature type not recognized')
+            
+            if "rename" in feature:
+                rename = feature["rename"]
+                self._rename_column(feature_name, rename)
 
         # Check and impolate
         if len(self.to_impute) > 0:
