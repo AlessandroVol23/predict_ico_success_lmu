@@ -14,10 +14,13 @@ logger = logging.getLogger(__name__)
 log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 logging.basicConfig(level=logging.INFO, format=log_fmt)
 
-training_models = [
-    CatBoostModel,
-    LightGbmModel
+# training_models = [
+#     CatBoostModel,
+#     LightGbmModel
+# ]
 
+training_models = [
+    CatBoostModel
 ]
 
 
@@ -78,6 +81,8 @@ class BuildModel(object):
             feature_sets = read_feature_meta(True)
             feature_set = feature_sets[feature_set_number]
 
+        upsampling = self.read_upsampling_feature_set(feature_set_meta, feature_set_number)
+
         result = self._read_result_csv()
 
         result_ser = pd.Series({
@@ -87,6 +92,7 @@ class BuildModel(object):
             'model_name': model_name,
             'submission_number': next_submission_number,
             'mcc_cv': mean_mcc,
+            'upsampling': upsampling,
             'submission_score': 'TO_FILL',
             'hp_iterations': hyperparam.get('iterations', 'NA'),
             'hp_early_stopping_rounds': hyperparam.get('early_stopping_rounds', 'NA'),
