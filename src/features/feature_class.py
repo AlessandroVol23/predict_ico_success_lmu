@@ -423,7 +423,7 @@ class FeatureEngineering(object):
     def natural_keys(self, text):
         return [self.atof(c) for c in re.split(r'[+-]?([0-9]+(?:[.][0-9]*)?|[.][0-9]+)', text)]
 
-    def _build_bitcoin_difference(self, amt_weeks:int):
+    def _build_bitcoin_difference(self, amt_weeks):
         """
         Function to build difference between bitcoin price and ico price.
         amt_weeks: Number of weeks to go back from last week
