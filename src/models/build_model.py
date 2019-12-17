@@ -9,6 +9,7 @@ import numpy as np
 from src.utils import read_feature_meta
 from time import time
 import datetime
+from src.models.utils import read_upsampling_feature_set
 
 logger = logging.getLogger(__name__)
 log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
@@ -55,7 +56,6 @@ class BuildModel(object):
 
     def _increment_submission_number(self, current_number=0):
         new_build_number = int(current_number) + 1
-        logger.info('New submission number is now: {}'.format(new_build_number))
         with open("SUBMISSION_NUMBER", "w") as f:
             f.write(str(new_build_number))
 
@@ -81,7 +81,7 @@ class BuildModel(object):
             feature_sets = read_feature_meta(True)
             feature_set = feature_sets[feature_set_number]
 
-        upsampling = self.read_upsampling_feature_set(feature_set_meta, feature_set_number)
+        upsampling = read_upsampling_feature_set(feature_set_meta, feature_set_number)
 
         result = self._read_result_csv()
 
@@ -102,17 +102,6 @@ class BuildModel(object):
             'hp_use_best_model': hyperparam.get('use_best_model', 'NA')
         })
         self._write_result_csv(result, result_ser)
-
-    def read_upsampling_feature_set(self, feature_set_meta, feature_set_key):
-        feature_set = feature_set_meta[feature_set_key]
-        for feature in feature_set:
-            if 'meta' in feature:
-                try:
-                    upsampling = float(feature['meta']['upsampling'])
-                    return upsampling
-                except ValueError:
-                    logger.warning(
-                        "Won't upsample because no float value was provided!")
 
     def _read_categorical_features(self, feature_set_meta, feature_set_key):
         feature_set = feature_set_meta[feature_set_key]
@@ -138,30 +127,55 @@ class BuildModel(object):
                 continue
             logger.info(
                 "Building model with feature set {}".format(feature_set_key))
+
             feature_set_meta = read_feature_meta()
-            upsampling = self.read_upsampling_feature_set(
+
+            upsampling = read_upsampling_feature_set(
                 feature_set_meta, feature_set_key)
 
             categorical_features = self._read_categorical_features(
                 feature_set_meta, feature_set_key)
+
             # Fitting model that trains and cross validates, takes the underlying model to train as a param
             fitting_model = FittingModel(
                 feature_set_key, current_model, categorical_features, upsample=upsampling)
 
-            next_submission_number = self._get_submission_number()
-
             # Get values from fitting model
             mean_mcc = fitting_model.cross_validation()
-            test_ids, sub_preds_abs = fitting_model.get_values()
+
             # get name and params from underlying model
             model_name = current_model.get_name()
             hyperparams = current_model.get_params()
 
-            self._create_evaluation_file(test_ids, sub_preds_abs,
-                                         next_submission_number, True)
-
             self._write_results(feature_set_meta, feature_set_key, mean_mcc, model_name,
-                                next_submission_number, hyperparams)
+                                'No Submission', hyperparams)
+
+            # Workaround till we have function to read in optimized hyperparams
+            if model_name == 'catboost':
+                hp = {
+                    "bagging_temperature": 1.0,
+                    "border_count": 121,
+                    "depth": 4,
+                    "iterations": 802,
+                    "l2_leaf_reg": 30,
+                    "learning_rate": 0.4476540650629794,
+                    "random_strength": 10.0,
+                    "scale_pos_weight": 0.9494114772362018
+                }
+                final_model = current_model_class(hp)
+            else:
+                final_model = current_model_class()
+
+            fitting_model = FittingModel(
+                feature_set_key, final_model, categorical_features, upsample=upsampling)
+
+            logger.info("Create final model.")
+            fitting_model.train_final_model()
+            preds_test = fitting_model.predict_test_set()
+            preds_test_abs = preds_test.argmax(axis=1)
+            next_submission_number = self._get_submission_number()
+            self._create_evaluation_file(fitting_model.test_ids, preds_test_abs,
+                                         next_submission_number, True)
 
 
 @click.command()
