@@ -134,6 +134,11 @@ def preprocess(df_in):
     for col in _COLS_TO_CONVERT:
         df = _replace_convert_float(df, col)
 
+    df = df.assign(id = df.loc[:, 'ï..id'])
+    df = df.drop('ï..id', axis=1)
+
+    df = df.rename({'name':'company_name'}, axis=1)
+
     logger.info("Preprocessing done!")
     return df
 
@@ -184,20 +189,21 @@ def get_external_data():
     df_gemin_btc_usd = pd.read_csv('data/external/Gemini_BTCUSD_d.csv')
     df_gemin_eth_usd = pd.read_csv('data/external/Gemini_ETHUSD_d.csv')
     df_gemin_ltc_usd = pd.read_csv('data/external/Gemini_LTCUSD_d.csv')
-    return df_gemin_btc_usd, df_gemin_eth_usd, df_gemin_ltc_usd
+    df_icobench = pd.read_csv('data/external/ico_bench_ended.csv')
+    return df_gemin_btc_usd, df_gemin_eth_usd, df_gemin_ltc_usd, df_icobench
 
 
-def _save_processed_data(df_bitcoin, df, df_test, df_gem_btc_usd, df_gem_eth_usd, df_gem_ltc_usd):
+def _save_processed_data(df_bitcoin, df, df_test, df_gem_btc_usd, df_gem_eth_usd, df_gem_ltc_usd, df_icobench):
     df_bitcoin.to_csv('data/processed/df_bitcoin_pp.csv', index=None)
     df.to_csv('data/processed/df_train_pp.csv')
     df_test.to_csv('data/processed/df_test_pp.csv')
     df_gem_btc_usd.to_csv('data/processed/df_gem_btc_usd.csv', index=None)
     df_gem_eth_usd.to_csv('data/processed/df_gem_eth_usd.csv', index=None)
     df_gem_ltc_usd.to_csv('data/processed/df_gem_ltc_usd.csv', index=None)
+    df_icobench.to_csv('data/processed/df_icobench.csv', index=None)
 
 
 def preprocess_external_data(df_btc, df_eth, df_ltc):
-
     def preprocess_times(df):
         df['Date'] = pd.to_datetime(df.Date)
         df = df.loc[df.Date.dt.year == 2019]
@@ -214,11 +220,11 @@ def preprocess_external_data(df_btc, df_eth, df_ltc):
 @click.command()
 def main():
     df_bitcoin, df, df_test = get_processed_data()
-    df_gemin_btc_usd, df_gemin_eth_usd, df_gemin_ltc_usd = get_external_data()
+    df_gemin_btc_usd, df_gemin_eth_usd, df_gemin_ltc_usd, df_icobench = get_external_data()
     df_btc_pp, df_eth_pp, df_ltc_pp = preprocess_external_data(
         df_gemin_btc_usd, df_gemin_eth_usd, df_gemin_ltc_usd)
     _save_processed_data(df_bitcoin, df, df_test,
-                         df_btc_pp, df_eth_pp, df_ltc_pp)
+                         df_btc_pp, df_eth_pp, df_ltc_pp, df_icobench)
 
 
 if __name__ == "__main__":

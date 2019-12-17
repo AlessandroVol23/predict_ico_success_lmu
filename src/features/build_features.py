@@ -24,7 +24,7 @@ def _read_random_feature_meta():
 @click.command()
 @click.argument('random')
 def main(random):
-    df_bitcoin, df, df_test, df_gem_btc_usd, df_gem_eth_usd, df_gem_ltc_usd = read_processed_data()
+    df_bitcoin, df, df_test, df_gem_btc_usd, df_gem_eth_usd, df_gem_ltc_usd, df_icobench = read_processed_data()
     feature_sets = []
     if random == "True":
         feature_sets = _read_random_feature_meta()
@@ -34,7 +34,7 @@ def main(random):
     for (key, value) in tqdm(feature_sets.items()):
         tqdm.write("building features for feature_set {} ".format(key))
         fe = FeatureEngineering(df, df_bitcoin, df_test,
-                                df_gem_btc_usd, df_gem_eth_usd, df_gem_ltc_usd)
+                                df_gem_btc_usd, df_gem_eth_usd, df_gem_ltc_usd, df_icobench)
         fe.construct_feature_set(value)
         X_train, y_train, X_test = fe.get_X_y()
         logger.debug("UNIQUE: {}".format(

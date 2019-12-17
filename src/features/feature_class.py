@@ -23,7 +23,7 @@ DATA_FRAME_LENGTH = 5758
 class FeatureEngineering(object):
 
     # Constructor
-    def __init__(self, df, df_bitcoin, df_test, df_gem_btc_usd, df_gem_eth_usd, df_gem_ltc_usd):
+    def __init__(self, df, df_bitcoin, df_test, df_gem_btc_usd, df_gem_eth_usd, df_gem_ltc_usd, df_icobench):
         """Constructor for class FeatureEngineering
 
         Parameters
@@ -45,6 +45,7 @@ class FeatureEngineering(object):
         self.df_gem_btc_usd = df_gem_btc_usd
         self.df_gem_eth_usd = df_gem_eth_usd
         self.df_gem_ltc_usd = df_gem_ltc_usd
+        self.df_icobench = df_icobench
 
         # Label Encoder
         self.le = preprocessing.LabelEncoder()
@@ -507,6 +508,27 @@ class FeatureEngineering(object):
         df_kws = self.calc_coeff_kw(self.df_gem_ltc_usd, 'corr_ltc')
         self._add_column_to_data_frame(df_kws, 'corr_ltc')
 
+    def _build_exist_icobench(self):
+        col = 'company_name'
+        df_ids = self.df[[col, 'OBS_ID']]
+        df_ids[col] = df_ids[col].str.lower()
+        df_ids[col] = df_ids[col].str.strip()
+
+        count_exist = 0
+        tqdm.write("Creating exist on icobench feature")
+        for index, row in tqdm(df_ids.iterrows(), total=df_ids.shape[0]):
+            try:
+                if self.df_icobench.id.str.contains(row[col]).any():
+                    count_exist += 1
+                    df_ids.loc[df_ids[col] == row[col], 'exist_on_icobench'] = 1
+                else:
+                    df_ids.loc[df_ids[col] == row[col], 'exist_on_icobench'] = 0
+            except Exception as e:
+                logger.warning("Exception: {}".format(e))
+
+        self._add_column_to_data_frame(df_ids, 'exist_on_icobench')
+        logger.info("{} icos were matched with thos on icobench".format(count_exist))
+
     def construct_feature_set(self, features):
         """This function is the pipeline for adding all features to the dataset
         """
@@ -561,6 +583,9 @@ class FeatureEngineering(object):
             elif feature['column'] == 'ltc_coeff':
                 self._build_ltc_coeff()
                 continue
+            elif feature['column'] == 'exist_on_icobench':
+                self._build_exist_icobench()
+                continue
 
             assert (
                     'column' in feature), "No column key provided in feature " + feature
@@ -602,6 +627,7 @@ class FeatureEngineering(object):
                 assert (
                         'na_strategy' in feature), "No na_strategy for difference {} provided".format(
                     feature_name)
+                id
                 strategy = feature["na_strategy"]
                 assert (
                         'columns' in feature), "No columns for difference in feature {} provided".format(feature_name)
