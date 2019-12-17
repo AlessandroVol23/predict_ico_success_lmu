@@ -88,7 +88,7 @@ class BuildModel(object):
         result_ser = pd.Series({
             'timestamp': datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f"),
             'feature_set': feature_set_number,
-            # 'features': feature_set,
+            'features': feature_set,
             'model_name': model_name,
             'submission_number': next_submission_number,
             'mcc_cv': mean_mcc,
