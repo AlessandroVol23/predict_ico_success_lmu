@@ -330,7 +330,7 @@ class FeatureEngineering(object):
     def natural_keys(self, text):
         return [self.atof(c) for c in re.split(r'[+-]?([0-9]+(?:[.][0-9]*)?|[.][0-9]+)', text)]
 
-    def calc_btc_difference(self, amt_weeks: int):
+    def calc_ext_difference(self, amt_weeks: int, df_ext, col_name):
         """
         Function to calculate the differences of calendar weeks and bitcoin price.
         amt_weeks: Number of weeks to go back from last week available
@@ -345,13 +345,13 @@ class FeatureEngineering(object):
 
         kws_slice = kws_wo_id[-amt_weeks:]
 
-        grouped_prices_kws = self.df_gem_btc_usd.groupby(
+        grouped_prices_kws = df_ext.groupby(
             'calendar_week').mean()['High']
 
         new_df = pd.DataFrame(df_kws.OBS_ID)
 
         for week in kws_slice:
-            new_col = 'difference_BTC_' + week
+            new_col = col_name + '_' + week
             btc_col = int(re.findall(
                 r'[+-]?([0-9]+(?:[.][0-9]*)?|[.][0-9]+)', new_col)[0])
             btc_price = grouped_prices_kws[btc_col]
@@ -366,18 +366,59 @@ class FeatureEngineering(object):
         amt_weeks: Number of weeks to go back from last week
         """
         logger.info("Create bitcoin difference feature")
-        new_df = self.calc_btc_difference(amt_weeks)
+        new_df = self.calc_ext_difference(
+            amt_weeks, self.df_gem_btc_usd, 'btc_difference')
+        self._add_df_to_feature_df(new_df)
 
+    def _build_eth_difference(self, amt_weeks: int):
+        """
+        Function to build difference between bitcoin price and ico price.
+        amt_weeks: Number of weeks to go back from last week
+        """
+        logger.info("Create eth difference feature")
+        new_df = self.calc_ext_difference(
+            amt_weeks, self.df_gem_eth_usd, 'eth_difference')
+        self._add_df_to_feature_df(new_df)
+
+    def _build_ltc_difference(self, amt_weeks: int):
+        """
+        Function to build difference between bitcoin price and ico price.
+        amt_weeks: Number of weeks to go back from last week
+        """
+        logger.info("Create ltc difference feature")
+        new_df = self.calc_ext_difference(
+            amt_weeks, self.df_gem_ltc_usd, 'ltc_difference')
         self._add_df_to_feature_df(new_df)
 
     def _build_bitcoin_avg_difference(self):
         logger.info("Build average difference over all weeks")
-        df_differences = self.calc_btc_difference(amt_weeks=39)
+        df_differences = self.calc_ext_difference(
+            39, self.df_gem_btc_usd, 'btc_difference')
         cols = set(df_differences.columns) - set('OBS_ID')
         df_differences_wo_id = df_differences.loc[:, cols]
         mean_per_ico = df_differences_wo_id.mean(axis=1)
         df_differences['mean_difference_btc'] = mean_per_ico
         self._add_column_to_data_frame(df_differences, 'mean_difference_btc')
+
+    def _build_eth_avg_difference(self):
+        logger.info("Build average difference over all weeks for eth")
+        df_differences = self.calc_ext_difference(
+            39, self.df_gem_eth_usd, 'eth_difference')
+        cols = set(df_differences.columns) - set('OBS_ID')
+        df_differences_wo_id = df_differences.loc[:, cols]
+        mean_per_ico = df_differences_wo_id.mean(axis=1)
+        df_differences['mean_difference_eth'] = mean_per_ico
+        self._add_column_to_data_frame(df_differences, 'mean_difference_eth')
+
+    def _build_ltc_avg_difference(self):
+        logger.info("Build average difference over all weeks for ltc")
+        df_differences = self.calc_ext_difference(
+            39, self.df_gem_ltc_usd, 'ltc_difference')
+        cols = set(df_differences.columns) - set('OBS_ID')
+        df_differences_wo_id = df_differences.loc[:, cols]
+        mean_per_ico = df_differences_wo_id.mean(axis=1)
+        df_differences['mean_difference_ltc'] = mean_per_ico
+        self._add_column_to_data_frame(df_differences, 'mean_difference_ltc')
 
     def calc_coeff_kw(self, df_external, col_name):
         kws = self.get_all_kw_cols()
@@ -409,6 +450,10 @@ class FeatureEngineering(object):
         df_kws = self.calc_coeff_kw(self.df_gem_eth_usd, 'corr_eth')
         self._add_column_to_data_frame(df_kws, 'corr_eth')
 
+    def _build_ltc_coeff(self):
+        df_kws = self.calc_coeff_kw(self.df_gem_ltc_usd, 'corr_ltc')
+        self._add_column_to_data_frame(df_kws, 'corr_ltc')
+
     def construct_feature_set(self, features):
         """This function is the pipeline for adding all features to the dataset
         """
@@ -437,14 +482,31 @@ class FeatureEngineering(object):
                 amt_weeks = int(feature['amt_weeks'])
                 self._build_bitcoin_difference(amt_weeks)
                 continue
+            elif feature['column'] == 'eth_difference':
+                amt_weeks = int(feature['amt_weeks'])
+                self._build_eth_difference(amt_weeks)
+                continue
+            elif feature['column'] == 'ltc_difference':
+                amt_weeks = int(feature['amt_weeks'])
+                self._build_ltc_difference(amt_weeks)
+                continue
             elif feature['column'] == 'bitcoin_avg_difference':
                 self._build_bitcoin_avg_difference()
+                continue
+            elif feature['column'] == 'eth_avg_difference':
+                self._build_eth_avg_difference()
+                continue
+            elif feature['column'] == 'ltc_avg_difference':
+                self._build_ltc_avg_difference()
                 continue
             elif feature['column'] == 'btc_coeff':
                 self._build_btc_coeff()
                 continue
             elif feature['column'] == 'eth_coeff':
                 self._build_eth_coeff()
+                continue
+            elif feature['column'] == 'ltc_coeff':
+                self._build_ltc_coeff()
                 continue
 
             assert (
