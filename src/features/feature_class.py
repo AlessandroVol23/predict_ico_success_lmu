@@ -10,7 +10,6 @@ from sklearn.experimental import enable_iterative_imputer
 from sklearn.impute import IterativeImputer
 from tqdm import tqdm
 import re
-import requests  
 logger = logging.getLogger(__name__)
 
 log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
@@ -35,7 +34,6 @@ class FeatureEngineering(object):
         df_test : DataFrame
             Test DataFrame
         """
-
         self.df = pd.concat([df, df_test], sort=True)
         assert len(
             self.df) == DATA_FRAME_LENGTH, "Length has to be 5758, check conattanation!"
@@ -46,12 +44,13 @@ class FeatureEngineering(object):
 
         # Label Encoder
         self.le = preprocessing.LabelEncoder()
-        self.url_reg_ex =  regex = re.compile(
-            r'^(?:http|ftp)s?://' # http:// or https://
-            r'(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+(?:[A-Z]{2,6}\.?|[A-Z0-9-]{2,}\.?)|' #domain...
-            r'localhost|' #localhost...
-            r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})' # ...or ip
-            r'(?::\d+)?' # optional port
+        self.url_reg_ex = regex = re.compile(
+            r'^(?:http|ftp)s?://'  # http:// or https://
+            # domain...
+            r'(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+(?:[A-Z]{2,6}\.?|[A-Z0-9-]{2,}\.?)|'
+            r'localhost|'  # localhost...
+            r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'  # ...or ip
+            r'(?::\d+)?'  # optional port
             r'(?:/?|[/?]\S+)$', re.IGNORECASE)
 
         # One Hot Encoder
@@ -156,8 +155,9 @@ class FeatureEngineering(object):
     def _add_column_to_data_frame(self, df, column):
         self.df_features = pd.merge(
             self.df_features, df[['OBS_ID', column]])
-        assert column in self.df_features.columns, "No {} in df_features!".format(column)
-        
+        assert column in self.df_features.columns, "No {} in df_features!".format(
+            column)
+
     def _make_valid_url(self, url):
 
         result = re.match(self.url_reg_ex, url)
@@ -168,23 +168,10 @@ class FeatureEngineering(object):
             return "https://"+url
 
 
-    def _check_http_status_code(self,url):
-        if url == "NAN":
-            return 0
-        url = self._make_valid_url(url)
-        try:
-            r = requests.head(url)
-            print(r.status_code)
-            if r.status_code >= 200 and r.status_code < 300:
-                return 1
-            else:
-                return 0
-        except requests.ConnectionError:
-            return 0
-
     def _remove_column_from_data_frame(self, column):
         self.df_features = self.df_features.drop(columns=[column])
-        assert column not in self.df_features.columns, "{} is in df_features!".format(column)
+        assert column not in self.df_features.columns, "{} is in df_features!".format(
+            column)
 
     def _add_df_to_feature_df(self, df):
         """Adds a DataFrame based on OBS_ID to feature df
@@ -227,11 +214,11 @@ class FeatureEngineering(object):
                 continue
             df_copy[column] = df_copy[column] - df_copy[feature]
 
-        df_copy.loc[df_copy[column] <0, column] = 0
+        df_copy.loc[df_copy[column] < 0, column] = 0
 
         return df_copy
 
-    def _transform_numerical_difference(self, column,include_columns, na_strategy='set:0'):
+    def _transform_numerical_difference(self, column, include_columns, na_strategy='set:0'):
         """Subtracts two or more columns from each other
 
         Arguments:
@@ -244,17 +231,16 @@ class FeatureEngineering(object):
 
         # Copy Dataframe
         df_copy = self.df
-        # Fill NAs and change dtype to numerical  
+        # Fill NAs and change dtype to numerical
         for feature in include_columns:
             df_copy = self._execute_na_strategy(df_copy, feature, na_strategy)
             df_copy[feature] = pd.to_numeric(df_copy[feature])
 
-
-        df_copy = self._calculate_difference(column,include_columns, df_copy)
+        df_copy = self._calculate_difference(column, include_columns, df_copy)
 
         self._add_column_to_data_frame(df_copy, column)
 
-    def _transform_duration_feature(self, column,include_columns, na_strategy='set:0'):
+    def _transform_duration_feature(self, column, include_columns, na_strategy='set:0'):
         """Subtracts two or more columns from each other
 
         Arguments:
@@ -267,26 +253,25 @@ class FeatureEngineering(object):
 
         # Copy Dataframe
         df_copy = self.df
-        years = column +'_years'
-        months = column +'_months'
-        days = column +'_days'
+        years = column + '_years'
+        months = column + '_months'
+        days = column + '_days'
 
         # Date time to unix timestamp
         for feature in include_columns:
-            df_copy[feature] = pd.to_datetime(df_copy[feature],infer_datetime_format=True,errors='coerce')
+            df_copy[feature] = pd.to_datetime(
+                df_copy[feature], infer_datetime_format=True, errors='coerce')
 
-        
         # calculate diffs
-        timeDiffs= df_copy[include_columns[0]] - df_copy[include_columns[1]]
+        timeDiffs = df_copy[include_columns[0]] - df_copy[include_columns[1]]
         #df_copy[years] = timeDiffs /np.timedelta64(1,'Y')
         #df_copy[months] = timeDiffs /np.timedelta64(1,'M')
-        df_copy[column] = timeDiffs /np.timedelta64(1,'D')
+        df_copy[column] = timeDiffs / np.timedelta64(1, 'D')
 
         # fill na values
         #df_copy = self._execute_na_strategy(df_copy, years, na_strategy)
         #df_copy = self._execute_na_strategy(df_copy, months, na_strategy)
         df_copy = self._execute_na_strategy(df_copy, column, na_strategy)
-
 
         #self._add_column_to_data_frame(df_copy, years)
         #self._add_column_to_data_frame(df_copy, months)
@@ -349,7 +334,7 @@ class FeatureEngineering(object):
         df_copy = self._execute_na_strategy(df_copy, column, na_strategy)
 
         self._add_column_to_data_frame(df_copy, column)
-    
+
     def _rename_column(self, column, rename):
         df_copy = self.df_features.copy()
 
@@ -357,14 +342,13 @@ class FeatureEngineering(object):
 
         self._remove_column_from_data_frame(column)
         self._add_column_to_data_frame(df_copy, rename)
-    
-    def _transform_link_binary(self, column, on_column, na_strategy ="set:NAN"):
-        df_copy = self.df.copy()
-        df_copy = self._execute_na_strategy(df_copy, on_column, na_strategy)
-        with Pool(processes=1000) as pool:
-            results = pool.map(self._check_http_status_code, df_copy[on_column])
 
-        return results
+    def _transform_link_binary(self, column):
+        try:
+            df_link_feature = pd.read_csv('data/external/'+column + '.csv')
+            self._add_df_to_feature_df(df_link_feature)
+        except:
+            logger.warn('could not add link binary feature {}, csv file was not found'.format(column))
 
     def get_X_y(self):
         """This function returns X_train, y_train and X_test.
@@ -439,7 +423,8 @@ class FeatureEngineering(object):
 
         kws_slice = kws_wo_id[-amt_weeks:]
 
-        grouped_prices_kws = self.df_gem_btc_usd.groupby('calendar_week').mean()['High']
+        grouped_prices_kws = self.df_gem_btc_usd.groupby(
+            'calendar_week').mean()['High']
 
         cols = self.remove_kw_from_column(kws_wo_id)
         cols = np.array(cols, dtype=int)
@@ -448,7 +433,8 @@ class FeatureEngineering(object):
 
         for week in kws_slice:
             new_col = 'difference_BTC_' + week
-            btc_col = int(re.findall(r'[+-]?([0-9]+(?:[.][0-9]*)?|[.][0-9]+)', new_col)[0])
+            btc_col = int(re.findall(
+                r'[+-]?([0-9]+(?:[.][0-9]*)?|[.][0-9]+)', new_col)[0])
             btc_price = grouped_prices_kws[btc_col]
             difference = df_kws.loc[:, week] - btc_price
             new_df.loc[:, new_col] = difference
@@ -470,7 +456,7 @@ class FeatureEngineering(object):
                 self._delete_na_values(feature_name)
 
         self._init_df_features()
-
+        
         # Iterating through features and construct feature set
         for feature in features:
             logger.debug("Feature: {}".format(feature))
@@ -485,7 +471,7 @@ class FeatureEngineering(object):
                 continue
 
             assert (
-                    'column' in feature), "No column key provided in feature " + feature
+                'column' in feature), "No column key provided in feature " + feature
             assert ('type' in feature), "No column type provided"
 
             feature_type = feature["type"]
@@ -493,11 +479,11 @@ class FeatureEngineering(object):
 
             if feature_type == "categorical":
                 assert (
-                        'encoder' in feature), "No encoder for categorical feauter {} provided".format(feature_name)
+                    'encoder' in feature), "No encoder for categorical feauter {} provided".format(feature_name)
 
                 feauter_encoder = feature["encoder"]
                 assert (
-                        'na_strategy' in feature), "No na_strategy for numerical feauter {} provided".format(feature_name)
+                    'na_strategy' in feature), "No na_strategy for numerical feauter {} provided".format(feature_name)
                 strategy = feature["na_strategy"]
 
                 if feauter_encoder == "label":
@@ -507,48 +493,48 @@ class FeatureEngineering(object):
                     self._transform_categorical_variables_one_hot_encoded(
                         feature_name, strategy)
                 elif feauter_encoder == "skip":
-                    self._transform_categorical_skip_encoded(feature_name, strategy)
+                    self._transform_categorical_skip_encoded(
+                        feature_name, strategy)
                 else:
                     raise ValueError("Feauter encoder not recognized")
 
             elif feature_type == "numerical":
                 assert (
-                        'na_strategy' in feature), "No na_strategy for categorical feauter {} provided".format(feature_name)
+                    'na_strategy' in feature), "No na_strategy for categorical feauter {} provided".format(feature_name)
                 strategy = feature["na_strategy"]
                 self._transform_numerical_variables(feature_name, strategy)
 
             elif feature_type == "difference":
                 assert (
-                        'na_strategy' in feature), "No na_strategy for difference {} provided".format(feature_name)
+                    'na_strategy' in feature), "No na_strategy for difference {} provided".format(feature_name)
                 strategy = feature["na_strategy"]
                 assert (
-                        'columns' in feature), "No columns for difference in feature {} provided".format(feature_name)
-                columns =feature["columns"]
+                    'columns' in feature), "No columns for difference in feature {} provided".format(feature_name)
+                columns = feature["columns"]
                 assert (
-                    len(columns) >1), "Please provide at least 2 columns for difference {} provided".format(feature_name)
-                self._transform_numerical_difference(feature_name,columns, strategy)
+                    len(columns) > 1), "Please provide at least 2 columns for difference {} provided".format(feature_name)
+                self._transform_numerical_difference(
+                    feature_name, columns, strategy)
             elif feature_type == "duration":
                 assert (
-                        'na_strategy' in feature), "No na_strategy for duration {} provided".format(feature_name)
+                    'na_strategy' in feature), "No na_strategy for duration {} provided".format(feature_name)
                 strategy = feature["na_strategy"]
                 assert (
-                        'columns' in feature), "No columns for duration in feature {} provided".format(feature_name)
-                columns =feature["columns"]
+                    'columns' in feature), "No columns for duration in feature {} provided".format(feature_name)
+                columns = feature["columns"]
                 assert (
                     len(columns) == 2), "Please provide exact 2 columns for duration {} provided".format(feature_name)
-                self._transform_duration_feature(feature_name,columns, strategy)
+                self._transform_duration_feature(
+                    feature_name, columns, strategy)
 
             elif feature_type == "binary":
-                self._transform_binary_variables(feature_name)            
-            
+                self._transform_binary_variables(feature_name)
+
             elif feature_type == "link":
-                assert (
-                        'on_column' in feature), "No on_column for http get check in feature {} provided".format(feature_name)
-                columns =feature["on_column"]
-                self._transform_link_binary(feature_name,columns)
+                self._transform_link_binary(feature_name)
             else:
                 raise ValueError('feature type not recognized')
-            
+
             if "rename" in feature:
                 rename = feature["rename"]
                 self._rename_column(feature_name, rename)
