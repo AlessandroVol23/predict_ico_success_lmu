@@ -81,7 +81,8 @@ class BuildModel(object):
             feature_sets = read_feature_meta(True)
             feature_set = feature_sets[feature_set_number]
 
-        upsampling = read_upsampling_feature_set(feature_set_meta, feature_set_number)
+        upsampling = read_upsampling_feature_set(
+            feature_set_meta, feature_set_number)
 
         result = self._read_result_csv()
 
@@ -174,6 +175,8 @@ class BuildModel(object):
             preds_test = fitting_model.predict_test_set()
             preds_test_abs = preds_test.argmax(axis=1)
             next_submission_number = self._get_submission_number()
+            model_file_name = fitting_model.save_current_model()
+            fitting_model.save_feature_importance()
             self._create_evaluation_file(fitting_model.test_ids, preds_test_abs,
                                          next_submission_number, True)
 
