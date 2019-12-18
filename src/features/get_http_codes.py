@@ -65,4 +65,4 @@ def transform_link_binary(column="links_homepage", na_strategy="set:NAN"):
     df_raw["links_homepage_available"] = results
 
     df_raw.to_csv(
-        'data/raw/1_training_data_sets/1_training_data_new.csv',   encoding="ISO-8859-1")
+        'data/raw/1_training_data_sets/1_training_data.csv')
