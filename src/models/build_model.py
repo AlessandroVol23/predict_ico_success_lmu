@@ -15,13 +15,12 @@ logger = logging.getLogger(__name__)
 log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 logging.basicConfig(level=logging.INFO, format=log_fmt)
 
-# training_models = [
-#     CatBoostModel,
-#     LightGbmModel
-# ]
-
 training_models = [
-    CatBoostModel
+    CatBoostModel,
+    LightGbmModel
+]
+training_models = [
+    LightGbmModel
 ]
 
 
@@ -142,6 +141,12 @@ class BuildModel(object):
 
             # Get values from fitting model
             mean_mcc = fitting_model.cross_validation()
+
+            test_ids, sub_preds_abs = fitting_model.get_values()
+
+            next_submission_number = self._get_submission_number()
+            self._create_evaluation_file(test_ids, sub_preds_abs,
+                                         next_submission_number, True)
 
             # get name and params from underlying model
             model_name = current_model.get_name()

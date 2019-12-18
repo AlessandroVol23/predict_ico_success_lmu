@@ -10,6 +10,5 @@ class BaseModel(ABC):
        pass
     def fit(self,trn_x, trn_y, val_x=None, val_y=None, categorical_features = []):
         pass
-    def predict_proba(self,oof_preds,sub_preds,X_test,folds,val_idx,val_x ):
-        pass
-
+    def predict_proba(self, test_set):
+       pass
