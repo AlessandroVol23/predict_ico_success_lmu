@@ -12,8 +12,6 @@ from src.models.utils import upsample_data
 
 from src.models.utils import read_feature_data
 
-
-
 logger = logging.getLogger(__name__)
 log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 logging.basicConfig(level=logging.INFO, format=log_fmt)
@@ -21,7 +19,7 @@ logging.basicConfig(level=logging.INFO, format=log_fmt)
 
 class FittingModel(object):
 
-    def __init__(self, feature_set,model,categorical_features, upsample=None ):
+    def __init__(self, feature_set, model, categorical_features, upsample=None):
         """Constructor for class LightGbmModel
 
         Parameters
@@ -36,46 +34,58 @@ class FittingModel(object):
         self.test_ids = self.X_test['OBS_ID']
         self.X_test = self.X_test.drop('OBS_ID', axis=1)
         self.upsample = upsample
-        self.categorical_features = np.array(list(map(lambda x: self.X_train.columns.get_loc(x), categorical_features)))
+        # self.categorical_features = np.array(list(map(lambda x: self.X_train.columns.get_loc(x), categorical_features)))
         self.model = model
-        self.traning_model = self.model.get_model()
+        self.traning_model = self.model.get_model(reinitialize=True)
         logger.info("X_train shape: {}".format(self.X_train.shape))
         logger.info("y_train shape: {}".format(self.y_train.shape))
         logger.info("x_test shape: {}".format(self.X_test.shape))
 
     def get_values(self):
-
         return self.test_ids, self.sub_preds_abs
+
+    def train_final_model(self):
+        self.model.fit(self.X_train, self.y_train)
+        logger.info("Model trained!")
+
+    def predict_test_set(self):
+        preds_test = self.model.predict_proba(self.X_test)
+        return preds_test
 
     def cross_validation(self):
         """Cross validation
         """
         # Modeling
-      # Modeling
-        folds = KFold(n_splits=5, shuffle=True, random_state=123)
+        # folds = KFold(n_splits=5, shuffle=True, random_state=123)
         # StratifiedKFold
-        # folds = StratifiedKFold(n_splits=10, shuffle=True, random_state=123)
+        folds = StratifiedKFold(n_splits=10, shuffle=True, random_state=123)
         # skf.get_n_splits(self.X_train, self.y_train)
-    
+
         oof_preds = np.zeros(self.X_train.shape[0])
         sub_preds = np.zeros(self.X_test.shape[0])
         mcc_folds = []
         for n_fold, (trn_idx, val_idx) in enumerate(folds.split(self.X_train, self.y_train)):
+
             trn_x, trn_y = self.X_train.iloc[trn_idx], self.y_train.iloc[trn_idx]
+
             if self.upsample:
                 trn_x, trn_y = upsample_data(trn_x, trn_y, self.upsample)
 
             val_x, val_y = self.X_train.iloc[val_idx], self.y_train.iloc[val_idx]
 
-            self.model.fit(trn_x, trn_y,val_x,val_y, self.categorical_features)
-            oof_pred_abs = self.model.predict_proba(oof_preds,sub_preds,self.X_test,folds,val_idx,val_x )
-            unique_elements, counts_elements = np.unique(
-                oof_pred_abs, return_counts=True)
-            logger.debug("unique elements: {}: counts_elements: {}".format(
-                unique_elements, counts_elements))
-            mcc = matthews_corrcoef(val_y, oof_pred_abs[val_idx])
+            self.model.fit(trn_x, trn_y, val_x, val_y)
+
+            # Get probabilities for validation set
+            preds_val_x = self.model.predict_proba(val_x)
+            preds_val_x_abs = preds_val_x.argmax(axis=1)
+
+            # Get MCC for validation set
+            mcc = matthews_corrcoef(val_y, preds_val_x_abs)
+
+            sub_preds += self.model.predict_proba(self.X_test)[:, 1] / folds.n_splits
+
             logger.info('Fold %2d mcc : %.6f' %
-                (n_fold + 1, mcc))
+                        (n_fold + 1, mcc))
 
             mcc_folds.append(mcc)
             del trn_x, trn_y, val_x, val_y
