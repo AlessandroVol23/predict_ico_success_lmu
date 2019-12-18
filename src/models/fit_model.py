@@ -47,7 +47,6 @@ class FittingModel(object):
         logger.info("y_train shape: {}".format(self.y_train.shape))
         logger.info("x_test shape: {}".format(self.X_test.shape))
 
-
     def get_values(self):
         return self.test_ids, self.sub_preds_abs
 
@@ -56,29 +55,39 @@ class FittingModel(object):
         logger.info("Model trained!")
 
     def predict_test_set(self):
-        preds_test=self.model.predict_proba(self.X_test)
+        preds_test = self.model.predict_proba(self.X_test)
         return preds_test
 
     def _get_model_file_name(self):
 
         return 'models/local/'+self.model.get_name() + '_'+self.feature_set + self.base_time_stamp + '.sav'
 
-    def _get_figure_file_name(self):
+    def _get_figure_file_name(self, method):
 
-        return 'reports/figures/local/'+self.model.get_name() + '_' + self.feature_set + self.base_time_stamp + '_feature_importance'+'.png'
+        return 'reports/figures/local/'+self.model.get_name() + '_' + self.feature_set + self.base_time_stamp + '_feature_importance'+'_'+method+'.png'
 
     def save_current_model(self):
-        filename=self._get_model_file_name()
+        filename = self._get_model_file_name()
         dump(self.model.get_model(), filename)
         logger.info("Saved model under {}".format(filename))
         return filename
 
-    def save_feature_importance(self):
-        shap_values=self.model.get_feature_importance(self.X_test)
-        shap.initjs()
-        shap_values = shap_values[:,:-1]
-        shap.summary_plot(shap_values, self.X_test, show=False)
-        plt.savefig(self._get_figure_file_name(), bbox_inches='tight')
+    def save_feature_importance(self, method="ShapValues", preds_test = []):
+        print(method)
+        shap_values = self.model.get_feature_importance(self.X_test, method, preds_test)
+        if method == "ShapValues":
+            shap_values = shap_values[:, :-1]
+            shap.summary_plot(shap_values, self.X_test, show=False)
+        else:
+            feature_score = pd.DataFrame(list(zip(self.X_test.dtypes.index, shap_values )),
+                                        columns=['Feature','Score'])    
+            feature_score = feature_score.sort_values(by='Score', ascending=False, inplace=False, kind='quicksort', na_position='last')
+            plt.rcParams["figure.figsize"] = (12,7)
+            ax = feature_score.plot('Feature', 'Score', kind='bar', color='c')
+            ax.set_title("Feature Importance using {}".format(method), fontsize = 14)
+            ax.set_xlabel("features")
+
+        plt.savefig(self._get_figure_file_name(method), bbox_inches='tight')
 
     def cross_validation(self):
         """Cross validation
@@ -86,29 +95,29 @@ class FittingModel(object):
         # Modeling
         # folds = KFold(n_splits=5, shuffle=True, random_state=123)
         # StratifiedKFold
-        folds=StratifiedKFold(n_splits=10, shuffle=True, random_state=123)
+        folds = StratifiedKFold(n_splits=10, shuffle=True, random_state=123)
         # skf.get_n_splits(self.X_train, self.y_train)
 
-        oof_preds=np.zeros(self.X_train.shape[0])
-        sub_preds=np.zeros(self.X_test.shape[0])
-        mcc_folds=[]
+        oof_preds = np.zeros(self.X_train.shape[0])
+        sub_preds = np.zeros(self.X_test.shape[0])
+        mcc_folds = []
         for n_fold, (trn_idx, val_idx) in enumerate(folds.split(self.X_train, self.y_train)):
 
-            trn_x, trn_y=self.X_train.iloc[trn_idx], self.y_train.iloc[trn_idx]
+            trn_x, trn_y = self.X_train.iloc[trn_idx], self.y_train.iloc[trn_idx]
 
             if self.upsample:
-                trn_x, trn_y=upsample_data(trn_x, trn_y, self.upsample)
+                trn_x, trn_y = upsample_data(trn_x, trn_y, self.upsample)
 
-            val_x, val_y=self.X_train.iloc[val_idx], self.y_train.iloc[val_idx]
+            val_x, val_y = self.X_train.iloc[val_idx], self.y_train.iloc[val_idx]
 
             self.model.fit(trn_x, trn_y, val_x, val_y)
 
             # Get probabilities for validation set
-            preds_val_x=self.model.predict_proba(val_x)
-            preds_val_x_abs=preds_val_x.argmax(axis=1)
+            preds_val_x = self.model.predict_proba(val_x)
+            preds_val_x_abs = preds_val_x.argmax(axis=1)
 
             # Get MCC for validation set
-            mcc=matthews_corrcoef(val_y, preds_val_x_abs)
+            mcc = matthews_corrcoef(val_y, preds_val_x_abs)
 
             sub_preds += self.model.predict_proba(
                 self.X_test)[:, 1] / folds.n_splits
@@ -119,7 +128,7 @@ class FittingModel(object):
             mcc_folds.append(mcc)
             del trn_x, trn_y, val_x, val_y
 
-        self.sub_preds_abs=sub_preds.round()
-        mean_mcc=np.array(mcc_folds).mean()
+        self.sub_preds_abs = sub_preds.round()
+        mean_mcc = np.array(mcc_folds).mean()
         print("Overall MCC was: {}".format(mean_mcc))
         return mean_mcc

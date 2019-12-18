@@ -57,6 +57,12 @@ class CatBoostModel(BaseModel):
         preds = self.model.predict_proba(test_set)
         return preds
 
-    def get_feature_importance(self, X_test, categorical_features_indices=[]):
-        return self.model.get_feature_importance(Pool(X_test,cat_features=categorical_features_indices), 
-                                                                     type="ShapValues")
+    def get_feature_importance(self, X_test, method="ShapValues", preds_test=[], categorical_features_indices=[]):
+
+        if method == "ShapValues":
+            return self.model.get_feature_importance(Pool(X_test, cat_features=categorical_features_indices),
+                                                     type="ShapValues")
+        else:
+            print("wrong here " + method)
+            return self.model.get_feature_importance(Pool(X_test,  label=preds_test, cat_features=categorical_features_indices),
+                                                     type=method)
