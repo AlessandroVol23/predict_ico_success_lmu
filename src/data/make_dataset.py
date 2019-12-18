@@ -176,8 +176,13 @@ def get_processed_data(path_bitcoin_df='data/raw/1_training_data_sets/1_bitcoin_
     df = preprocess(df)
 
     # Split into df and df_test again
-    df_test = df.loc[df.success == "TEST", :"KW39"]
+    cols_test = set(df.columns) - set(['success'])
+    df_test = df.loc[df.success == "TEST", cols_test]
     df = df.loc[df.success != "TEST"]
+
+    logger.info("Training dataset shape: {}".format(df.shape))
+    logger.info("Test dataset shape: {}".format(df_test.shape))
+
     assert len(df) == 4757, "Shape of DF has to be 4757"
     assert len(df_test) == 1001, "Shape of DF test has to be 1001"
 
@@ -195,8 +200,8 @@ def get_external_data():
 
 def _save_processed_data(df_bitcoin, df, df_test, df_gem_btc_usd, df_gem_eth_usd, df_gem_ltc_usd, df_icobench):
     df_bitcoin.to_csv('data/processed/df_bitcoin_pp.csv', index=None)
-    df.to_csv('data/processed/df_train_pp.csv')
-    df_test.to_csv('data/processed/df_test_pp.csv')
+    df.to_csv('data/processed/df_train_pp.csv', index=None)
+    df_test.to_csv('data/processed/df_test_pp.csv', index=None)
     df_gem_btc_usd.to_csv('data/processed/df_gem_btc_usd.csv', index=None)
     df_gem_eth_usd.to_csv('data/processed/df_gem_eth_usd.csv', index=None)
     df_gem_ltc_usd.to_csv('data/processed/df_gem_ltc_usd.csv', index=None)
