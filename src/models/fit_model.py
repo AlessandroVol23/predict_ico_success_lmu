@@ -15,6 +15,7 @@ import shap
 import matplotlib.pyplot as plt
 
 from src.models.utils import read_feature_data
+from src.utils import create_folder
 
 logger = logging.getLogger(__name__)
 log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
@@ -59,12 +60,10 @@ class FittingModel(object):
         return preds_test
 
     def _get_model_file_name(self):
+        return 'models/local/' + self.model.get_name() + '_' + self.feature_set + self.base_time_stamp + '.sav'
 
-        return 'models/local/'+self.model.get_name() + '_'+self.feature_set + self.base_time_stamp + '.sav'
-
-    def _get_figure_file_name(self, method):
-
-        return 'reports/figures/local/'+self.model.get_name() + '_' + self.feature_set + self.base_time_stamp + '_feature_importance'+'_'+method+'.png'
+    def _get_figure_file_name(self, method, path):
+        return os.path.join(path, ('feature_importance' + '_' + method + '.png'))
 
     def save_current_model(self):
         filename = self._get_model_file_name()
@@ -72,22 +71,34 @@ class FittingModel(object):
         logger.info("Saved model under {}".format(filename))
         return filename
 
-    def save_feature_importance(self, method="ShapValues", preds_test = []):
-        print(method)
-        shap_values = self.model.get_feature_importance(self.X_test, method, preds_test)
-        if method == "ShapValues":
-            shap_values = shap_values[:, :-1]
-            shap.summary_plot(shap_values, self.X_test, show=False)
-        else:
-            feature_score = pd.DataFrame(list(zip(self.X_test.dtypes.index, shap_values )),
-                                        columns=['Feature','Score'])    
-            feature_score = feature_score.sort_values(by='Score', ascending=False, inplace=False, kind='quicksort', na_position='last')
-            plt.rcParams["figure.figsize"] = (12,7)
-            ax = feature_score.plot('Feature', 'Score', kind='bar', color='c')
-            ax.set_title("Feature Importance using {}".format(method), fontsize = 14)
-            ax.set_xlabel("features")
+    def save_feature_importance(self, method, preds_test=[]):
+        logger.info(method)
+        path = os.path.join('reports/figures/local/', (self.model.get_name() + '_' + self.feature_set))
+        create_folder(path)
+        filename = self._get_figure_file_name(method, path)
+        explainer = shap.TreeExplainer(self.model.get_model(reinitialize=False))
+        shap_values = explainer.shap_values(self.X_train)
 
-        plt.savefig(self._get_figure_file_name(method), bbox_inches='tight')
+        if method == "shap":
+            # shap_values = shap_values[:, :-1]
+            shap.summary_plot(shap_values, self.X_train, show=False)
+            plt.savefig(self._get_figure_file_name('shap', path), bbox_inches='tight')
+
+        elif method == 'summary':
+            shap.summary_plot(shap_values, self.X_train, plot_type='bar', show=False)
+            plt.savefig(self._get_figure_file_name('summary', path), bbox_inches='tight')
+
+        elif method == 'feature_importance':
+            feature_score = pd.DataFrame(list(zip(self.X_test.dtypes.index, shap_values.mean(axis=0))),
+                                         columns=['Feature', 'Score'])
+            feature_score = feature_score.sort_values(by='Score', ascending=False, inplace=False, kind='quicksort',
+                                                      na_position='last')
+            plt.rcParams["figure.figsize"] = (12, 7)
+            ax = feature_score.plot('Feature', 'Score', kind='bar', color='c')
+            ax.set_title("Feature Importance using {}".format(method), fontsize=14)
+            ax.set_xlabel("features")
+            plt.savefig(self._get_figure_file_name(method, path), bbox_inches='tight')
+
 
     def cross_validation(self):
         """Cross validation
@@ -95,7 +106,7 @@ class FittingModel(object):
         # Modeling
         # folds = KFold(n_splits=5, shuffle=True, random_state=123)
         # StratifiedKFold
-        folds = StratifiedKFold(n_splits=10, shuffle=True, random_state=123)
+        folds = StratifiedKFold(n_splits=5, shuffle=True, random_state=123)
         # skf.get_n_splits(self.X_train, self.y_train)
 
         oof_preds = np.zeros(self.X_train.shape[0])

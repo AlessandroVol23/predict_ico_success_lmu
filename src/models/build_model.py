@@ -133,7 +133,6 @@ class BuildModel(object):
 
             categorical_features = self._read_categorical_features(
                 feature_set_meta, feature_set_key)
-
             # Fitting model that trains and cross validates, takes the underlying model to train as a param
             fitting_model = FittingModel(
                 feature_set_key, current_model, categorical_features, upsample=upsampling)
@@ -180,8 +179,9 @@ class BuildModel(object):
             next_submission_number = self._get_submission_number()
             fitting_model.save_current_model()
             if model_name == 'catboost':
-                fitting_model.save_feature_importance()
-                fitting_model.save_feature_importance("LossFunctionChange", preds_test_abs)
+                fitting_model.save_feature_importance('summary')
+                fitting_model.save_feature_importance('shap')
+                fitting_model.save_feature_importance('feature_importance')
             self._create_evaluation_file(fitting_model.test_ids, preds_test_abs,
                                          next_submission_number, True)
 
