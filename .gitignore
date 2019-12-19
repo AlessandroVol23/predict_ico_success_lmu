@@ -24,7 +24,9 @@ var/
 *.egg
 catboost_info/
 models/local/*
-reports/figures/local/*
+#reports/figures/local/*
+data/feature/feature_sets/*
+
 # PyInstaller
 #  Usually these files are written by a python script from a template
 #  before PyInstaller builds the exe, so as to inject date/other infos into it.
@@ -89,3 +91,5 @@ target/
 
 # Feature sets
 data/feature/feature_set
+/data/features/feature_sets/
+/data/submissions/
