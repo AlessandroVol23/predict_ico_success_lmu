@@ -20,9 +20,6 @@ training_models = [
     CatBoostModel,
     LightGbmModel
 ]
-training_models = [
-    LightGbmModel
-]
 
 
 class BuildModel(object):
@@ -155,7 +152,7 @@ class BuildModel(object):
             hyperparams = current_model.get_params()
 
             self._write_results(feature_set_meta, feature_set_key, mean_mcc, model_name,
-                                'No Submission', hyperparams)
+                                next_submission_number, hyperparams)
 
             # Workaround till we have function to read in optimized hyperparams
             if model_name == 'catboost':
@@ -182,8 +179,9 @@ class BuildModel(object):
             preds_test_abs = preds_test.argmax(axis=1)
             next_submission_number = self._get_submission_number()
             fitting_model.save_current_model()
-            fitting_model.save_feature_importance()
-            fitting_model.save_feature_importance("LossFunctionChange", preds_test_abs)
+            if model_name == 'catboost':
+                fitting_model.save_feature_importance()
+                fitting_model.save_feature_importance("LossFunctionChange", preds_test_abs)
             self._create_evaluation_file(fitting_model.test_ids, preds_test_abs,
                                          next_submission_number, True)
 

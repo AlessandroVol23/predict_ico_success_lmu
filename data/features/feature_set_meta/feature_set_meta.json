@@ -1,5 +1,5 @@
 {
-  "na_less_50_median_upsample_50": [
+ "na_less_20_median_upsample_50": [
     {
       "meta": {
         "upsampling": "0.5"
@@ -241,6 +241,11 @@
       "na_strategy": "median"
     },
     {
+      "column": "developer_data_closed_issues",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
       "column": "developer_data_pull_requests_merged",
       "type": "numerical",
       "na_strategy": "median"
@@ -281,17 +286,7 @@
       "na_strategy": "median"
     },
     {
-      "column": "community_data_telegram_channel_user_count",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
       "column": "market_data_circulating_supply",
-      "type": "numerical",
-      "na_strategy": "median"
-    },
-    {
-      "column": "market_data_low_24h_usd",
       "type": "numerical",
       "na_strategy": "median"
     },
@@ -306,14 +301,32 @@
       "na_strategy": "median"
     },
     {
+      "column": "links_homepage",
+      "type": "binary",
+      "na_strategy": "False"
+    },
+    {
+      "column": "market_data_low_24h_usd",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
       "column": "market_data_high_24h_usd",
       "type": "numerical",
       "na_strategy": "median"
     },
     {
+      "column": "market_data_high_24h_usd",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "links_blockchain_site",
+      "type": "binary"
+    },
+    {
       "column": "market_data_first_time_trading",
-      "type": "binary",
-      "na_strategy": "False"
+      "type": "binary"
     },
     {
       "column": "market_data_total_supply",
@@ -321,54 +334,8 @@
       "na_strategy": "median"
     },
     {
-      "column": "market_data_ath_date_usd",
-      "type": "binary",
-      "na_strategy": "set:False"
-    },
-    {
-      "column": "links_homepage",
-      "type": "binary",
-      "na_strategy": "False"
-    },
-    {
-      "column": "links_repos_url_github",
-      "type": "binary",
-      "na_strategy": "False"
-    },
-    {
       "column": "links_twitter_screen_name",
-      "type": "binary",
-      "na_strategy": "False"
-    },
-    {
-      "column": "links_blockchain_site",
-      "type": "binary",
-      "na_strategy": "False"
-    },
-    {
-      "column": "links_twitter_screen_name",
-      "type": "binary",
-      "na_strategy": "False"
-    },
-    {
-      "column": "holder_count",
-      "type": "numerical",
-      "na_strategy": "set:0"
-    },
-    {
-      "column": "contract_address",
-      "type": "binary",
-      "na_strategy": "False"
-    },
-    {
-      "column": "transaction_count",
-      "type": "numerical",
-      "na_strategy": "set:0"
-    },
-    {
-      "column": "timestamp",
-      "type": "binary",
-      "na_strategy": "False"
+      "type": "binary"
     }
   ]
 }
