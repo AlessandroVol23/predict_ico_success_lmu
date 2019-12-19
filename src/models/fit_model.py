@@ -49,7 +49,7 @@ class FittingModel(object):
         logger.info("x_test shape: {}".format(self.X_test.shape))
 
     def get_values(self):
-        return self.test_ids, self.sub_preds_abs
+        return self.test_ids, self.oof_test_abs
 
     def train_final_model(self):
         self.model.fit(self.X_train, self.y_train)
