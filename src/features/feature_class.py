@@ -333,8 +333,6 @@ class FeatureEngineering(object):
             except:
                 pass
 
-            print(df_copy[feature].head())
-
         # calculate diffs
         timeDiffs = df_copy[include_columns[0]] - df_copy[include_columns[1]]
         # df_copy[years] = timeDiffs /np.timedelta64(1,'Y')

@@ -1,11 +1,14 @@
 {
-  "na_less_50_mixed_upsampling_00_3": [
+  "na_less_50_mixed_upsampling_00_4": [
     { "meta": { "upsampling": "0.0" } },
     {
       "column": "transaction_count",
       "type": "numerical",
       "na_strategy": "median"
     },
+    { "column": "bitcoin_difference", "type": "custom", "amt_weeks": 4 },
+    { "column": "eth_difference", "type": "custom", "amt_weeks": 4 },
+    { "column": "ltc_difference", "type": "custom", "amt_weeks": 4 },
     { "column": "timestamp", "type": "binary" },
     {
       "column": "diff_holder_count_total_tokens",
@@ -34,6 +37,60 @@
       "column": "market_data_ath_usd",
       "type": "numerical",
       "na_strategy": "min"
+    },
+    {
+      "column": "average_of_kws",
+      "type": "average",
+      "include": false,
+      "na_strategy": "median",
+      "columns": [
+        "KW1",
+        "KW2",
+        "KW3",
+        "KW4",
+        "KW5",
+        "KW6",
+        "KW7",
+        "KW8",
+        "KW9",
+        "KW10",
+        "KW11",
+        "KW12",
+        "KW13",
+        "KW14",
+        "KW15",
+        "KW16",
+        "KW17",
+        "KW18",
+        "KW19",
+        "KW20",
+        "KW21",
+        "KW22",
+        "KW23",
+        "KW24",
+        "KW25",
+        "KW26",
+        "KW27",
+        "KW28",
+        "KW29",
+        "KW30",
+        "KW31",
+        "KW32",
+        "KW33",
+        "KW34",
+        "KW35",
+        "KW36",
+        "KW37",
+        "KW38",
+        "KW39"
+      ]
+    },
+    {
+      "column": "diff_all_time_highest_average",
+      "type": "difference",
+      "na_strategy": "set:0",
+      "columns": ["market_data_ath_usd", "average_of_kws"],
+      "dependsOn": ["average_of_kws"]
     },
     {
       "column": "diff_market_total_circulating_supply",
