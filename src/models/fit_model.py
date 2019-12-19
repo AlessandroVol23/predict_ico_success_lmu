@@ -9,6 +9,10 @@ import pandas as pd
 from sklearn.metrics import matthews_corrcoef, roc_auc_score
 from sklearn.model_selection import KFold, StratifiedKFold, train_test_split
 from src.models.utils import upsample_data
+from time import time
+from joblib import dump
+import shap
+import matplotlib.pyplot as plt
 
 from src.models.utils import read_feature_data
 
@@ -29,8 +33,10 @@ class FittingModel(object):
         y : DataFrame
             y_train DataFrame from build_features.py
         """
+        self.base_time_stamp = str(int(time()))
         self.X_train, self.y_train, self.X_test = read_feature_data(
             feature_set)
+        self.feature_set = feature_set
         self.test_ids = self.X_test['OBS_ID']
         self.X_test = self.X_test.drop('OBS_ID', axis=1)
         self.upsample = upsample
@@ -51,6 +57,37 @@ class FittingModel(object):
     def predict_test_set(self):
         preds_test = self.model.predict_proba(self.X_test)
         return preds_test
+
+    def _get_model_file_name(self):
+
+        return 'models/local/'+self.model.get_name() + '_'+self.feature_set + self.base_time_stamp + '.sav'
+
+    def _get_figure_file_name(self, method):
+
+        return 'reports/figures/local/'+self.model.get_name() + '_' + self.feature_set + self.base_time_stamp + '_feature_importance'+'_'+method+'.png'
+
+    def save_current_model(self):
+        filename = self._get_model_file_name()
+        dump(self.model.get_model(), filename)
+        logger.info("Saved model under {}".format(filename))
+        return filename
+
+    def save_feature_importance(self, method="ShapValues", preds_test = []):
+        print(method)
+        shap_values = self.model.get_feature_importance(self.X_test, method, preds_test)
+        if method == "ShapValues":
+            shap_values = shap_values[:, :-1]
+            shap.summary_plot(shap_values, self.X_test, show=False)
+        else:
+            feature_score = pd.DataFrame(list(zip(self.X_test.dtypes.index, shap_values )),
+                                        columns=['Feature','Score'])    
+            feature_score = feature_score.sort_values(by='Score', ascending=False, inplace=False, kind='quicksort', na_position='last')
+            plt.rcParams["figure.figsize"] = (12,7)
+            ax = feature_score.plot('Feature', 'Score', kind='bar', color='c')
+            ax.set_title("Feature Importance using {}".format(method), fontsize = 14)
+            ax.set_xlabel("features")
+
+        plt.savefig(self._get_figure_file_name(method), bbox_inches='tight')
 
     def cross_validation(self):
         """Cross validation
@@ -82,7 +119,8 @@ class FittingModel(object):
             # Get MCC for validation set
             mcc = matthews_corrcoef(val_y, preds_val_x_abs)
 
-            sub_preds += self.model.predict_proba(self.X_test)[:, 1] / folds.n_splits
+            sub_preds += self.model.predict_proba(
+                self.X_test)[:, 1] / folds.n_splits
 
             logger.info('Fold %2d mcc : %.6f' %
                         (n_fold + 1, mcc))
