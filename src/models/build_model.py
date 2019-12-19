@@ -10,7 +10,7 @@ from src.utils import read_feature_meta
 from time import time
 import datetime
 from catboost import EFstrType
-from src.models.utils import read_upsampling_feature_set
+from src.models.utils import read_upsampling_feature_set, read_categorical_features
 
 logger = logging.getLogger(__name__)
 log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
@@ -101,20 +101,7 @@ class BuildModel(object):
         })
         self._write_result_csv(result, result_ser)
 
-    def _read_categorical_features(self, feature_set_meta, feature_set_key):
-        feature_set = feature_set_meta[feature_set_key]
-        categorical_features = []
-        for feature in feature_set:
-            if 'meta' in feature:
-                continue
-            feature_name = feature["column"]
-            feature_type = feature["type"]
-            if feature_type == "categorical":
-                categorical_features.append(feature_name)
-
-        return categorical_features
-
-    def train_model(self, feature_set_key, modelName=""):
+    def train_model(self, feature_set_key, modelName="", final_model=True):
         """takes the list of models and fits them with cross validation"""
 
         for current_model_class in training_models:
@@ -131,7 +118,7 @@ class BuildModel(object):
             upsampling = read_upsampling_feature_set(
                 feature_set_meta, feature_set_key)
 
-            categorical_features = self._read_categorical_features(
+            categorical_features = read_categorical_features(
                 feature_set_meta, feature_set_key)
             # Fitting model that trains and cross validates, takes the underlying model to train as a param
             fitting_model = FittingModel(
@@ -153,37 +140,38 @@ class BuildModel(object):
             self._write_results(feature_set_meta, feature_set_key, mean_mcc, model_name,
                                 next_submission_number, hyperparams)
 
-            # Workaround till we have function to read in optimized hyperparams
-            if model_name == 'catboost':
-                hp = {
-                    "bagging_temperature": 1.0,
-                    "border_count": 121,
-                    "depth": 4,
-                    "iterations": 802,
-                    "l2_leaf_reg": 30,
-                    "learning_rate": 0.4476540650629794,
-                    "random_strength": 10.0,
-                    "scale_pos_weight": 0.9494114772362018
-                }
-                final_model = current_model_class(hp)
-            else:
-                final_model = current_model_class()
+            if final_model:
+                # Workaround till we have function to read in optimized hyperparams
+                if model_name == 'catboost':
+                    hp = {
+                        "bagging_temperature": 1.0,
+                        "border_count": 121,
+                        "depth": 4,
+                        "iterations": 802,
+                        "l2_leaf_reg": 30,
+                        "learning_rate": 0.4476540650629794,
+                        "random_strength": 10.0,
+                        "scale_pos_weight": 0.9494114772362018
+                    }
+                    final_model = current_model_class(hp)
+                else:
+                    final_model = current_model_class()
 
-            fitting_model = FittingModel(
-                feature_set_key, final_model, categorical_features, upsample=upsampling)
+                fitting_model = FittingModel(
+                    feature_set_key, final_model, categorical_features, upsample=upsampling)
 
-            logger.info("Create final model.")
-            fitting_model.train_final_model()
-            preds_test = fitting_model.predict_test_set()
-            preds_test_abs = preds_test.argmax(axis=1)
-            next_submission_number = self._get_submission_number()
-            fitting_model.save_current_model()
-            if model_name == 'catboost':
-                fitting_model.save_feature_importance('summary')
-                fitting_model.save_feature_importance('shap')
-                fitting_model.save_feature_importance('feature_importance')
-            self._create_evaluation_file(fitting_model.test_ids, preds_test_abs,
-                                         next_submission_number, True)
+                logger.info("Create final model.")
+                fitting_model.train_final_model()
+                preds_test = fitting_model.predict_test_set()
+                preds_test_abs = preds_test.argmax(axis=1)
+                next_submission_number = self._get_submission_number()
+                fitting_model.save_current_model()
+                if model_name == 'catboost':
+                    fitting_model.save_feature_importance('summary')
+                    fitting_model.save_feature_importance('shap')
+                    fitting_model.save_feature_importance('feature_importance')
+                self._create_evaluation_file(fitting_model.test_ids, preds_test_abs,
+                                             next_submission_number, True)
 
 
 @click.command()
