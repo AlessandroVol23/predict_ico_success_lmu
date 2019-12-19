@@ -49,7 +49,7 @@ class FittingModel(object):
         logger.info("x_test shape: {}".format(self.X_test.shape))
 
     def get_values(self):
-        return self.test_ids, self.sub_preds_abs
+        return self.test_ids, self.oof_test_abs
 
     def train_final_model(self):
         self.model.fit(self.X_train, self.y_train)
@@ -64,6 +64,9 @@ class FittingModel(object):
 
     def _get_figure_file_name(self, method, path):
         return os.path.join(path, ('feature_importance' + '_' + method + '.png'))
+
+    def get_oof(self):
+        return self.oof_train, self.oof_test
 
     def save_current_model(self):
         filename = self._get_model_file_name()
@@ -99,7 +102,6 @@ class FittingModel(object):
             ax.set_xlabel("features")
             plt.savefig(self._get_figure_file_name(method, path), bbox_inches='tight')
 
-
     def cross_validation(self):
         """Cross validation
         """
@@ -109,8 +111,9 @@ class FittingModel(object):
         folds = StratifiedKFold(n_splits=5, shuffle=True, random_state=123)
         # skf.get_n_splits(self.X_train, self.y_train)
 
-        oof_preds = np.zeros(self.X_train.shape[0])
-        sub_preds = np.zeros(self.X_test.shape[0])
+        self.oof_train = np.zeros(self.X_train.shape[0])
+        self.oof_test = np.zeros(self.X_test.shape[0])
+        oof_test_skf = np.empty((folds.n_splits, self.X_test.shape[0]))
         mcc_folds = []
         for n_fold, (trn_idx, val_idx) in enumerate(folds.split(self.X_train, self.y_train)):
 
@@ -124,14 +127,21 @@ class FittingModel(object):
             self.model.fit(trn_x, trn_y, val_x, val_y)
 
             # Get probabilities for validation set
-            preds_val_x = self.model.predict_proba(val_x)
-            preds_val_x_abs = preds_val_x.argmax(axis=1)
+            # Just get probability for first class
+            probs = self.model.predict_proba(val_x)
+            if probs.shape[1] == 2:
+                probs = probs[:, 1]
+            self.oof_train[val_idx] = probs
+            self.oof_train_abs = self.oof_train[val_idx].round()
 
             # Get MCC for validation set
-            mcc = matthews_corrcoef(val_y, preds_val_x_abs)
+            mcc = matthews_corrcoef(val_y, self.oof_train_abs)
 
-            sub_preds += self.model.predict_proba(
-                self.X_test)[:, 1] / folds.n_splits
+            # Calculate submission predictions
+            probs = self.model.predict_proba(self.X_test)
+            if probs.shape[1] == 2:
+                probs = probs[:, 1]
+            oof_test_skf[n_fold, :] = probs
 
             logger.info('Fold %2d mcc : %.6f' %
                         (n_fold + 1, mcc))
@@ -139,7 +149,8 @@ class FittingModel(object):
             mcc_folds.append(mcc)
             del trn_x, trn_y, val_x, val_y
 
-        self.sub_preds_abs = sub_preds.round()
+        self.oof_test[:] = oof_test_skf.mean(axis=0)
+        self.oof_test_abs = self.oof_test[:].round()
         mean_mcc = np.array(mcc_folds).mean()
         print("Overall MCC was: {}".format(mean_mcc))
         return mean_mcc

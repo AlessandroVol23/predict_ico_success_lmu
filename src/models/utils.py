@@ -8,15 +8,15 @@ import numpy as np
 logger = logging.getLogger(__name__)
 
 
-def read_feature_data(feature_set = "1"):
-    x_train='data/features/feature_sets/features_x_train_'+feature_set+'.csv'
-    y_train='data/features/feature_sets/features_y_train_'+feature_set+'.np'
-    x_test='data/features/feature_sets/features_x_test_'+feature_set+'.csv'
+def read_feature_data(feature_set="1"):
+    x_train = 'data/features/feature_sets/features_x_train_' + feature_set + '.csv'
+    y_train = 'data/features/feature_sets/features_y_train_' + feature_set + '.np'
+    x_test = 'data/features/feature_sets/features_x_test_' + feature_set + '.csv'
 
     x_train = pd.read_csv(x_train)
-    #y_train = pd.DataFrame(np.fromfile(y_train))
+    # y_train = pd.DataFrame(np.fromfile(y_train))
     y_train = pd.DataFrame(np.fromfile(y_train, dtype=int))
-    y_train.columns=['success']
+    y_train.columns = ['success']
     logger.info("Unique of y_train: {}".format(y_train.success.value_counts()))
     x_test = pd.read_csv(x_test)
 
@@ -57,6 +57,7 @@ def create_submission_csv(model, X_test, path_to_save_csv):
     classes_preds = preds.round().astype(int)
     df_submission = pd.DataFrame(classes_preds)
 
+
 def read_upsampling_feature_set(feature_set_meta, feature_set_key):
     feature_set = feature_set_meta[feature_set_key]
     for feature in feature_set:
@@ -67,3 +68,17 @@ def read_upsampling_feature_set(feature_set_meta, feature_set_key):
             except ValueError:
                 logger.warning(
                     "Won't upsample because no float value was provided!")
+
+
+def read_categorical_features(feature_set_meta, feature_set_key):
+    feature_set = feature_set_meta[feature_set_key]
+    categorical_features = []
+    for feature in feature_set:
+        if 'meta' in feature:
+            continue
+        feature_name = feature["column"]
+        feature_type = feature["type"]
+        if feature_type == "categorical":
+            categorical_features.append(feature_name)
+
+    return categorical_features
