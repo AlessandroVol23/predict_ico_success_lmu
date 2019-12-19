@@ -16,13 +16,9 @@ logger = logging.getLogger(__name__)
 log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 logging.basicConfig(level=logging.INFO, format=log_fmt)
 
-# training_models = [
-#     CatBoostModel,
-#     LightGbmModel
-# ]
-
 training_models = [
-    CatBoostModel
+    CatBoostModel,
+    LightGbmModel
 ]
 
 
@@ -144,12 +140,18 @@ class BuildModel(object):
             # Get values from fitting model
             mean_mcc = fitting_model.cross_validation()
 
+            test_ids, sub_preds_abs = fitting_model.get_values()
+
+            next_submission_number = self._get_submission_number()
+            self._create_evaluation_file(test_ids, sub_preds_abs,
+                                         next_submission_number, True)
+
             # get name and params from underlying model
             model_name = current_model.get_name()
             hyperparams = current_model.get_params()
 
             self._write_results(feature_set_meta, feature_set_key, mean_mcc, model_name,
-                                'No Submission', hyperparams)
+                                next_submission_number, hyperparams)
 
             # Workaround till we have function to read in optimized hyperparams
             if model_name == 'catboost':
@@ -176,9 +178,10 @@ class BuildModel(object):
             preds_test_abs = preds_test.argmax(axis=1)
             next_submission_number = self._get_submission_number()
             fitting_model.save_current_model()
-            fitting_model.save_feature_importance('summary')
-            fitting_model.save_feature_importance('shap')
-            fitting_model.save_feature_importance('feature_importance')
+            if model_name == 'catboost':
+                fitting_model.save_feature_importance('summary')
+                fitting_model.save_feature_importance('shap')
+                fitting_model.save_feature_importance('feature_importance')
             self._create_evaluation_file(fitting_model.test_ids, preds_test_abs,
                                          next_submission_number, True)
 
