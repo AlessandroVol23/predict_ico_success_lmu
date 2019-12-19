@@ -10,6 +10,8 @@ from sklearn.experimental import enable_iterative_imputer
 from sklearn.impute import IterativeImputer
 from tqdm import tqdm
 import re
+from scipy.stats import pearsonr
+
 logger = logging.getLogger(__name__)
 
 log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
@@ -22,7 +24,7 @@ DATA_FRAME_LENGTH = 5758
 class FeatureEngineering(object):
 
     # Constructor
-    def __init__(self, df, df_bitcoin, df_test, df_gem_btc_usd):
+    def __init__(self, df, df_bitcoin, df_test, df_gem_btc_usd, df_gem_eth_usd, df_gem_ltc_usd, df_icobench):
         """Constructor for class FeatureEngineering
 
         Parameters
@@ -41,6 +43,9 @@ class FeatureEngineering(object):
         self.df.loc[self.df.success.isna(), 'success'] = "TEST"
         self.df_bitcoin = df_bitcoin
         self.df_gem_btc_usd = df_gem_btc_usd
+        self.df_gem_eth_usd = df_gem_eth_usd
+        self.df_gem_ltc_usd = df_gem_ltc_usd
+        self.df_icobench = df_icobench
 
         # Label Encoder
         self.le = preprocessing.LabelEncoder()
@@ -259,22 +264,21 @@ class FeatureEngineering(object):
 
         # Date time to unix timestamp
         for feature in include_columns:
-            df_copy[feature] = pd.to_datetime(
-                df_copy[feature], infer_datetime_format=True, errors='coerce')
+            df_copy[feature] = pd.to_datetime(df_copy[feature], infer_datetime_format=True, errors='coerce')
 
         # calculate diffs
         timeDiffs = df_copy[include_columns[0]] - df_copy[include_columns[1]]
-        #df_copy[years] = timeDiffs /np.timedelta64(1,'Y')
-        #df_copy[months] = timeDiffs /np.timedelta64(1,'M')
+        # df_copy[years] = timeDiffs /np.timedelta64(1,'Y')
+        # df_copy[months] = timeDiffs /np.timedelta64(1,'M')
         df_copy[column] = timeDiffs / np.timedelta64(1, 'D')
 
         # fill na values
-        #df_copy = self._execute_na_strategy(df_copy, years, na_strategy)
-        #df_copy = self._execute_na_strategy(df_copy, months, na_strategy)
+        # df_copy = self._execute_na_strategy(df_copy, years, na_strategy)
+        # df_copy = self._execute_na_strategy(df_copy, months, na_strategy)
         df_copy = self._execute_na_strategy(df_copy, column, na_strategy)
 
-        #self._add_column_to_data_frame(df_copy, years)
-        #self._add_column_to_data_frame(df_copy, months)
+        # self._add_column_to_data_frame(df_copy, years)
+        # self._add_column_to_data_frame(df_copy, months)
         self._add_column_to_data_frame(df_copy, column)
 
     def _transform_binary_variables(self, column, na_strategy='set:0'):
@@ -407,12 +411,12 @@ class FeatureEngineering(object):
     def natural_keys(self, text):
         return [self.atof(c) for c in re.split(r'[+-]?([0-9]+(?:[.][0-9]*)?|[.][0-9]+)', text)]
 
-    def _build_bitcoin_difference(self, amt_weeks):
+
+    def calc_ext_difference(self, amt_weeks: int, df_ext, col_name):
         """
-        Function to build difference between bitcoin price and ico price.
-        amt_weeks: Number of weeks to go back from last week
+        Function to calculate the differences of calendar weeks and bitcoin price.
+        amt_weeks: Number of weeks to go back from last week available
         """
-        logger.info("Create bitcoin difference feature")
         kws = self.get_all_kw_cols()
         kws.append('OBS_ID')
         df_kws = self.df.loc[:, kws]
@@ -423,23 +427,136 @@ class FeatureEngineering(object):
 
         kws_slice = kws_wo_id[-amt_weeks:]
 
-        grouped_prices_kws = self.df_gem_btc_usd.groupby(
+        grouped_prices_kws = df_ext.groupby(
             'calendar_week').mean()['High']
-
-        cols = self.remove_kw_from_column(kws_wo_id)
-        cols = np.array(cols, dtype=int)
 
         new_df = pd.DataFrame(df_kws.OBS_ID)
 
         for week in kws_slice:
-            new_col = 'difference_BTC_' + week
+
+            new_col = col_name + '_' + week
             btc_col = int(re.findall(
                 r'[+-]?([0-9]+(?:[.][0-9]*)?|[.][0-9]+)', new_col)[0])
             btc_price = grouped_prices_kws[btc_col]
             difference = df_kws.loc[:, week] - btc_price
             new_df.loc[:, new_col] = difference
 
+        return new_df
+
+    def _build_bitcoin_difference(self, amt_weeks: int):
+        """
+        Function to build difference between bitcoin price and ico price.
+        amt_weeks: Number of weeks to go back from last week
+        """
+        logger.info("Create bitcoin difference feature")
+        new_df = self.calc_ext_difference(
+            amt_weeks, self.df_gem_btc_usd, 'btc_difference')
         self._add_df_to_feature_df(new_df)
+
+    def _build_eth_difference(self, amt_weeks: int):
+        """
+        Function to build difference between bitcoin price and ico price.
+        amt_weeks: Number of weeks to go back from last week
+        """
+        logger.info("Create eth difference feature")
+        new_df = self.calc_ext_difference(
+            amt_weeks, self.df_gem_eth_usd, 'eth_difference')
+        self._add_df_to_feature_df(new_df)
+
+    def _build_ltc_difference(self, amt_weeks: int):
+        """
+        Function to build difference between bitcoin price and ico price.
+        amt_weeks: Number of weeks to go back from last week
+        """
+        logger.info("Create ltc difference feature")
+        new_df = self.calc_ext_difference(
+            amt_weeks, self.df_gem_ltc_usd, 'ltc_difference')
+        self._add_df_to_feature_df(new_df)
+
+    def _build_bitcoin_avg_difference(self):
+        logger.info("Build average difference over all weeks")
+        df_differences = self.calc_ext_difference(
+            39, self.df_gem_btc_usd, 'btc_difference')
+        cols = set(df_differences.columns) - set('OBS_ID')
+        df_differences_wo_id = df_differences.loc[:, cols]
+        mean_per_ico = df_differences_wo_id.mean(axis=1)
+        df_differences['mean_difference_btc'] = mean_per_ico
+        self._add_column_to_data_frame(df_differences, 'mean_difference_btc')
+
+    def _build_eth_avg_difference(self):
+        logger.info("Build average difference over all weeks for eth")
+        df_differences = self.calc_ext_difference(
+            39, self.df_gem_eth_usd, 'eth_difference')
+        cols = set(df_differences.columns) - set('OBS_ID')
+        df_differences_wo_id = df_differences.loc[:, cols]
+        mean_per_ico = df_differences_wo_id.mean(axis=1)
+        df_differences['mean_difference_eth'] = mean_per_ico
+        self._add_column_to_data_frame(df_differences, 'mean_difference_eth')
+
+    def _build_ltc_avg_difference(self):
+        logger.info("Build average difference over all weeks for ltc")
+        df_differences = self.calc_ext_difference(
+            39, self.df_gem_ltc_usd, 'ltc_difference')
+        cols = set(df_differences.columns) - set('OBS_ID')
+        df_differences_wo_id = df_differences.loc[:, cols]
+        mean_per_ico = df_differences_wo_id.mean(axis=1)
+        df_differences['mean_difference_ltc'] = mean_per_ico
+        self._add_column_to_data_frame(df_differences, 'mean_difference_ltc')
+
+    def calc_coeff_kw(self, df_external, col_name):
+        kws = self.get_all_kw_cols()
+        kws.append('OBS_ID')
+        df_kws = self.df.loc[:, kws]
+
+        kws_wo_id = set(kws) - set(['OBS_ID'])
+        kws_wo_id = list(kws_wo_id)
+        kws_wo_id.sort(key=self.natural_keys)
+
+        grouped_prices_kws = df_external.groupby(
+            'calendar_week').mean()['High']
+        ext_price = grouped_prices_kws[:39].values
+
+        logger.info("Calculate pearson coefficient of {}".format(col_name))
+
+        for index, row in df_kws.iterrows():
+            ico_price = row[kws_wo_id].values
+            correlation = pearsonr(ico_price, ext_price)[0]
+            df_kws.loc[df_kws.OBS_ID == row.OBS_ID, col_name] = correlation
+
+        return df_kws[['OBS_ID', col_name]]
+
+    def _build_btc_coeff(self):
+        df_kws = self.calc_coeff_kw(self.df_gem_btc_usd, 'corr_btc')
+        self._add_column_to_data_frame(df_kws, 'corr_btc')
+
+    def _build_eth_coeff(self):
+        df_kws = self.calc_coeff_kw(self.df_gem_eth_usd, 'corr_eth')
+        self._add_column_to_data_frame(df_kws, 'corr_eth')
+
+    def _build_ltc_coeff(self):
+        df_kws = self.calc_coeff_kw(self.df_gem_ltc_usd, 'corr_ltc')
+        self._add_column_to_data_frame(df_kws, 'corr_ltc')
+
+    def _build_exist_icobench(self):
+        col = 'company_name'
+        df_ids = self.df[[col, 'OBS_ID']]
+        df_ids[col] = df_ids[col].str.lower()
+        df_ids[col] = df_ids[col].str.strip()
+
+        count_exist = 0
+        tqdm.write("Creating exist on icobench feature")
+        for index, row in tqdm(df_ids.iterrows(), total=df_ids.shape[0]):
+            try:
+                if self.df_icobench.id.str.contains(row[col]).any():
+                    count_exist += 1
+                    df_ids.loc[df_ids[col] == row[col], 'exist_on_icobench'] = 1
+                else:
+                    df_ids.loc[df_ids[col] == row[col], 'exist_on_icobench'] = 0
+            except Exception as e:
+                logger.warning("Exception: {}".format(e))
+
+        self._add_column_to_data_frame(df_ids, 'exist_on_icobench')
+        logger.info("{} icos were matched with thos on icobench".format(count_exist))
 
     def construct_feature_set(self, features):
         """This function is the pipeline for adding all features to the dataset
@@ -469,6 +586,35 @@ class FeatureEngineering(object):
                 amt_weeks = int(feature['amt_weeks'])
                 self._build_bitcoin_difference(amt_weeks)
                 continue
+            elif feature['column'] == 'eth_difference':
+                amt_weeks = int(feature['amt_weeks'])
+                self._build_eth_difference(amt_weeks)
+                continue
+            elif feature['column'] == 'ltc_difference':
+                amt_weeks = int(feature['amt_weeks'])
+                self._build_ltc_difference(amt_weeks)
+                continue
+            elif feature['column'] == 'bitcoin_avg_difference':
+                self._build_bitcoin_avg_difference()
+                continue
+            elif feature['column'] == 'eth_avg_difference':
+                self._build_eth_avg_difference()
+                continue
+            elif feature['column'] == 'ltc_avg_difference':
+                self._build_ltc_avg_difference()
+                continue
+            elif feature['column'] == 'btc_coeff':
+                self._build_btc_coeff()
+                continue
+            elif feature['column'] == 'eth_coeff':
+                self._build_eth_coeff()
+                continue
+            elif feature['column'] == 'ltc_coeff':
+                self._build_ltc_coeff()
+                continue
+            elif feature['column'] == 'exist_on_icobench':
+                self._build_exist_icobench()
+                continue
 
             assert (
                 'column' in feature), "No column key provided in feature " + feature
@@ -483,7 +629,8 @@ class FeatureEngineering(object):
 
                 feauter_encoder = feature["encoder"]
                 assert (
-                    'na_strategy' in feature), "No na_strategy for numerical feauter {} provided".format(feature_name)
+                        'na_strategy' in feature), "No na_strategy for numerical feauter {} provided".format(
+                    feature_name)
                 strategy = feature["na_strategy"]
 
                 if feauter_encoder == "label":
@@ -500,19 +647,25 @@ class FeatureEngineering(object):
 
             elif feature_type == "numerical":
                 assert (
-                    'na_strategy' in feature), "No na_strategy for categorical feauter {} provided".format(feature_name)
+                        'na_strategy' in feature), "No na_strategy for categorical feauter {} provided".format(
+                    feature_name)
+                    
                 strategy = feature["na_strategy"]
                 self._transform_numerical_variables(feature_name, strategy)
 
             elif feature_type == "difference":
                 assert (
-                    'na_strategy' in feature), "No na_strategy for difference {} provided".format(feature_name)
+                        'na_strategy' in feature), "No na_strategy for difference {} provided".format(
+                    feature_name)
+                id
                 strategy = feature["na_strategy"]
                 assert (
-                    'columns' in feature), "No columns for difference in feature {} provided".format(feature_name)
+                        'columns' in feature), "No columns for difference in feature {} provided".format(feature_name)
                 columns = feature["columns"]
                 assert (
-                    len(columns) > 1), "Please provide at least 2 columns for difference {} provided".format(feature_name)
+                        len(columns) > 1), "Please provide at least 2 columns for difference {} provided".format(
+                    feature_name)
+                    
                 self._transform_numerical_difference(
                     feature_name, columns, strategy)
             elif feature_type == "duration":
@@ -520,12 +673,12 @@ class FeatureEngineering(object):
                     'na_strategy' in feature), "No na_strategy for duration {} provided".format(feature_name)
                 strategy = feature["na_strategy"]
                 assert (
-                    'columns' in feature), "No columns for duration in feature {} provided".format(feature_name)
+                        'columns' in feature), "No columns for duration in feature {} provided".format(feature_name)
                 columns = feature["columns"]
                 assert (
-                    len(columns) == 2), "Please provide exact 2 columns for duration {} provided".format(feature_name)
-                self._transform_duration_feature(
-                    feature_name, columns, strategy)
+                        len(columns) == 2), "Please provide exact 2 columns for duration {} provided".format(
+                    feature_name)
+                self._transform_duration_feature(feature_name, columns, strategy)
 
             elif feature_type == "binary":
                 self._transform_binary_variables(feature_name)

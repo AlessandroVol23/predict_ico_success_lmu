@@ -29,6 +29,7 @@ yellowbrick = "*"
 chart-studio = "*"
 xlwt = "*"
 openpyxl = "*"
+shap = "*"
 
 [requires]
 python_version = "3.7"

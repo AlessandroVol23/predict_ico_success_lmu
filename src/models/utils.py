@@ -16,9 +16,10 @@ def read_feature_data(feature_set = "1"):
     x_train = pd.read_csv(x_train)
     #y_train = pd.DataFrame(np.fromfile(y_train))
     y_train = pd.DataFrame(np.fromfile(y_train, dtype=int))
+    y_train.columns=['success']
+    logger.info("Unique of y_train: {}".format(y_train.success.value_counts()))
     x_test = pd.read_csv(x_test)
-    #print("UNIQUE: {}".format(np.unique(y_train, return_counts=True)))
-    print("UNIQUE: {}".format(y_train.groupby(0).count()))
+
     return x_train, y_train, x_test
 
 
@@ -55,3 +56,14 @@ def create_submission_csv(model, X_test, path_to_save_csv):
     # Probabilities to classes
     classes_preds = preds.round().astype(int)
     df_submission = pd.DataFrame(classes_preds)
+
+def read_upsampling_feature_set(feature_set_meta, feature_set_key):
+    feature_set = feature_set_meta[feature_set_key]
+    for feature in feature_set:
+        if 'meta' in feature:
+            try:
+                upsampling = float(feature['meta']['upsampling'])
+                return upsampling
+            except ValueError:
+                logger.warning(
+                    "Won't upsample because no float value was provided!")

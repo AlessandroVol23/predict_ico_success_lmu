@@ -134,6 +134,11 @@ def preprocess(df_in):
     for col in _COLS_TO_CONVERT:
         df = _replace_convert_float(df, col)
 
+    df = df.assign(id = df.loc[:, 'ï..id'])
+    df = df.drop('ï..id', axis=1)
+
+    df = df.rename({'name':'company_name'}, axis=1)
+
     logger.info("Preprocessing done!")
     return df
 
@@ -141,7 +146,8 @@ def preprocess(df_in):
 def preprocess_bitcoin(df: pd.DataFrame):
     logger.info("Preprocess bitcoin dataset. Shape: {}".format(df.shape))
     logger.info("Build timestamps from milliseconds")
-    df['time'] = df.date_in_ms.apply(lambda x: datetime.fromtimestamp(x / 1000.0))
+    df['time'] = df.date_in_ms.apply(
+        lambda x: datetime.fromtimestamp(x / 1000.0))
 
     logger.info("Remove all bitcoin prices which are not from 2019")
     df = df.loc[df.time.dt.year == 2019]
@@ -170,8 +176,13 @@ def get_processed_data(path_bitcoin_df='data/raw/1_training_data_sets/1_bitcoin_
     df = preprocess(df)
 
     # Split into df and df_test again
-    df_test = df.loc[df.success == "TEST", :"KW39"]
+    cols_test = set(df.columns) - set(['success'])
+    df_test = df.loc[df.success == "TEST", cols_test]
     df = df.loc[df.success != "TEST"]
+
+    logger.info("Training dataset shape: {}".format(df.shape))
+    logger.info("Test dataset shape: {}".format(df_test.shape))
+
     assert len(df) == 4757, "Shape of DF has to be 4757"
     assert len(df_test) == 1001, "Shape of DF test has to be 1001"
 
@@ -181,29 +192,44 @@ def get_processed_data(path_bitcoin_df='data/raw/1_training_data_sets/1_bitcoin_
 
 def get_external_data():
     df_gemin_btc_usd = pd.read_csv('data/external/Gemini_BTCUSD_d.csv')
-    return df_gemin_btc_usd
+    df_gemin_eth_usd = pd.read_csv('data/external/Gemini_ETHUSD_d.csv')
+    df_gemin_ltc_usd = pd.read_csv('data/external/Gemini_LTCUSD_d.csv')
+    df_icobench = pd.read_csv('data/external/ico_bench_ended.csv')
+    return df_gemin_btc_usd, df_gemin_eth_usd, df_gemin_ltc_usd, df_icobench
 
 
-def _save_processed_data(df_bitcoin, df, df_test, df_gem_btc_usd):
+def _save_processed_data(df_bitcoin, df, df_test, df_gem_btc_usd, df_gem_eth_usd, df_gem_ltc_usd, df_icobench):
     df_bitcoin.to_csv('data/processed/df_bitcoin_pp.csv', index=None)
-    df.to_csv('data/processed/df_train_pp.csv')
-    df_test.to_csv('data/processed/df_test_pp.csv')
+    df.to_csv('data/processed/df_train_pp.csv', index=None)
+    df_test.to_csv('data/processed/df_test_pp.csv', index=None)
     df_gem_btc_usd.to_csv('data/processed/df_gem_btc_usd.csv', index=None)
+    df_gem_eth_usd.to_csv('data/processed/df_gem_eth_usd.csv', index=None)
+    df_gem_ltc_usd.to_csv('data/processed/df_gem_ltc_usd.csv', index=None)
+    df_icobench.to_csv('data/processed/df_icobench.csv', index=None)
 
 
-def preprocess_external_data(df):
-    df['Date'] = pd.to_datetime(df.Date)
-    df = df.loc[df.Date.dt.year == 2019]
-    df = df.assign(calendar_week = df.Date.dt.week)
-    return df
+def preprocess_external_data(df_btc, df_eth, df_ltc):
+    def preprocess_times(df):
+        df['Date'] = pd.to_datetime(df.Date)
+        df = df.loc[df.Date.dt.year == 2019]
+        df = df.assign(calendar_week=df.Date.dt.week)
+        return df
+
+    df_btc_pp = preprocess_times(df_btc)
+    df_eth_pp = preprocess_times(df_eth)
+    df_ltc_pp = preprocess_times(df_ltc)
+
+    return df_btc_pp, df_eth_pp, df_ltc_pp
 
 
 @click.command()
 def main():
     df_bitcoin, df, df_test = get_processed_data()
-    df_gem_btc_usd = get_external_data()
-    df_gem_btc_usd = preprocess_external_data(df_gem_btc_usd)
-    _save_processed_data(df_bitcoin, df, df_test, df_gem_btc_usd)
+    df_gemin_btc_usd, df_gemin_eth_usd, df_gemin_ltc_usd, df_icobench = get_external_data()
+    df_btc_pp, df_eth_pp, df_ltc_pp = preprocess_external_data(
+        df_gemin_btc_usd, df_gemin_eth_usd, df_gemin_ltc_usd)
+    _save_processed_data(df_bitcoin, df, df_test,
+                         df_btc_pp, df_eth_pp, df_ltc_pp, df_icobench)
 
 
 if __name__ == "__main__":
