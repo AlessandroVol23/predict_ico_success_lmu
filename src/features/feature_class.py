@@ -3,6 +3,7 @@
 
 import logging
 import pandas as pd
+from multiprocessing.pool import ThreadPool, Pool
 import numpy as np
 from sklearn import preprocessing
 from sklearn.experimental import enable_iterative_imputer
@@ -35,7 +36,6 @@ class FeatureEngineering(object):
         df_test : DataFrame
             Test DataFrame
         """
-
         self.df = pd.concat([df, df_test], sort=True)
         assert len(
             self.df) == DATA_FRAME_LENGTH, "Length has to be 5758, check conattanation!"
@@ -49,6 +49,14 @@ class FeatureEngineering(object):
 
         # Label Encoder
         self.le = preprocessing.LabelEncoder()
+        self.url_reg_ex = regex = re.compile(
+            r'^(?:http|ftp)s?://'  # http:// or https://
+            # domain...
+            r'(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+(?:[A-Z]{2,6}\.?|[A-Z0-9-]{2,}\.?)|'
+            r'localhost|'  # localhost...
+            r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'  # ...or ip
+            r'(?::\d+)?'  # optional port
+            r'(?:/?|[/?]\S+)$', re.IGNORECASE)
 
         # One Hot Encoder
         self.enc = preprocessing.OneHotEncoder(handle_unknown='ignore')
@@ -152,11 +160,23 @@ class FeatureEngineering(object):
     def _add_column_to_data_frame(self, df, column):
         self.df_features = pd.merge(
             self.df_features, df[['OBS_ID', column]])
-        assert column in self.df_features.columns, "No {} in df_features!".format(column)
+        assert column in self.df_features.columns, "No {} in df_features!".format(
+            column)
+
+    def _make_valid_url(self, url):
+
+        result = re.match(self.url_reg_ex, url)
+
+        if result:
+            return url
+        else:
+            return "https://"+url
+
 
     def _remove_column_from_data_frame(self, column):
         self.df_features = self.df_features.drop(columns=[column])
-        assert column not in self.df_features.columns, "{} is in df_features!".format(column)
+        assert column not in self.df_features.columns, "{} is in df_features!".format(
+            column)
 
     def _add_df_to_feature_df(self, df):
         """Adds a DataFrame based on OBS_ID to feature df
@@ -327,6 +347,13 @@ class FeatureEngineering(object):
         self._remove_column_from_data_frame(column)
         self._add_column_to_data_frame(df_copy, rename)
 
+    def _transform_link_binary(self, column):
+        try:
+            df_link_feature = pd.read_csv('data/external/'+column + '.csv')
+            self._add_df_to_feature_df(df_link_feature)
+        except:
+            logger.warn('could not add link binary feature {}, csv file was not found'.format(column))
+
     def get_X_y(self):
         """This function returns X_train, y_train and X_test.
         These are not the splits for training! This is just for preprocessing both datasets.
@@ -384,6 +411,7 @@ class FeatureEngineering(object):
     def natural_keys(self, text):
         return [self.atof(c) for c in re.split(r'[+-]?([0-9]+(?:[.][0-9]*)?|[.][0-9]+)', text)]
 
+
     def calc_ext_difference(self, amt_weeks: int, df_ext, col_name):
         """
         Function to calculate the differences of calendar weeks and bitcoin price.
@@ -405,6 +433,7 @@ class FeatureEngineering(object):
         new_df = pd.DataFrame(df_kws.OBS_ID)
 
         for week in kws_slice:
+
             new_col = col_name + '_' + week
             btc_col = int(re.findall(
                 r'[+-]?([0-9]+(?:[.][0-9]*)?|[.][0-9]+)', new_col)[0])
@@ -544,7 +573,7 @@ class FeatureEngineering(object):
                 self._delete_na_values(feature_name)
 
         self._init_df_features()
-
+        
         # Iterating through features and construct feature set
         for feature in features:
             logger.debug("Feature: {}".format(feature))
@@ -588,7 +617,7 @@ class FeatureEngineering(object):
                 continue
 
             assert (
-                    'column' in feature), "No column key provided in feature " + feature
+                'column' in feature), "No column key provided in feature " + feature
             assert ('type' in feature), "No column type provided"
 
             feature_type = feature["type"]
@@ -596,7 +625,7 @@ class FeatureEngineering(object):
 
             if feature_type == "categorical":
                 assert (
-                        'encoder' in feature), "No encoder for categorical feauter {} provided".format(feature_name)
+                    'encoder' in feature), "No encoder for categorical feauter {} provided".format(feature_name)
 
                 feauter_encoder = feature["encoder"]
                 assert (
@@ -620,6 +649,7 @@ class FeatureEngineering(object):
                 assert (
                         'na_strategy' in feature), "No na_strategy for categorical feauter {} provided".format(
                     feature_name)
+                    
                 strategy = feature["na_strategy"]
                 self._transform_numerical_variables(feature_name, strategy)
 
@@ -635,11 +665,12 @@ class FeatureEngineering(object):
                 assert (
                         len(columns) > 1), "Please provide at least 2 columns for difference {} provided".format(
                     feature_name)
+                    
                 self._transform_numerical_difference(
                     feature_name, columns, strategy)
             elif feature_type == "duration":
                 assert (
-                        'na_strategy' in feature), "No na_strategy for duration {} provided".format(feature_name)
+                    'na_strategy' in feature), "No na_strategy for duration {} provided".format(feature_name)
                 strategy = feature["na_strategy"]
                 assert (
                         'columns' in feature), "No columns for duration in feature {} provided".format(feature_name)
@@ -651,6 +682,9 @@ class FeatureEngineering(object):
 
             elif feature_type == "binary":
                 self._transform_binary_variables(feature_name)
+
+            elif feature_type == "link":
+                self._transform_link_binary(feature_name)
             else:
                 raise ValueError('feature type not recognized')
 
