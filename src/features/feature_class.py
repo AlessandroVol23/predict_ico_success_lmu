@@ -46,6 +46,7 @@ class FeatureEngineering(object):
         self.df_gem_eth_usd = df_gem_eth_usd
         self.df_gem_ltc_usd = df_gem_ltc_usd
         self.df_icobench = df_icobench
+        self.dependencies = []
 
         # Label Encoder
         self.le = preprocessing.LabelEncoder()
@@ -172,6 +173,11 @@ class FeatureEngineering(object):
         else:
             return "https://"+url
 
+    def _add_to_base_df(self, column):
+        self.df = pd.merge(
+            self.df, self.df_features[['OBS_ID', column]])
+        assert column in self.df.columns, "No {} in df!".format(
+            column)
 
     def _remove_column_from_data_frame(self, column):
         self.df_features = self.df_features.drop(columns=[column])
@@ -211,6 +217,18 @@ class FeatureEngineering(object):
 
         self._add_column_to_data_frame(df_copy, column)
 
+    def _divide_columns(self, column, include_columns, df_copy):
+        # subtract all given columns
+        for feature in include_columns:
+            if include_columns[0] == feature:
+                df_copy[column] = df_copy[feature]
+                continue
+            df_copy[column] = df_copy[column] / df_copy[feature]
+
+        df_copy.loc[df_copy[column] < 0, column] = 0
+
+        return df_copy
+
     def _calculate_difference(self, column, include_columns, df_copy):
         # subtract all given columns
         for feature in include_columns:
@@ -222,6 +240,49 @@ class FeatureEngineering(object):
         df_copy.loc[df_copy[column] < 0, column] = 0
 
         return df_copy
+
+    def _transform_numerical_division(self, column, include_columns, na_strategy='set:0'):
+        """Divides two or more columns through each other
+
+        Arguments:
+            column {String} -- The new features name
+            include_columns {Array} -- The features which will be subtracted from each other from left to right
+            na_strategy {String} -- A valid na_strategy which is executed before subtraction
+        """
+        logger.debug(
+            "Division of numerical variables for columns {}".format(include_columns))
+
+        # Copy Dataframe
+        df_copy = self.df
+        # Fill NAs and change dtype to numerical
+        for feature in include_columns:
+            df_copy = self._execute_na_strategy(df_copy, feature, na_strategy)
+            df_copy[feature] = pd.to_numeric(df_copy[feature])
+
+        df_copy = self._divide_columns(column, include_columns, df_copy)
+
+        self._add_column_to_data_frame(df_copy, column)
+
+    def _transform_average_feature(self, column, include_columns=[], na_strategy='median'):
+        """Subtracts two or more columns from each other
+
+        Arguments:
+            column {String} -- The new features name
+            include_columns {Array} -- The features which will be subtracted from each other from left to right
+            na_strategy {String} -- A valid na_strategy which is executed before subtraction
+        """
+        logger.debug(
+            "Difference of numerical variables for columns {}".format(include_columns))
+
+        # Copy Dataframe
+        df_copy = self.df
+        # Fill NAs and change dtype to numerical
+        for feature in include_columns:
+            df_copy = self._execute_na_strategy(df_copy, feature, na_strategy)
+            df_copy[feature] = pd.to_numeric(df_copy[feature])
+
+        df_copy[column] = df_copy[include_columns].mean(axis=1)
+        self._add_column_to_data_frame(df_copy, column)
 
     def _transform_numerical_difference(self, column, include_columns, na_strategy='set:0'):
         """Subtracts two or more columns from each other
@@ -264,7 +325,8 @@ class FeatureEngineering(object):
 
         # Date time to unix timestamp
         for feature in include_columns:
-            df_copy[feature] = pd.to_datetime(df_copy[feature], infer_datetime_format=True, errors='coerce')
+            df_copy[feature] = pd.to_datetime(
+                df_copy[feature], infer_datetime_format=True, errors='coerce')
 
         # calculate diffs
         timeDiffs = df_copy[include_columns[0]] - df_copy[include_columns[1]]
@@ -280,6 +342,11 @@ class FeatureEngineering(object):
         # self._add_column_to_data_frame(df_copy, years)
         # self._add_column_to_data_frame(df_copy, months)
         self._add_column_to_data_frame(df_copy, column)
+
+    def _add_dependencies(self, dependencies=[]):
+
+        for dep in dependencies:
+            self.dependencies.append(dep)
 
     def _transform_binary_variables(self, column, na_strategy='set:0'):
         logger.debug("Transform binary variable for column {}".format(column))
@@ -350,9 +417,10 @@ class FeatureEngineering(object):
     def _transform_link_binary(self, column):
         try:
             df_link_feature = pd.read_csv('data/external/'+column + '.csv')
-            self._add_df_to_feature_df(df_link_feature)
+            self._add_column_to_data_frame(df_link_feature, column)
         except:
-            logger.warn('could not add link binary feature {}, csv file was not found'.format(column))
+            logger.warn(
+                'could not add link binary feature {}, csv file was not found'.format(column))
 
     def get_X_y(self):
         """This function returns X_train, y_train and X_test.
@@ -410,7 +478,6 @@ class FeatureEngineering(object):
 
     def natural_keys(self, text):
         return [self.atof(c) for c in re.split(r'[+-]?([0-9]+(?:[.][0-9]*)?|[.][0-9]+)', text)]
-
 
     def calc_ext_difference(self, amt_weeks: int, df_ext, col_name):
         """
@@ -549,14 +616,31 @@ class FeatureEngineering(object):
             try:
                 if self.df_icobench.id.str.contains(row[col]).any():
                     count_exist += 1
-                    df_ids.loc[df_ids[col] == row[col], 'exist_on_icobench'] = 1
+                    df_ids.loc[df_ids[col] == row[col],
+                               'exist_on_icobench'] = 1
                 else:
-                    df_ids.loc[df_ids[col] == row[col], 'exist_on_icobench'] = 0
+                    df_ids.loc[df_ids[col] == row[col],
+                               'exist_on_icobench'] = 0
             except Exception as e:
                 logger.warning("Exception: {}".format(e))
 
         self._add_column_to_data_frame(df_ids, 'exist_on_icobench')
-        logger.info("{} icos were matched with thos on icobench".format(count_exist))
+        logger.info(
+            "{} icos were matched with thos on icobench".format(count_exist))
+
+    def _check_meta_information(self, feature, feature_name):
+        assert (
+            'na_strategy' in feature), "No na_strategy for difference {} provided".format(
+                feature_name)
+        strategy = feature["na_strategy"]
+        assert (
+            'columns' in feature), "No columns for difference in feature {} provided".format(feature_name)
+        columns = feature["columns"]
+        assert (
+            len(columns) > 1), "Please provide at least 2 columns for difference {} provided".format(
+                feature_name)
+
+        return strategy, columns
 
     def construct_feature_set(self, features):
         """This function is the pipeline for adding all features to the dataset
@@ -573,7 +657,30 @@ class FeatureEngineering(object):
                 self._delete_na_values(feature_name)
 
         self._init_df_features()
-        
+
+        # Check dependencies
+        for feature in features:
+            if 'meta' in feature:
+                continue
+            if 'dependsOn' in feature:
+                feature_name = feature["column"]
+                dependencies = feature["dependsOn"]
+                assert (
+                    len(dependencies) > 0), "Please provide at least 1 dependency for {} ".format(
+                        feature_name)
+                self._add_dependencies(dependencies)
+
+        # rearange based on dependencies
+        features_copy = features.copy()
+        for feature in features:
+            if 'meta' in feature:
+                continue
+
+            feature_name = feature["column"]
+            if feature_name in self.dependencies:
+                features_copy.remove(feature)
+                features_copy.insert(0, feature)
+
         # Iterating through features and construct feature set
         for feature in features:
             logger.debug("Feature: {}".format(feature))
@@ -629,7 +736,7 @@ class FeatureEngineering(object):
 
                 feauter_encoder = feature["encoder"]
                 assert (
-                        'na_strategy' in feature), "No na_strategy for numerical feauter {} provided".format(
+                    'na_strategy' in feature), "No na_strategy for numerical feauter {} provided".format(
                     feature_name)
                 strategy = feature["na_strategy"]
 
@@ -647,38 +754,36 @@ class FeatureEngineering(object):
 
             elif feature_type == "numerical":
                 assert (
-                        'na_strategy' in feature), "No na_strategy for categorical feauter {} provided".format(
+                    'na_strategy' in feature), "No na_strategy for categorical feauter {} provided".format(
                     feature_name)
-                    
+
                 strategy = feature["na_strategy"]
                 self._transform_numerical_variables(feature_name, strategy)
 
-            elif feature_type == "difference":
-                assert (
-                        'na_strategy' in feature), "No na_strategy for difference {} provided".format(
-                    feature_name)
-                id
-                strategy = feature["na_strategy"]
-                assert (
-                        'columns' in feature), "No columns for difference in feature {} provided".format(feature_name)
-                columns = feature["columns"]
-                assert (
-                        len(columns) > 1), "Please provide at least 2 columns for difference {} provided".format(
-                    feature_name)
-                    
-                self._transform_numerical_difference(
+            elif feature_type == "average":
+                strategy, columns = self._check_meta_information(
+                    feature, feature_name)
+                self._transform_average_feature(
                     feature_name, columns, strategy)
+
+            elif feature_type == "difference" or feature_type == "divide":
+                strategy, columns = self._check_meta_information(
+                    feature, feature_name)
+
+                if feature_type == "difference":
+                    self._transform_numerical_difference(
+                        feature_name, columns, strategy)
+                else:
+                    self._transform_numerical_division(
+                        feature_name, columns, strategy)
             elif feature_type == "duration":
+                strategy, columns = self._check_meta_information(
+                    feature, feature_name)
                 assert (
-                    'na_strategy' in feature), "No na_strategy for duration {} provided".format(feature_name)
-                strategy = feature["na_strategy"]
-                assert (
-                        'columns' in feature), "No columns for duration in feature {} provided".format(feature_name)
-                columns = feature["columns"]
-                assert (
-                        len(columns) == 2), "Please provide exact 2 columns for duration {} provided".format(
+                    len(columns) == 2), "Please provide exact 2 columns for duration {} provided".format(
                     feature_name)
-                self._transform_duration_feature(feature_name, columns, strategy)
+                self._transform_duration_feature(
+                    feature_name, columns, strategy)
 
             elif feature_type == "binary":
                 self._transform_binary_variables(feature_name)
@@ -691,6 +796,17 @@ class FeatureEngineering(object):
             if "rename" in feature:
                 rename = feature["rename"]
                 self._rename_column(feature_name, rename)
+
+            if feature_name in self.dependencies:
+                name = feature_name
+                if "rename" in feature:
+                    name = feature["rename"]
+                self._add_to_base_df(name)
+
+            if "include" in feature:
+                include = feature["include"]
+                if include == False:
+                    self._remove_column_from_data_frame(feature_name)
 
         # Check and impolate
         if len(self.to_impute) > 0:
