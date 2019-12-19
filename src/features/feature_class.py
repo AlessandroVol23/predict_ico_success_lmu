@@ -11,6 +11,7 @@ from sklearn.impute import IterativeImputer
 from tqdm import tqdm
 import re
 from scipy.stats import pearsonr
+import datetime as dt
 
 logger = logging.getLogger(__name__)
 
@@ -327,6 +328,12 @@ class FeatureEngineering(object):
         for feature in include_columns:
             df_copy[feature] = pd.to_datetime(
                 df_copy[feature], infer_datetime_format=True, errors='coerce')
+            try:
+                df_copy[feature] = df_copy[feature].dt.tz_localize(None)
+            except:
+                pass
+
+            print(df_copy[feature].head())
 
         # calculate diffs
         timeDiffs = df_copy[include_columns[0]] - df_copy[include_columns[1]]
