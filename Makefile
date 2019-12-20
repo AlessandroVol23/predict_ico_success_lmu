@@ -75,11 +75,8 @@ else
 		$(PYTHON_INTERPRETER) src/models/stacking/stack_models.py 1
 endif
 
-
-#################################################################################
-# PROJECT RULES                                                                 #
-#################################################################################
-
+shap_plots:
+	$(PYTHON_INTERPRETER) src/models/model_chain.py feature_set_meta.json True
 
 
 #################################################################################
