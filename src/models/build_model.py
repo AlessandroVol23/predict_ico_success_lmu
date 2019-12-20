@@ -6,6 +6,7 @@ from src.models.catboost_model import CatBoostModel
 from src.models.fit_model import FittingModel
 from src.models.light_gbm import LightGbmModel
 from src.models.naive_bayes import NaiveBayesModel
+from src.models.random_forest import RandomForestModel
 from src.models.utils import read_upsampling_feature_set, read_categorical_features, get_submission_number, \
     create_evaluation_file, write_results
 from src.utils import read_feature_meta
@@ -17,7 +18,8 @@ logging.basicConfig(level=logging.INFO, format=log_fmt)
 training_models = [
     CatBoostModel,
     LightGbmModel,
-    NaiveBayesModel
+    NaiveBayesModel,
+    RandomForestModel
 ]
 
 
@@ -36,7 +38,7 @@ class BuildModel(object):
             if modelName != "" and modelName != current_model.get_name():
                 continue
             logger.info(
-                "Building model with feature set {}".format(feature_set_key))
+                "Build3529771966499047ing model with feature set {}".format(feature_set_key))
 
             feature_set_meta = read_feature_meta()
 
