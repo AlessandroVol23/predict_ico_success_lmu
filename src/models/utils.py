@@ -92,7 +92,7 @@ def increment_submission_number(current_number=0):
         f.write(str(new_build_number))
 
 
-def create_evaluation_file(test_ids, sub_preds_abs, next_submission_number, increment=True):
+def create_evaluation_file(test_ids, sub_preds_abs, next_submission_number, increment=True, suffix=''):
     if increment:
         increment_submission_number(next_submission_number)
 
@@ -101,7 +101,7 @@ def create_evaluation_file(test_ids, sub_preds_abs, next_submission_number, incr
     df_submission.columns = ['OBS_ID', 'success']
     df_submission['OBS_ID'] = df_submission.OBS_ID.astype(int)
     df_submission['success'] = df_submission.success.astype(int)
-    fileName = 'data/submissions/submission' + next_submission_number + '.csv'
+    fileName = 'data/submissions/submission' + next_submission_number + suffix + '.csv'
     df_submission.to_csv(fileName, index=None)
     logger.info("Write submission file to: {}".format(fileName))
 
