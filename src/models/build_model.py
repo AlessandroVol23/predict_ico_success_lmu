@@ -5,6 +5,7 @@ import click
 from src.models.catboost_model import CatBoostModel
 from src.models.fit_model import FittingModel
 from src.models.light_gbm import LightGbmModel
+from src.models.naive_bayes import NaiveBayesModel
 from src.models.utils import read_upsampling_feature_set, read_categorical_features, get_submission_number, \
     create_evaluation_file, write_results
 from src.utils import read_feature_meta
@@ -15,7 +16,8 @@ logging.basicConfig(level=logging.INFO, format=log_fmt)
 
 training_models = [
     CatBoostModel,
-    LightGbmModel
+    LightGbmModel,
+    NaiveBayesModel
 ]
 
 

@@ -6,7 +6,7 @@ class BaseModel(ABC):
         pass
     def get_params(self):
         pass
-    def get_model(self, reinitialize = False):
+    def get_model(self, reinitialize = True):
        pass
     def fit(self,trn_x, trn_y, val_x=None, val_y=None, categorical_features = []):
         pass
