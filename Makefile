@@ -66,13 +66,10 @@ fit_models:
 	$(PYTHON_INTERPRETER) src/models/base_model.py
 
 model_chain:
-	$(PYTHON_INTERPRETER) src/models/model_chain.py feature_set_meta.json
+	$(PYTHON_INTERPRETER) src/models/model_chain.py feature_set_meta.json False
 
-
-#################################################################################
-# PROJECT RULES                                                                 #
-#################################################################################
-
+shap_plots:
+	$(PYTHON_INTERPRETER) src/models/model_chain.py feature_set_meta.json True
 
 
 #################################################################################
