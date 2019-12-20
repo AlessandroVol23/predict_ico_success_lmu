@@ -68,6 +68,13 @@ fit_models:
 model_chain:
 	$(PYTHON_INTERPRETER) src/models/model_chain.py feature_set_meta.json
 
+stacking:
+ifdef feature_set
+		$(PYTHON_INTERPRETER) src/models/stacking/stack_models.py $(feature_set)
+else
+		$(PYTHON_INTERPRETER) src/models/stacking/stack_models.py 1
+endif
+
 
 #################################################################################
 # PROJECT RULES                                                                 #
