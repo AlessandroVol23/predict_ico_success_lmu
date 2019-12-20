@@ -226,8 +226,28 @@ class FeatureEngineering(object):
                 continue
             df_copy[column] = df_copy[column] / df_copy[feature]
 
-        df_copy.loc[df_copy[column] < 0, column] = 0
+        # df_copy.loc[df_copy[column] < 0, column] = 0
 
+        return df_copy
+    def _addition_columns(self, column, include_columns, df_copy):
+        # multiply columns
+        for feature in include_columns:
+            if include_columns[0] == feature:
+                df_copy[column] = df_copy[feature]
+                continue
+            df_copy[column] = df_copy[column] + df_copy[feature]
+
+        return df_copy
+
+    def _multiply_columns(self, column, include_columns, df_copy):
+        # multiply columns
+        for feature in include_columns:
+            if include_columns[0] == feature:
+                df_copy[column] = df_copy[feature]
+                continue
+            df_copy[column] = df_copy[column] * df_copy[feature]
+
+        df_copy[column] = df_copy[column].abs()
         return df_copy
 
     def _calculate_difference(self, column, include_columns, df_copy):
@@ -238,15 +258,58 @@ class FeatureEngineering(object):
                 continue
             df_copy[column] = df_copy[column] - df_copy[feature]
 
-        df_copy.loc[df_copy[column] < 0, column] = 0
+        # df_copy.loc[df_copy[column] < 0, column] = 0
 
         return df_copy
 
     def set_inf_to_na(self, df, column):
         df.loc[np.isinf(df[column]), column] = np.nan
         return df
+    def _transform_numerical_addition(self, column, include_columns, na_strategy='set:0'):
+        """Adds two or more columns 
 
-    def _transform_numerical_division(self, column, include_columns, na_strategy='set:0'):
+        Arguments:
+            column {String} -- The new features name
+            include_columns {Array} -- The features which will be added
+            na_strategy {String} -- A valid na_strategy which is executed before subtraction
+        """
+        logger.debug(
+            "Additoin of numerical variables for columns {}".format(include_columns))
+
+        # Copy Dataframe
+        df_copy = self.df
+        # Fill NAs and change dtype to numerical
+        for feature in include_columns:
+            df_copy = self._execute_na_strategy(df_copy, feature, na_strategy)
+            df_copy[feature] = pd.to_numeric(df_copy[feature])
+
+        df_copy[column] = self._addition_columns(
+            column, include_columns, df_copy)
+        self._add_column_to_data_frame(df_copy, column)
+
+    def _transform_numerical_multiply(self, column, include_columns, na_strategy='set:0'):
+        """Mutltiplies two or more columns 
+
+        Arguments:
+            column {String} -- The new features name
+            include_columns {Array} -- The features which will be multiplied
+            na_strategy {String} -- A valid na_strategy which is executed before subtraction
+        """
+        logger.debug(
+            "Multiply of numerical variables for columns {}".format(include_columns))
+
+        # Copy Dataframe
+        df_copy = self.df
+        # Fill NAs and change dtype to numerical
+        for feature in include_columns:
+            df_copy = self._execute_na_strategy(df_copy, feature, na_strategy)
+            df_copy[feature] = pd.to_numeric(df_copy[feature])
+
+        df_copy[column] = self._multiply_columns(
+            column, include_columns, df_copy)
+        self._add_column_to_data_frame(df_copy, column)
+
+    def _transform_numerical_division(self, column, include_columns, na_strategy='set:1'):
         """Divides two or more columns through each other
 
         Arguments:
@@ -263,7 +326,9 @@ class FeatureEngineering(object):
         for feature in include_columns:
             df_copy = self._execute_na_strategy(df_copy, feature, na_strategy)
             df_copy[feature] = pd.to_numeric(df_copy[feature])
-            df_copy = self._execute_na_strategy(df_copy, feature, na_strategy)
+            if include_columns[0] == feature:
+                continue
+            df_copy.loc[df_copy[feature] == 0, column] = np.NaN
 
         df_copy = self._divide_columns(column, include_columns, df_copy)
         df_copy = self.set_inf_to_na(df_copy, column)
@@ -272,11 +337,11 @@ class FeatureEngineering(object):
         self._add_column_to_data_frame(df_copy, column)
 
     def _transform_average_feature(self, column, include_columns=[], na_strategy='median'):
-        """Subtracts two or more columns from each other
+        """Avarages over two or more columns 
 
         Arguments:
             column {String} -- The new features name
-            include_columns {Array} -- The features which will be subtracted from each other from left to right
+            include_columns {Array} -- The features which will be avearaged
             na_strategy {String} -- A valid na_strategy which is executed before subtraction
         """
         logger.debug(
@@ -788,6 +853,19 @@ class FeatureEngineering(object):
                 else:
                     self._transform_numerical_division(
                         feature_name, columns, strategy)
+
+            elif feature_type == "multiply":
+                strategy, columns = self._check_meta_information(
+                    feature, feature_name)
+
+                self._transform_numerical_multiply(
+                    feature_name, columns, strategy)
+            elif feature_type == "add":
+                strategy, columns = self._check_meta_information(
+                    feature, feature_name)
+
+                self._transform_numerical_addition(
+                    feature_name, columns, strategy)
             elif feature_type == "duration":
                 strategy, columns = self._check_meta_information(
                     feature, feature_name)

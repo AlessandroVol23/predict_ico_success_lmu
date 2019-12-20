@@ -1,10 +1,16 @@
 {
-  "na_less_50_mixed_upsampling_00_4": [
+  "na_less_50_mixed_upsampling_00_6": [
     { "meta": { "upsampling": "0.0" } },
     {
       "column": "transaction_count",
       "type": "numerical",
       "na_strategy": "median"
+    },
+    {
+      "column": "divided_total_supplie_transcation_count",
+      "type": "divide",
+      "na_strategy": "set:1",
+      "columns": ["market_data_total_supply", "transaction_count"]
     },
     { "column": "bitcoin_difference", "type": "custom", "amt_weeks": 4 },
     { "column": "eth_difference", "type": "custom", "amt_weeks": 4 },
@@ -13,35 +19,24 @@
     {
       "column": "diff_holder_count_total_tokens",
       "type": "difference",
-      "na_strategy": "set:0",
+      "na_strategy": "set:1",
       "columns": ["market_data_total_supply", "holder_count"]
     },
     {
       "column": "divided_transaction_count_holder_count",
       "type": "divide",
       "na_strategy": "set:1",
-      "columns": ["transaction_count", "holder_count"]
+      "columns": ["holder_count", "transaction_count"]
     },
     {
-      "column": "diff_ath_current_price_usd",
+      "column": "price_fluctuation_ath_current",
       "type": "difference",
       "na_strategy": "set:0",
       "columns": ["market_data_ath_usd", "market_data_current_price_usd"]
     },
     {
-      "column": "market_data_current_price_usd",
-      "type": "numerical",
-      "na_strategy": "min"
-    },
-    {
-      "column": "market_data_ath_usd",
-      "type": "numerical",
-      "na_strategy": "min"
-    },
-    {
       "column": "average_of_kws",
       "type": "average",
-      "include": false,
       "na_strategy": "median",
       "columns": [
         "KW1",
@@ -93,9 +88,46 @@
       "dependsOn": ["average_of_kws"]
     },
     {
-      "column": "diff_market_total_circulating_supply",
+      "column": "price_fluctuation_24h_usd",
       "type": "difference",
       "na_strategy": "set:0",
+      "columns": ["market_data_high_24h_usd", "market_data_low_24h_usd"]
+    },
+    {
+      "column": "ratio_price_fluctuation_average_ath_current",
+      "type": "divide",
+      "na_strategy": "set:1",
+      "dependsOn": [
+        "diff_all_time_highest_average",
+        "price_fluctuation_ath_current"
+      ],
+      "columns": [
+        "diff_all_time_highest_average",
+        "price_fluctuation_ath_current"
+      ]
+    },
+    {
+      "column": "market_data_current_price_usd",
+      "type": "numerical",
+      "na_strategy": "min"
+    },
+    { "column": "links_blockchain_site", "type": "binary" },
+    {
+      "column": "market_data_ath_usd",
+      "type": "numerical",
+      "na_strategy": "min"
+    },
+    {
+      "column": "diff_average_price_current_price",
+      "type": "difference",
+      "na_strategy": "set:0",
+      "dependsOn": ["average_of_kws"],
+      "columns": ["market_data_current_price_usd", "average_of_kws"]
+    },
+    {
+      "column": "ciruclating_ration",
+      "type": "divide",
+      "na_strategy": "set:1",
       "columns": ["market_data_total_supply", "market_data_circulating_supply"]
     },
     {
@@ -113,6 +145,12 @@
       "type": "numerical",
       "na_strategy": "set:0"
     },
+    {
+      "column": "ratio_developer_total_issues_subscribers",
+      "type": "divide",
+      "na_strategy": "set:1",
+      "columns": ["developer_data_total_issues", "developer_data_subscribers"]
+    },
     { "column": "contract_address", "type": "binary", "na_strategy": "False" },
     {
       "column": "community_data_reddit_subscribers",
@@ -124,6 +162,7 @@
       "type": "numerical",
       "na_strategy": "mean"
     },
+
     {
       "column": "community_data_twitter_followers",
       "type": "numerical",
@@ -164,7 +203,13 @@
       "column": "duration_highest_price_start",
       "type": "duration",
       "na_strategy": "set:0",
-      "columns": ["market_data_first_time_trading", "market_data_ath_date_usd"]
+      "columns": ["market_data_ath_date_usd", "market_data_first_time_trading"]
+    },
+    {
+      "column": "duration_last_trading_highest_price",
+      "type": "duration",
+      "na_strategy": "set:0",
+      "columns": ["market_data_ath_date_usd", "timestamp"]
     }
   ]
 }
