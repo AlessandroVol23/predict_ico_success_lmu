@@ -5,6 +5,7 @@ import click
 from src.models.catboost_model import CatBoostModel
 from src.models.fit_model import FittingModel
 from src.models.light_gbm import LightGbmModel
+from src.models.light_gbm_dart import LightGbmDartModel
 from src.models.naive_bayes import NaiveBayesModel
 from src.models.random_forest import RandomForestModel
 from src.models.utils import read_upsampling_feature_set, read_categorical_features, get_submission_number, \
@@ -19,7 +20,8 @@ training_models = [
     CatBoostModel,
     LightGbmModel,
     NaiveBayesModel,
-    RandomForestModel
+    RandomForestModel,
+    LightGbmDartModel
 ]
 
 
