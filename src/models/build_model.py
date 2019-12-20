@@ -5,6 +5,7 @@ import click
 from src.models.catboost_model import CatBoostModel
 from src.models.fit_model import FittingModel
 from src.models.light_gbm import LightGbmModel
+from src.models.light_gbm_dart import LightGbmDartModel
 from src.models.logistic_regression import LogisticRegressionModel
 from src.models.naive_bayes import NaiveBayesModel
 from src.models.random_forest import RandomForestModel
@@ -21,7 +22,8 @@ training_models = [
     LightGbmModel,
     NaiveBayesModel,
     RandomForestModel,
-    LogisticRegressionModel
+    LogisticRegressionModel,
+    LightGbmDartModel
 ]
 
 
