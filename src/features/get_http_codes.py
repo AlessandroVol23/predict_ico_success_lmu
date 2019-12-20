@@ -46,8 +46,8 @@ def _check_http_status_code(url):
 
 
 def transform_link_binary(column="links_homepage", na_strategy="set:NAN"):
-    df_bitcoin, df, df_test, df_gem_btc_usd = read_processed_data()
-    df_copy = df.copy()
+    df_bitcoin, df, df_test, df_gem_btc_usd, df_gem_eth_usd, df_gem_ltc_usd, df_icobench = read_processed_data()
+    df_copy = pd.concat([df, df_test], sort=True)
     results = []
     if na_strategy.find(":") != -1:
         strat = na_strategy.split(":")
@@ -60,7 +60,7 @@ def transform_link_binary(column="links_homepage", na_strategy="set:NAN"):
         results = list(tqdm(pool.imap(_check_http_status_code,
                                       df_copy[column]), total=len(df_copy[column])))
 
-    df_new = pd.DataFrame(df["OBS_ID"],  columns=['OBS_ID'])
+    df_new = df_copy[['OBS_ID']].copy()
     df_new["links_homepage_available"] = results
     df_new.to_csv(
         'data/external/Links_Homepage_available.csv', index=None)
