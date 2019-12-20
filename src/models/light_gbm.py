@@ -40,7 +40,7 @@ class LightGbmModel(BaseModel):
         if val_x is not None:
             self.model.fit(trn_x, trn_y,
                            eval_set=[(trn_x, trn_y), (val_x, val_y)],
-                           eval_metric='binary_logloss', verbose=250, early_stopping_rounds=100
+                           eval_metric='binary_logloss', verbose=250, early_stopping_rounds=300
                            )
         else:
             self.model.fit(trn_x, trn_y, verbose=25)

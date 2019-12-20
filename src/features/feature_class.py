@@ -242,6 +242,10 @@ class FeatureEngineering(object):
 
         return df_copy
 
+    def set_inf_to_na(self, df, column):
+        df.loc[np.isinf(df[column]), column] = np.nan
+        return df
+
     def _transform_numerical_division(self, column, include_columns, na_strategy='set:0'):
         """Divides two or more columns through each other
 
@@ -259,8 +263,11 @@ class FeatureEngineering(object):
         for feature in include_columns:
             df_copy = self._execute_na_strategy(df_copy, feature, na_strategy)
             df_copy[feature] = pd.to_numeric(df_copy[feature])
+            df_copy = self._execute_na_strategy(df_copy, feature, na_strategy)
 
         df_copy = self._divide_columns(column, include_columns, df_copy)
+        df_copy = self.set_inf_to_na(df_copy, column)
+        df_copy = self._execute_na_strategy(df_copy, column, na_strategy)
 
         self._add_column_to_data_frame(df_copy, column)
 

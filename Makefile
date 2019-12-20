@@ -66,7 +66,19 @@ fit_models:
 	$(PYTHON_INTERPRETER) src/models/base_model.py
 
 model_chain:
+ifdef final_model
+	$(PYTHON_INTERPRETER) src/models/model_chain.py feature_set_meta.json $(final_model)
+else 
 	$(PYTHON_INTERPRETER) src/models/model_chain.py feature_set_meta.json False
+
+endif
+
+stacking:
+ifdef feature_set
+		$(PYTHON_INTERPRETER) src/models/stacking/stack_models.py $(feature_set)
+else
+		$(PYTHON_INTERPRETER) src/models/stacking/stack_models.py 1
+endif
 
 shap_plots:
 	$(PYTHON_INTERPRETER) src/models/model_chain.py feature_set_meta.json True

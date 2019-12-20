@@ -152,5 +152,5 @@ class FittingModel(object):
         self.oof_test[:] = oof_test_skf.mean(axis=0)
         self.oof_test_abs = self.oof_test[:].round()
         mean_mcc = np.array(mcc_folds).mean()
-        print("Overall MCC was: {}".format(mean_mcc))
+        logger.info("Overall MCC was: {}".format(mean_mcc))
         return mean_mcc
