@@ -74,16 +74,9 @@ class BuildModel(object):
             if final_model:
                 # Workaround till we have function to read in optimized hyperparams
                 if model_name == 'catboost':
-                    hp = {
-                        "bagging_temperature": 1.0,
-                        "border_count": 121,
-                        "depth": 4,
-                        "iterations": 802,
-                        "l2_leaf_reg": 30,
-                        "learning_rate": 0.4476540650629794,
-                        "random_strength": 10.0,
-                        "scale_pos_weight": 0.9494114772362018
-                    }
+                    hp = {"bagging_temperature": 1.0, "border_count": 202, "depth": 5, "iterations": 705,
+                          "l2_leaf_reg": 30, "learning_rate": 0.29502864152955893, "random_strength": 10.0,
+                          "scale_pos_weight": 1.0}
                     final_model = current_model_class(hp)
                 else:
                     final_model = current_model_class()
@@ -102,7 +95,7 @@ class BuildModel(object):
                     fitting_model.save_feature_importance('shap')
                     fitting_model.save_feature_importance('feature_importance')
                 create_evaluation_file(fitting_model.test_ids, preds_test_abs,
-                                       next_submission_number, True)
+                                       next_submission_number, True, '_final')
 
 
 @click.command()
