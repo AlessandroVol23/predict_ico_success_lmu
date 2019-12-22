@@ -1,5 +1,5 @@
 {
-  "na_less_50_mixed_upsampling_00_6": [
+  "na_less_50_mixed_upsampling_40_6": [
     { "meta": { "upsampling": "0.0" } },
     {
       "column": "transaction_count",
