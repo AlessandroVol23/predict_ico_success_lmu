@@ -88,7 +88,6 @@ class BuildModel(object):
                 fitting_model.train_final_model()
                 preds_test = fitting_model.predict_test_set()
                 preds_test_abs = preds_test.argmax(axis=1)
-                next_submission_number = get_submission_number()
                 fitting_model.save_current_model()
                 if model_name == 'catboost':
                     fitting_model.save_feature_importance('summary')

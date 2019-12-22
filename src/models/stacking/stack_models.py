@@ -30,17 +30,9 @@ training_models = [
 
 
 def train_final_classifier(X, y):
-    hyperparam = {
-        "bagging_temperature": 1.0,
-        "border_count": 202,
-        "depth": 5,
-        "iterations": 705,
-        "l2_leaf_reg": 30,
-        "learning_rate": 0.29502864152955893,
-        "random_strength": 10.0,
-        "scale_pos_weight": 1.0,
-        'logging_level': 'Verbose',
-    }
+    hyperparam = {"bagging_temperature": 1.0, "border_count": 202, "depth": 5, "iterations": 705,
+                  "l2_leaf_reg": 30, "learning_rate": 0.29502864152955893, "random_strength": 10.0,
+                  "scale_pos_weight": 1.0}
 
     clf = CatBoostModel(hyperparam)
     clf.fit(X, y)
@@ -98,10 +90,10 @@ def cross_validate_stacking(X_train, X_test, y_train):
     return mean_mcc, oof_test_abs
 
 
-def make_submission(fitting_model, next_submission_number):
+def make_submission(fitting_model, next_submission_number, suffix=''):
     test_ids, sub_preds_abs = fitting_model.get_values()
     create_evaluation_file(test_ids, sub_preds_abs,
-                           next_submission_number, True)
+                           next_submission_number, True, suffix)
 
 
 def make_result_file(model_name, feature_set_meta, feature_set_key, mean_mcc, next_submission_number, hp):
@@ -170,7 +162,13 @@ def stack_models(feature_set_key):
     make_result_file('stacking_' + '_'.join(model_names), feature_set_meta, feature_set_key, mean_mcc,
                      next_submission_number, hp)
 
-    # final_cv = train_final_classifier(df_oof_train, fitting_model.y_train)
+    final_clf = train_final_classifier(df_oof_train, fitting_model.y_train)
+    probs = final_clf.predict_proba(df_oof_test)
+    preds_test = probs[:].round()
+    next_submission_number = get_submission_number()
+
+    make_submission(fitting_model, next_submission_number, suffix='_final')
+
     logger.info("Stacked model trained!")
 
 
