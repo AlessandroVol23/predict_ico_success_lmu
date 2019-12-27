@@ -55,8 +55,13 @@ def main(feature_set_key):
 
     print(json.dumps(opt.best_params_, indent=4))
 
+    result = {
+        "model":"catboost",
+        **opt.best_params_
+    }
+
     with open('best_params.json', 'w') as outfile:
-        json.dump(opt.best_params_, outfile)
+        json.dump(result, outfile)
 
     dump(opt, 'optimizer.joblib')
 

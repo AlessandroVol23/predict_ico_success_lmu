@@ -11,15 +11,19 @@ from lightgbm import LGBMClassifier
 
 class LightGbmModel(BaseModel):
 
-    def __init__(self):
-        self.hyperparam = {
-            'n_estimators': 2000,
-            'learning_rate': '0.0035',
-            'device': 'CPU'
-        }
-        self.model = LGBMClassifier(
-            **self.hyperparam
-        )
+    def __init__(self, hyperparams = None):
+        if hyperparams == None:
+            self.hyperparam = {
+                'n_estimators': 2000,
+                'learning_rate': '0.0035',
+                'device': 'CPU'
+            }
+            self.model = LGBMClassifier(
+                **self.hyperparam
+            )
+        else:
+            self.hyperparam = hyperparams
+            self.get_model(True)
 
     def get_name(self):
         return "lbm"

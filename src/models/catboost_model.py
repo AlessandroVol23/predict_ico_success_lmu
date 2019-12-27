@@ -1,7 +1,6 @@
 #! /bin/bash
 # -*- coding: utf-8 -*-
 
-import logging
 import os
 from src.models.base_model import BaseModel
 from catboost import CatBoostClassifier, Pool

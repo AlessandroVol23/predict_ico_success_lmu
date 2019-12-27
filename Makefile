@@ -78,6 +78,13 @@ endif
 shap_plots:
 	$(PYTHON_INTERPRETER) src/models/model_chain.py feature_set_meta.json True
 
+hyperparam_search:
+ifdef feature_set
+		$(PYTHON_INTERPRETER) src/models/hyperparams/hyper_param_search.py $(feature_set)
+else
+		$(PYTHON_INTERPRETER) src/models/hyperparams/hyper_param_search.py 1
+endif
+
 
 #################################################################################
 # Self Documenting Commands                                                     #

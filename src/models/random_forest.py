@@ -5,11 +5,16 @@ from src.models.base_model import BaseModel
 
 class RandomForestModel(BaseModel):
 
-    def __init__(self):
-        self.hyperparameter = {
-            "n_estimators": 500
-        }
-        pass
+    def __init__(self, hyperparams = None):
+        if hyperparams == None:
+
+            self.hyperparameter = {
+                "n_estimators": 500
+            }
+        else:
+            self.hyperparameter={
+                **hyperparams
+            }
        #  self.model = RandomForestClassifier()
 
 
