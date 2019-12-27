@@ -1,1 +1,1 @@
-[{"model": "lbm", "bagging_fraction": 0.8820207917706628, "feature_fraction": 0.6821805945418601, "lambda_l1": 5, "lambda_l2": 1, "max_depth": 8, "min_child_weight": 24, "min_split_gain": 0.03574220215501526, "num_leaves": 40}]
+[{"model": "catboost", "bagging_temperature": 0.41010395885331385, "border_count": 

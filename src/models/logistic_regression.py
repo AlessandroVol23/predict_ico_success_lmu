@@ -5,10 +5,15 @@ from src.models.base_model import BaseModel
 
 class LogisticRegressionModel(BaseModel):
 
-    def __init__(self):
-        self.hyperparameter = {
-            "max_iter": 10000
-        }
+    def __init__(self, hyperparams=None):
+        if(hyperparams == None):
+            self.hyperparameter = {
+                "max_iter": 10000
+            }
+        else:
+            self.hyperparameter = {
+                **hyperparams
+            }
         pass
 
     def get_name(self):
