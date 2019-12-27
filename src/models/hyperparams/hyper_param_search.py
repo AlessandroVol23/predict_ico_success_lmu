@@ -32,7 +32,7 @@ warnings.filterwarnings("ignore")
 
 search_models = [
 
-   CatBoostModel,
+    CatBoostModel,
     LightGbmModel,
     NaiveBayesModel,
     RandomForestModel,
@@ -98,12 +98,25 @@ def main(feature_set_key):
             search_spaces = {'criterion': ['gini', 'entropy'], 'max_depth': [3, 4, 6, 10], 'n_estimators': [
                 100, 200, 500], 'max_features': ['sqrt', 'log2', 0.2, 0.5, 0.8], 'min_samples_split': [2, 5, 20, 50]}
         elif current_model_class == LogisticRegressionModel:
-            current_model = current_model_class({"penalty":'l1', "dual":False, "max_iter":110})
+            current_model = current_model_class(
+                {"penalty": 'l1', "dual": False, "max_iter": 110})
             search_spaces = {
                 "dual": [True, False],
                 "max_iter": [100, 110, 120, 130, 140],
                 "C": [1.0, 1.5, 2.0, 2.5]
             }
+        elif current_model_class == LightGbmDartModel:
+            current_model = current_model_class({'num_iterations': 100,
+                                                 'learning_rate': 0.05,
+                                                 'metric': 'lgb_r2_score'})
+            search_spaces = {'num_leaves': Integer(24, 45),
+                             'feature_fraction': Real(0.1, 0.9),
+                             'bagging_fraction': Real(0.8, 1),
+                             'max_depth': Integer(5, 9),
+                             'lambda_l1': Integer(0, 5),
+                             'lambda_l2': Integer(0, 3),
+                             'min_split_gain': Real(0.001, 0.1),
+                             'min_child_weight': Integer(5, 50)}
         else:
             logger.warn("Model not found. Continue")
             continue
