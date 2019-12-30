@@ -30,8 +30,9 @@ warnings.filterwarnings("ignore")
 
 # Skopt functions
 
-search_models = [
+#
 
+search_models = [
     CatBoostModel,
     LightGbmModel,
     NaiveBayesModel,
@@ -95,15 +96,14 @@ def main(feature_set_key):
                                                  "min_samples_split": 2, "min_weight_fraction_leaf": 0.0,
                                                  "n_estimators": 10, "n_jobs": 1, "oob_score": False,
                                                  "verbose": 0, "warm_start": False})
-            search_spaces = {'criterion': ['gini', 'entropy'], 'max_depth': [3, 4, 6, 10], 'n_estimators': [
-                100, 200, 500], 'max_features': ['sqrt', 'log2', 0.2, 0.5, 0.8], 'min_samples_split': [2, 5, 20, 50]}
+            search_spaces = {'criterion': ['gini', 'entropy'], 'max_depth': [3, 4, 6, 10], 'n_estimators': Integer(
+                100, 500), 'max_features': ['sqrt', 'log2', 0.2, 0.5, 0.8], 'min_samples_split': Integer(2, 50)}
         elif current_model_class == LogisticRegressionModel:
             current_model = current_model_class(
-                {"penalty": 'l1', "dual": False, "max_iter": 110})
+                {"penalty": 'l2', "dual": False, "max_iter": 110})
             search_spaces = {
-                "dual": [True, False],
                 "max_iter": [100, 110, 120, 130, 140],
-                "C": [1.0, 1.5, 2.0, 2.5]
+                "C": Integer(1e-4, 1e4)
             }
         elif current_model_class == LightGbmDartModel:
             current_model = current_model_class({'num_iterations': 100,

@@ -1,1 +1,44 @@
-[{"model": "catboost", "bagging_temperature": 0.41010395885331385, "border_count": 
+[
+  {
+    "model": "catboost",
+    "bagging_temperature": 0.41010395885331385,
+    "border_count": 186,
+    "depth": 8,
+    "iterations": 323,
+    "l2_leaf_reg": 21,
+    "learning_rate": 0.0673344419215237,
+    "random_strength": 3.230824361824754e-6,
+    "scale_pos_weight": 0.7421091918485163
+  },
+  {
+    "model": "lbm",
+    "bagging_fraction": 0.8820207917706628,
+    "feature_fraction": 0.6821805945418601,
+    "lambda_l1": 5,
+    "lambda_l2": 1,
+    "max_depth": 8,
+    "min_child_weight": 24,
+    "min_split_gain": 0.03574220215501526,
+    "num_leaves": 40
+  },
+  {
+    "model": "random_forest",
+    "criterion": "gini",
+    "max_depth": 6,
+    "max_features": 0.8,
+    "min_samples_split": 17,
+    "n_estimators": 368
+  },
+  { "model": "logistic_regression", "C": 4101, "max_iter": 130 },
+  {
+    "model": "lbm_dart",
+    "bagging_fraction": 0.8820207917706628,
+    "feature_fraction": 0.6821805945418601,
+    "lambda_l1": 5,
+    "lambda_l2": 1,
+    "max_depth": 8,
+    "min_child_weight": 24,
+    "min_split_gain": 0.03574220215501526,
+    "num_leaves": 40
+  }
+]

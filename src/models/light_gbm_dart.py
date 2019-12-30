@@ -8,16 +8,22 @@ from src.models.base_model import BaseModel
 
 class LightGbmDartModel(BaseModel):
 
-    def __init__(self):
-        self.hyperparam = {
-            'n_estimators': 2000,
-            'learning_rate': '0.1',
-            'device': 'CPU',
-            'boosting': 'dart'
-        }
-        self.model = LGBMClassifier(
-            **self.hyperparam
-        )
+    def __init__(self, hyperparms=None):
+        if hyperparms == None:
+            self.hyperparam = {
+                'n_estimators': 2000,
+                'learning_rate': '0.1',
+                'device': 'CPU',
+                'boosting': 'dart'
+            }
+
+        else:
+            self.hyperparam = {
+                **hyperparms
+            }
+            self.model = LGBMClassifier(
+                **self.hyperparam
+            )
 
     def get_name(self):
         return "lbm_dart"
