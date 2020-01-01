@@ -1,4 +1,5 @@
 import logging
+from copy import deepcopy
 
 import click
 import numpy as np
@@ -13,7 +14,7 @@ from src.models.light_gbm_dart import LightGbmDartModel
 from src.models.naive_bayes import NaiveBayesModel
 from src.models.random_forest import RandomForestModel
 from src.models.utils import read_upsampling_feature_set, read_categorical_features, get_submission_number, \
-    create_evaluation_file, write_results
+    create_evaluation_file, write_results, read_hyperparams
 from src.utils import read_feature_meta
 
 logger = logging.getLogger(__name__)
@@ -103,10 +104,25 @@ def make_result_file(model_name, feature_set_meta, feature_set_key, mean_mcc, ne
                   next_submission_number, hp)
 
 
+def get_hyperparams(hyperparams, model_name):
+    """
+    Find hyparparams to current model
+    :param hyperparams: Hyperparam list of dicts
+    :param model_name: Name of model
+    :return: Dict with hyperparams
+    """
+    for hp in hyperparams:
+        if hp['model'] == model_name:
+            hp_copy = deepcopy(hp)
+            del hp_copy['model']
+            return hp_copy
+
+
 @click.command()
 @click.argument('feature_set_key')
 def stack_models(feature_set_key):
     feature_set_meta = read_feature_meta()
+    hyperparams = read_hyperparams('reports/best_params.json')
 
     df_oof_train = pd.DataFrame()
     df_oof_test = pd.DataFrame()
@@ -114,21 +130,9 @@ def stack_models(feature_set_key):
     for current_model_class in training_models:
         current_model = current_model_class()
 
-        if current_model.get_name() == 'catboost':
-            hp = {
-                'iterations': 2000,
-                'eval_metric': 'MCC',
-                'loss_function': 'Logloss',
-                'use_best_model': True,
-                'early_stopping_rounds': 300,
-                'logging_level': 'Silent'
-            }
-            current_model.hyperparam = hp
-        elif current_model.get_name() == 'lbm':
-            hp = {
-                'n_estimators': 2000,
-                'learning_rate': '0.0035',
-                'device': 'CPU'}
+        model_name = current_model.get_name()
+        hp = get_hyperparams(hyperparams, model_name)
+        if hp != None:
             current_model.hyperparam = hp
 
         upsampling = read_upsampling_feature_set(

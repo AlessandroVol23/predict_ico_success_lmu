@@ -667,6 +667,9 @@ class FeatureEngineering(object):
             correlation = pearsonr(ico_price, ext_price)[0]
             df_kws.loc[df_kws.OBS_ID == row.OBS_ID, col_name] = correlation
 
+        df_kws[col_name].fillna(0, inplace=True)
+
+
         return df_kws[['OBS_ID', col_name]]
 
     def _build_btc_coeff(self):

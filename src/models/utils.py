@@ -1,6 +1,6 @@
 #! /bin/bash
 # -*- coding: utf-8 -*-
-
+import json
 import logging
 import datetime
 
@@ -139,3 +139,7 @@ def write_results(feature_set_meta, feature_set_number, mean_mcc, model_name, ne
         'hp_use_best_model': hyperparam.get('use_best_model', 'NA')
     })
     write_result_csv(result, result_ser)
+
+def read_hyperparams(path):
+    with open(path) as f:
+        return (json.load(f))
