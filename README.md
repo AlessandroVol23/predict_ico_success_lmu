@@ -1,47 +1,97 @@
-# data_science_for_business_lmu
+# Predicting ICO Success 
 
-## Next Deadline 
+This repository shows our internal Kaggle challenge of the module "Data Science for Business" of the IBIS institute at LMU Munich.
 
-__13.12.2019__
+## Environment
 
-## Paper
+To install all dependencies you need pipenv. After installing pipenv just type:
 
-### Outline
-1. Introduction
-    1. ICO
-    2. Machine Learning - Motivation
-    3. ICO - ML - Motvation
-2. Approach
-3. Data Analysis
-    1. Description of data
-    2. EDA
-    3. "Statistical Analysis" -> Correlations / Min / Max / Mean
-4. Prediction Model
-    1. Pipeline
-    2. Data Preparation
-    3. Prediction Model
-        -> Random Forrest / Light Gbm
-5. Results
-6. Conclusion and Outlook
+`pipenv shell`
+
+`pipenv install`
+
+After that you have all dependencies and you are ready to go. For further instructions please visit https://github.com/pypa/pipenv.
+
+## Data
+
+Preprocess data with `make data`
+
+- Basic preprocessing steps
+
+## Features
+
+`make features`:
+- Generate all features which were declared in config meta file: `data/features/feature_set_meta/feature_set_meta.json`
+
+Example feature set:
+```json
+{
+  "feature_set_1": [
+    {
+      "meta": {
+        "upsampling": "0.0" -> Define Upsampling factor
+      }
+    },
+    {
+      "column": "transaction_count", -> Define feature column in data
+      "type": "numerical", -> Type of data [categorical, numerical, binary, custom]
+      "na_strategy": "median" -> How to handle NAs [mean, median, delete, set]
+    }
+    {
+      "column": "timestamp",
+      "type": "binary",
+      "na_strategy": "False"
+    },
+    {
+      "column": "divided_total_supplie_transcation_count",
+      "type": "divide", -> Own implemented strategies
+      "na_strategy": "set:1",
+      "columns": ["market_data_total_supply", "transaction_count"]
+    }
+  ]
+}
+```
+
+- column: Which column of the data to take?
+- Type: Which type of data? [numerical, categorical, binary, divide, duration, multiply, add, difference, average, coefficient]
+- na_strategy: How to handle NAs? [mean, median, set:x, False]
+- encoder: Encoder for categorical features: [label, one_hot]
 
 
-## Currently implemented 
+## Models
 
-### Data
-- Data pre-generation through make command 
-### Features
-- Automatically generation of Features
-- Automatically exporting of features into CSV files 
-- Custom Feature set description through a meta file saved in JSON data structure 
-- Random feature meta file generation 
-- Generation of random feature sets through random feature meta file 
-- NA-value Strategies [mean, median, delete, set]
-- Encoder strategies [one_hote, label]
+Different types of models were implemented. Following models were implemented:
 
-### Models
-- saving model results into result file 
-- automatically generating and incrementing of submission number, tied to result and feature set 
-- cross-fold validation
-- up-sampling
-- pipeline to fit a model to random generated features 
-- implemented models [LightGBM, Catboost]
+1. Random Forest
+2. LightGbm
+3. Catboost
+4. Naive Bayes
+5. Logistic Regression
+
+`make train_models feature_set=feature_set`: All models will be trained on `feature_set`. After training the results of the training will be saved in a separate results.json in `data/results/results.json`.
+
+`make model_chain`: Trains all models on all feature sets, declared in `feature_set_meta.json`.
+
+### Stacking
+
+A stacking approach was implemented as well. With `make stacking feature_set=feature_set` all models will be validated (5-fold), trained on the whole dataset and a submission file will be created afterwards.
+
+### Cross-Validation
+
+The datasets cross validates on 5-folds, trains on the whole dataset and creates submission files for both cases. 
+
+## Further Make commands
+
+
+### Random Feature Sets
+
+`make features_random_meta`:
+- Creates random feature sets without custom features
+
+### shap_plots
+
+`make shap_plots`: Trains all models on all feature sets declared in `feature_set_meta.json` and creates shap plots for every model and feature set in `reports/figures/local`. 
+
+## End Results
+
+In the end we could make first place with a MCC on the private leaderboard of 0.42 MCC whereas the public score 0.48 MCC was.
