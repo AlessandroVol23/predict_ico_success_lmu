@@ -33,9 +33,9 @@ Example feature set:
       }
     },
     {
-      "column": "transaction_count", -> Define feature column in data
-      "type": "numerical", -> Type of data [categorical, numerical, binary, custom]
-      "na_strategy": "median" -> How to handle NAs [mean, median, delete, set]
+      "column": "transaction_count",
+      "type": "numerical",
+      "na_strategy": "median" 
     }
     {
       "column": "timestamp",
@@ -44,7 +44,7 @@ Example feature set:
     },
     {
       "column": "divided_total_supplie_transcation_count",
-      "type": "divide", -> Own implemented strategies
+      "type": "divide", 
       "na_strategy": "set:1",
       "columns": ["market_data_total_supply", "transaction_count"]
     }
