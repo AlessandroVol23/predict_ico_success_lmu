@@ -29,7 +29,7 @@ Example feature set:
   "feature_set_1": [
     {
       "meta": {
-        "upsampling": "0.0" -> Define Upsampling factor
+        "upsampling": "0.0"
       }
     },
     {
