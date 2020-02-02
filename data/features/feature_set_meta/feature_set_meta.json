@@ -1,6 +1,10 @@
 {
   "na_less_50_mixed_upsampling_00_6": [
-    { "meta": { "upsampling": "0.0" } },
+    {
+      "meta": {
+        "upsampling": "0.0"
+      }
+    },
     {
       "column": "transaction_count",
       "type": "numerical",
@@ -10,29 +14,56 @@
       "column": "divided_total_supplie_transcation_count",
       "type": "divide",
       "na_strategy": "set:1",
-      "columns": ["market_data_total_supply", "transaction_count"]
+      "columns": [
+        "market_data_total_supply",
+        "transaction_count"
+      ]
     },
-    { "column": "bitcoin_difference", "type": "custom", "amt_weeks": 4 },
-    { "column": "eth_difference", "type": "custom", "amt_weeks": 4 },
-    { "column": "ltc_difference", "type": "custom", "amt_weeks": 4 },
-    { "column": "timestamp", "type": "binary" },
+    {
+      "column": "bitcoin_difference",
+      "type": "custom",
+      "amt_weeks": 4
+    },
+    {
+      "column": "eth_difference",
+      "type": "custom",
+      "amt_weeks": 4
+    },
+    {
+      "column": "ltc_difference",
+      "type": "custom",
+      "amt_weeks": 4
+    },
+    {
+      "column": "timestamp",
+      "type": "binary"
+    },
     {
       "column": "diff_holder_count_total_tokens",
       "type": "difference",
       "na_strategy": "set:1",
-      "columns": ["market_data_total_supply", "holder_count"]
+      "columns": [
+        "market_data_total_supply",
+        "holder_count"
+      ]
     },
     {
       "column": "divided_transaction_count_holder_count",
       "type": "divide",
       "na_strategy": "set:1",
-      "columns": ["holder_count", "transaction_count"]
+      "columns": [
+        "holder_count",
+        "transaction_count"
+      ]
     },
     {
       "column": "price_fluctuation_ath_current",
       "type": "difference",
       "na_strategy": "set:0",
-      "columns": ["market_data_ath_usd", "market_data_current_price_usd"]
+      "columns": [
+        "market_data_ath_usd",
+        "market_data_current_price_usd"
+      ]
     },
     {
       "column": "average_of_kws",
@@ -84,14 +115,22 @@
       "column": "diff_all_time_highest_average",
       "type": "difference",
       "na_strategy": "set:0",
-      "columns": ["market_data_ath_usd", "average_of_kws"],
-      "dependsOn": ["average_of_kws"]
+      "columns": [
+        "market_data_ath_usd",
+        "average_of_kws"
+      ],
+      "dependsOn": [
+        "average_of_kws"
+      ]
     },
     {
       "column": "price_fluctuation_24h_usd",
       "type": "difference",
       "na_strategy": "set:0",
-      "columns": ["market_data_high_24h_usd", "market_data_low_24h_usd"]
+      "columns": [
+        "market_data_high_24h_usd",
+        "market_data_low_24h_usd"
+      ]
     },
     {
       "column": "ratio_price_fluctuation_average_ath_current",
@@ -111,7 +150,10 @@
       "type": "numerical",
       "na_strategy": "min"
     },
-    { "column": "links_blockchain_site", "type": "binary" },
+    {
+      "column": "links_blockchain_site",
+      "type": "binary"
+    },
     {
       "column": "market_data_ath_usd",
       "type": "numerical",
@@ -121,14 +163,22 @@
       "column": "diff_average_price_current_price",
       "type": "difference",
       "na_strategy": "set:0",
-      "dependsOn": ["average_of_kws"],
-      "columns": ["market_data_current_price_usd", "average_of_kws"]
+      "dependsOn": [
+        "average_of_kws"
+      ],
+      "columns": [
+        "market_data_current_price_usd",
+        "average_of_kws"
+      ]
     },
     {
       "column": "ciruclating_ration",
       "type": "divide",
       "na_strategy": "set:1",
-      "columns": ["market_data_total_supply", "market_data_circulating_supply"]
+      "columns": [
+        "market_data_total_supply",
+        "market_data_circulating_supply"
+      ]
     },
     {
       "column": "developer_data_commit_count_4_weeks",
@@ -149,9 +199,16 @@
       "column": "ratio_developer_total_issues_subscribers",
       "type": "divide",
       "na_strategy": "set:1",
-      "columns": ["developer_data_total_issues", "developer_data_subscribers"]
+      "columns": [
+        "developer_data_total_issues",
+        "developer_data_subscribers"
+      ]
     },
-    { "column": "contract_address", "type": "binary", "na_strategy": "False" },
+    {
+      "column": "contract_address",
+      "type": "binary",
+      "na_strategy": "False"
+    },
     {
       "column": "community_data_reddit_subscribers",
       "type": "numerical",
@@ -162,54 +219,1122 @@
       "type": "numerical",
       "na_strategy": "mean"
     },
-
     {
       "column": "community_data_twitter_followers",
       "type": "numerical",
       "na_strategy": "median"
     },
-    { "column": "market_data_first_time_trading", "type": "binary" },
+    {
+      "column": "market_data_first_time_trading",
+      "type": "binary"
+    },
     {
       "column": "average_kws_jan",
       "type": "average",
       "na_strategy": "median",
-      "columns": ["KW1", "KW2", "KW3", "KW4"]
+      "columns": [
+        "KW1",
+        "KW2",
+        "KW3",
+        "KW4"
+      ]
     },
     {
       "column": "average_kws_mar",
       "type": "average",
       "na_strategy": "median",
-      "columns": ["KW9", "KW10", "KW11", "KW12"]
+      "columns": [
+        "KW9",
+        "KW10",
+        "KW11",
+        "KW12"
+      ]
     },
     {
       "column": "average_kws_may",
       "type": "average",
       "na_strategy": "median",
-      "columns": ["KW17", "KW18", "KW19", "KW20"]
+      "columns": [
+        "KW17",
+        "KW18",
+        "KW19",
+        "KW20"
+      ]
     },
     {
       "column": "average_kws_july",
       "type": "average",
       "na_strategy": "median",
-      "columns": ["KW25", "KW26", "KW27", "KW28"]
+      "columns": [
+        "KW25",
+        "KW26",
+        "KW27",
+        "KW28"
+      ]
     },
     {
       "column": "average_kws_sep",
       "type": "average",
       "na_strategy": "median",
-      "columns": ["KW33", "KW34", "KW35", "KW36"]
+      "columns": [
+        "KW33",
+        "KW34",
+        "KW35",
+        "KW36"
+      ]
     },
     {
       "column": "duration_highest_price_start",
       "type": "duration",
       "na_strategy": "set:0",
-      "columns": ["market_data_ath_date_usd", "market_data_first_time_trading"]
+      "columns": [
+        "market_data_ath_date_usd",
+        "market_data_first_time_trading"
+      ]
     },
     {
       "column": "duration_last_trading_highest_price",
       "type": "duration",
       "na_strategy": "set:0",
-      "columns": ["market_data_ath_date_usd", "timestamp"]
+      "columns": [
+        "market_data_ath_date_usd",
+        "timestamp"
+      ]
+    }
+  ],
+  "na_less_20_median": [
+    {
+      "column": "KW1",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW2",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW3",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW4",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW5",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW6",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW7",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW8",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW9",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW10",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW11",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW12",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW13",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW14",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW15",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW16",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW17",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW18",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW19",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW20",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW21",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW22",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW23",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW24",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW25",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW26",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW27",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW28",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW29",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW30",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW31",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW32",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW33",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW34",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW35",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW36",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW37",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW38",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW39",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "community_data_reddit_accounts_active_48h",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "community_data_reddit_average_comments_48h",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "community_data_reddit_average_posts_48h",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "community_data_reddit_subscribers",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "developer_data_forks",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "developer_data_stars",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "developer_data_subscribers",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "developer_data_closed_issues",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "developer_data_closed_issues",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "developer_data_pull_requests_merged",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "developer_data_total_issues",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "developer_data_commit_count_4_weeks",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "developer_data_pull_request_contributors",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "public_interest_stats_bing_matches",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "public_interest_stats_alexa_rank",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "community_data_facebook_likes",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "community_data_twitter_followers",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "market_data_circulating_supply",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "market_data_current_price_usd",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "market_data_ath_usd",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "links_homepage",
+      "type": "binary",
+      "na_strategy": "False"
+    },
+    {
+      "column": "market_data_low_24h_usd",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "market_data_high_24h_usd",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "market_data_high_24h_usd",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "links_blockchain_site",
+      "type": "binary"
+    },
+    {
+      "column": "market_data_first_time_trading",
+      "type": "binary"
+    },
+    {
+      "column": "market_data_total_supply",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "links_twitter_screen_name",
+      "type": "binary"
+    }
+  ],
+  "correlation_positive": [
+    {
+      "meta": {
+        "upsampling": "0.0"
+      }
+    },
+    {
+      "column": "KW1",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW2",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW3",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW4",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW5",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW6",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW7",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW8",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW9",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW10",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW11",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW12",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW13",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW14",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW15",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW16",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW17",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW18",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW19",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW20",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW21",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW22",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW23",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW24",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW25",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW26",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW27",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW28",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW29",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW30",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW31",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW32",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW33",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW34",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW35",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW36",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW37",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW38",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "KW39",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "developer_data_forks",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "developer_data_stars",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "developer_data_subscribers",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "developer_data_pull_requests_merged",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "developer_data_commit_count_4_weeks",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "developer_data_pull_request_contributors",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "community_data_twitter_followers",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "market_data_current_price_usd",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "market_data_ath_usd",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "market_data_high_24h_usd",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "market_data_total_supply",
+      "type": "numerical",
+      "na_strategy": "median"
+    },
+    {
+      "column": "ico_data_total_raised",
+      "type": "numerical",
+      "na_strategy": "median"
+    }
+  ],
+  "all": [
+    {
+      "column": "categories_0",
+      "type": "categorical",
+      "encoder": "label",
+      "na_strategy": "set:NA"
+    },
+    {
+      "column": "transaction_count",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "holder_count",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "country_origin",
+      "type": "categorical",
+      "encoder": "label",
+      "na_strategy": "set:NA"
+    },
+    {
+      "column": "market_data_current_price_usd",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "market_data_ath_usd",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "market_data_high_24h_usd",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "market_data_total_supply",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "market_data_circulating_supply",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "community_data_facebook_likes",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "community_data_twitter_followers",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "community_data_reddit_average_posts_48h",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "community_data_reddit_subscribers",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "community_data_reddit_accounts_active_48h",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "developer_data_forks",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "developer_data_stars",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "developer_data_subscribers",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "developer_data_total_issues",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "developer_data_closed_issues",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "developer_data_pull_requests_merged",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "developer_data_pull_request_contributors",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "developer_data_commit_count_4_weeks",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "ico_data_amount_for_sale",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "ico_data_country_origin",
+      "type": "categorical",
+      "encoder": "label",
+      "na_strategy": "set:NA"
+    },
+    {
+      "column": "ico_data_hardcap_amount",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "ico_data_hardcap_currency",
+      "type": "categorical",
+      "encoder": "label",
+      "na_strategy": "set:NA"
+    },
+    {
+      "column": "ico_data_kyc_required",
+      "type": "binary",
+      "na_strategy": "False"
+    },
+    {
+      "column": "ico_data_pre_sale_available",
+      "type": "binary",
+      "na_strategy": "False"
+    },
+    {
+      "column": "ico_data_softcap_amount",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "ico_data_softcap_currency",
+      "type": "categorical",
+      "encoder": "label",
+      "na_strategy": "set:NA"
+    },
+    {
+      "column": "ico_data_total_raised",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "ico_data_total_raised_currency",
+      "type": "categorical",
+      "encoder": "label",
+      "na_strategy": "set:NA"
+    },
+    {
+      "column": "public_interest_stats_alexa_rank",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "public_interest_stats_bing_matches",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "public_interest_stats_bing_matches",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "KW1",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "KW2",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "KW3",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "KW4",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "KW5",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "KW6",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "KW7",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "KW8",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "KW9",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "KW10",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "KW11",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "KW12",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "KW13",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "KW14",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "KW15",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "KW16",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "KW17",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "KW18",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "KW19",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "KW20",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "KW21",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "KW22",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "KW23",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "KW24",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "KW25",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "KW26",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "KW27",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "KW28",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "KW29",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "KW30",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "KW31",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "KW32",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "KW33",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "KW34",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "KW35",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "KW36",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "KW37",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "KW38",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "KW39",
+      "type": "numerical",
+      "na_strategy": "set:0"
+    },
+    {
+      "column": "bitcoin_difference",
+      "type": "custom",
+      "amt_weeks": 2
+    },
+    {
+      "column": "eth_difference",
+      "type": "custom",
+      "amt_weeks": 2
+    },
+    {
+      "column": "ltc_difference",
+      "type": "custom",
+      "amt_weeks": 2
+    },
+    {
+      "column": "btc_coeff",
+      "type": "custom"
+    },
+    {
+      "column": "eth_coeff",
+      "type": "custom"
+    },
+    {
+      "column": "ltc_coeff",
+      "type": "custom"
+    },
+    {
+      "column": "bitcoin_avg_difference",
+      "type": "custom"
+    },
+    {
+      "column": "eth_avg_difference",
+      "type": "custom"
+    },
+    {
+      "column": "ltc_avg_difference",
+      "type": "custom"
+    },
+    {
+      "column": "duration_last_first_trade",
+      "type": "duration",
+      "na_strategy": "set:0",
+      "columns": [
+        "timestamp",
+        "market_data_first_time_trading"
+      ]
+    },
+    {
+      "column": "dif_total_circulating",
+      "type": "difference",
+      "na_strategy": "set:0",
+      "columns": [
+        "market_data_total_supply",
+        "market_data_circulating_supply"
+      ]
+    },
+    {
+      "column": "exist_on_icobench",
+      "type": "custom"
     }
   ]
 }
